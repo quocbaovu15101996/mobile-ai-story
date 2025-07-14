@@ -1,6 +1,10 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import * as SecureStore from 'expo-secure-store';
+import * as Device from 'expo-device';
+import { Platform } from 'react-native';
+import api, { ApiResponse } from '../services/api';
+import { LoginResponse } from '../services/api/config';
 import { AuthState } from './types';
 
 // Custom storage object for expo-secure-store
@@ -20,6 +24,7 @@ type AuthActions = {
   setToken: (token: string) => void;
   clearToken: () => void;
   setAuthenticated: (isAuthenticated: boolean) => void;
+  loginByDevice: () => Promise<string | null>;
 };
 
 type AuthStore = AuthState & AuthActions;
@@ -31,14 +36,38 @@ const initialState: AuthState = {
 
 export const useAuthStore = create<AuthStore>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       ...initialState,
-      setToken: (token: string) =>
+      setToken: (token: string) => 
         set({ token, isAuthenticated: true }),
-      clearToken: () =>
+      clearToken: () => 
         set({ token: null, isAuthenticated: false }),
-      setAuthenticated: (isAuthenticated: boolean) =>
+      setAuthenticated: (isAuthenticated: boolean) => 
         set({ isAuthenticated }),
+      loginByDevice: async (): Promise<string | null> => {
+        try {
+          // Use Device ID or generate a unique ID if not available
+          const deviceId = Device.modelId || `web-${Math.random().toString(36).substring(7)}`;
+          const platform = Platform.OS === 'ios' ? 'ios' : 'android';
+          
+          const response = await api.post<LoginResponse>(
+            '/v1/auth/login-by-device',
+            { platform, deviceId }
+          ) as unknown as ApiResponse<LoginResponse>;
+          
+          if (response.data?.token) {
+            const { token } = response.data;
+            get().setToken(token);
+            return token;
+          }
+          
+          return null;
+        } catch (error) {
+          console.error('Login by device failed:', error);
+          get().clearToken();
+          return null;
+        }
+      },
     }),
     {
       name: 'auth-storage',
