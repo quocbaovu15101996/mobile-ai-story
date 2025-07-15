@@ -1,8 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { rollCall, earnTokenByAds } from '../src/services/api/users';
-import { showSuccessToast, showErrorToast } from '../src/utils/toast';
+import { rollCall, earnTokenByAds } from '@/src/services/api/users';
+import { showSuccessToast, showErrorToast } from '@/src/utils/toast';
 
 type Props = {
   visible: boolean;
