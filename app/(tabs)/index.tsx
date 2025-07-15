@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingTop: 16,
+    paddingTop: 32,
     paddingBottom: 12,
     backgroundColor: '#f8f8f8',
     borderBottomWidth: 1,
@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   tokenBox: {
+    flexDirection: 'row',
     backgroundColor: '#e0e7ff',
     borderRadius: 8,
     paddingVertical: 4,
