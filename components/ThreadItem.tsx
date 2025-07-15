@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
-import { Thread } from '../src/services/api/config';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 interface ThreadItemProps {
   thread: Thread;

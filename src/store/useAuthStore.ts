@@ -5,7 +5,6 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { loginByDevice } from '../services/api/auth';
 import { getUserProfile } from '../services/api/users';
-import { AuthState, UserProfile } from './types';
 
 // Custom storage object for expo-secure-store
 const secureStorage = {

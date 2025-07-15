@@ -1,6 +1,6 @@
 import { AxiosInstance, AxiosRequestConfig } from 'axios';
-import { API_CONFIG } from './config';
 import configuredClient from './client';
+import { API_CONFIG } from './config';
 
 // API response type
 export interface ApiResponse<T = any> {
@@ -27,25 +27,25 @@ export interface ApiClient {
 
 const api: ApiClient = {
   // GET request
-  get: <T = any, R = ApiResponse<T>>(url: string, config: AxiosRequestConfig = {}) => 
+  get: <T = any, R = ApiResponse<T>>(url: string, config: AxiosRequestConfig = {}) =>
     configuredClient.get<T, R>(url, config) as unknown as Promise<R>,
-  
+
   // POST request
-  post: <T = any, R = ApiResponse<T>>(url: string, data: any = {}, config: AxiosRequestConfig = {}) => 
+  post: <T = any, R = ApiResponse<T>>(url: string, data: any = {}, config: AxiosRequestConfig = {}) =>
     configuredClient.post<T, R>(url, data, config) as unknown as Promise<R>,
-  
+
   // PUT request
-  put: <T = any, R = ApiResponse<T>>(url: string, data: any = {}, config: AxiosRequestConfig = {}) => 
+  put: <T = any, R = ApiResponse<T>>(url: string, data: any = {}, config: AxiosRequestConfig = {}) =>
     configuredClient.put<T, R>(url, data, config) as unknown as Promise<R>,
-  
+
   // PATCH request
-  patch: <T = any, R = ApiResponse<T>>(url: string, data: any = {}, config: AxiosRequestConfig = {}) => 
+  patch: <T = any, R = ApiResponse<T>>(url: string, data: any = {}, config: AxiosRequestConfig = {}) =>
     configuredClient.patch<T, R>(url, data, config) as unknown as Promise<R>,
-  
+
   // DELETE request
-  delete: <T = any, R = ApiResponse<T>>(url: string, config: AxiosRequestConfig = {}) => 
+  delete: <T = any, R = ApiResponse<T>>(url: string, config: AxiosRequestConfig = {}) =>
     configuredClient.delete<T, R>(url, config) as unknown as Promise<R>,
-  
+
   // Set authentication token
   setAuthToken: (token: string | null) => {
     if (token) {
@@ -54,40 +54,14 @@ const api: ApiClient = {
       delete configuredClient.defaults.headers.common['Authorization'];
     }
   },
-  
+
   // Clear authentication token
   clearAuthToken: () => {
     delete configuredClient.defaults.headers.common['Authorization'];
   },
-  
+
   // Get the underlying axios instance (use with caution)
   getClient: () => configuredClient,
 };
 
 export default api;
-
-// Example usage with TypeScript:
-/*
-import api, { LoginResponse } from './services/api';
-
-// Make a GET request with type
-api.get<User[]>('/users')
-  .then((response) => {
-    const users = response.data;
-    console.log(users);
-  })
-  .catch((error) => console.error(error));
-
-// Make a POST request with type
-interface LoginData {
-  username: string;
-  password: string;
-}
-
-api.post<LoginResponse>('/auth/login', { username: 'user', password: 'pass' })
-  .then((response) => {
-    const { token } = response.data;
-    api.setAuthToken(token);
-  })
-  .catch((error) => console.error(error));
-*/

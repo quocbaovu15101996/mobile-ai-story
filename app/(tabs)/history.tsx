@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  View, 
-  FlatList, 
-  StyleSheet, 
-  ActivityIndicator, 
+import {
+  ActivityIndicator,
+  FlatList,
+  RefreshControl,
+  StyleSheet,
   Text,
-  RefreshControl 
+  View
 } from 'react-native';
 import { ThreadItem } from '../../components/ThreadItem';
 import { getHistory } from '../../src/services/api/thread';
-import { Thread } from '../../src/services/api/config';
 
 export default function HistoryScreen() {
   const [threads, setThreads] = useState<Thread[]>([]);

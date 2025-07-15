@@ -1,5 +1,5 @@
 import api, { ApiResponse } from "..";
-import { ENDPOINTS, UserProfile } from "../config";
+import { ENDPOINTS } from "../config";
 
 export const getUserProfile = async () => {
   return await api.get<UserProfile>(

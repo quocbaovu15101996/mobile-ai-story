@@ -5,7 +5,7 @@ export const RESPONSE_CODES = {
 
 // Base API configuration
 export const API_CONFIG = {
-  BASE_URL: 'http://localhost:3000', 
+  BASE_URL: 'http://localhost:3000',
   TIMEOUT: 30000, // 30 seconds
   HEADERS: {
     'Content-Type': 'application/json',
@@ -27,33 +27,5 @@ export const ENDPOINTS = {
   },
 };
 
-// Types
-export interface LoginResponse {
-  type: string;
-  token: string;
-}
-
-export interface UserProfile {
-  id: string;
-  email?: string;
-  name?: string;
-  avatar?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Thread {
-  id: string;
-  title: string;
-  content: string;
-  image?: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface ThreadsResponse {
-  threads: Thread[];
-  total: number;
-  page: number;
-  limit: number;
-}
+// Types are now defined globally in src/services/api/types.d.ts
+// No need to import interfaces from config.ts

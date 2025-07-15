@@ -1,5 +1,5 @@
 import api, { ApiResponse } from "..";
-import { ENDPOINTS, LoginResponse } from "../config";
+import { ENDPOINTS } from "../config";
 
 export const loginByDevice = async ({ platform, deviceId }: { platform: string, deviceId: string }) => {
   const payload = {
