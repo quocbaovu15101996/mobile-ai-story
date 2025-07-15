@@ -19,10 +19,29 @@ export const ENDPOINTS = {
   AUTH: {
     LOGIN_BY_DEVICE: '/v1/auth/login-by-device',
   },
+  THREAD: {
+    GET_HISTORY: '/v1/threads',
+  },
 };
 
 // Types
 export interface LoginResponse {
   type: string;
   token: string;
+}
+
+export interface Thread {
+  id: string;
+  title: string;
+  content: string;
+  image?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ThreadsResponse {
+  threads: Thread[];
+  total: number;
+  page: number;
+  limit: number;
 }
