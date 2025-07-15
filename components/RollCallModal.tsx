@@ -1,6 +1,8 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { rollCall, earnTokenByAds } from '../src/services/api/users';
+import { showSuccessToast, showErrorToast } from '../src/utils/toast';
 
 type Props = {
   visible: boolean;
@@ -10,10 +12,42 @@ type Props = {
 export default function RollCallModal(props: Props) {
   const { visible, onClose } = props;
   const [show, setShow] = useState(false);
+  const [isCheckingIn, setIsCheckingIn] = useState(false);
+  const [isWatchingAds, setIsWatchingAds] = useState(false);
 
   useEffect(() => {
     setShow(visible);
   }, [visible]);
+
+  const handleCheckIn = async () => {
+    if (isCheckingIn) return;
+    
+    setIsCheckingIn(true);
+    try {
+      await rollCall();
+      showSuccessToast('Check-in successful! You earned tokens.');
+    } catch (error) {
+      console.error('Check-in failed:', error);
+      showErrorToast('Failed to check in. Please try again.');
+    } finally {
+      setIsCheckingIn(false);
+    }
+  };
+
+  const handleWatchAds = async () => {
+    if (isWatchingAds) return;
+    
+    setIsWatchingAds(true);
+    try {
+      await earnTokenByAds();
+      showSuccessToast('Successfully earned tokens by watching ads!');
+    } catch (error) {
+      console.error('Watch ads failed:', error);
+      showErrorToast('Failed to earn tokens. Please try again.');
+    } finally {
+      setIsWatchingAds(false);
+    }
+  };
 
   return (
     <>
@@ -42,18 +76,29 @@ export default function RollCallModal(props: Props) {
                 </View>
               ))}
             </View>
-            <TouchableOpacity style={styles.modalCheckinBtn}>
-              <Text style={styles.modalCheckinBtnText}>Check-In</Text>
+            <TouchableOpacity 
+              style={[styles.modalCheckinBtn, isCheckingIn && styles.modalCheckinBtnDisabled]} 
+              onPress={handleCheckIn}
+              disabled={isCheckingIn}
+            >
+              <Text style={styles.modalCheckinBtnText}>
+                {isCheckingIn ? 'Checking In...' : 'Check-In'}
+              </Text>
             </TouchableOpacity>
-            <View style={styles.modalAds}>
-              <Text style={styles.modalAdsText}>Watch Ads (0/5)
+            <TouchableOpacity 
+              style={[styles.modalAds, isWatchingAds && styles.modalAdsDisabled]} 
+              onPress={handleWatchAds}
+              disabled={isWatchingAds}
+            >
+              <Text style={styles.modalAdsText}>
+                {isWatchingAds ? 'Watching Ads...' : 'Watch Ads (0/5)'}
                 <Text style={{ color: '#7ee2ff' }}>  Watch ads to earn 1 Gems</Text>
               </Text>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                 <Ionicons name="diamond" size={18} color="#7ee2ff" />
                 <Text style={styles.modalAdsGem}>+1</Text>
               </View>
-            </View>
+            </TouchableOpacity>
           </View>
         </Pressable>
       </Modal>
@@ -147,6 +192,10 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     alignItems: 'center',
   },
+  modalCheckinBtnDisabled: {
+    backgroundColor: '#4a5568',
+    opacity: 0.6,
+  },
   modalCheckinBtnText: {
     color: '#232136',
     fontWeight: 'bold',
@@ -160,6 +209,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+  },
+  modalAdsDisabled: {
+    backgroundColor: '#1a1829',
+    opacity: 0.6,
   },
   modalAdsText: {
     color: '#fff',
