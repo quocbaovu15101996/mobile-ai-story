@@ -4,7 +4,8 @@ import { Platform } from 'react-native';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { loginByDevice } from '../services/api/auth';
-import { AuthState } from './types';
+import { getUserProfile } from '../services/api/users';
+import { AuthState, UserProfile } from './types';
 
 // Custom storage object for expo-secure-store
 const secureStorage = {
@@ -23,6 +24,7 @@ type AuthActions = {
   setToken: (token: string) => void;
   clearToken: () => void;
   setAuthenticated: (isAuthenticated: boolean) => void;
+  setUserProfile: (profile: UserProfile | null) => void;
   loginByDevice: () => Promise<string | null>;
 };
 
@@ -31,6 +33,7 @@ type AuthStore = AuthState & AuthActions;
 const initialState: AuthState = {
   token: null,
   isAuthenticated: false,
+  userProfile: null,
 };
 
 export const useAuthStore = create<AuthStore>()(
@@ -40,9 +43,11 @@ export const useAuthStore = create<AuthStore>()(
       setToken: (token: string) =>
         set({ token, isAuthenticated: true }),
       clearToken: () =>
-        set({ token: null, isAuthenticated: false }),
+        set({ token: null, isAuthenticated: false, userProfile: null }),
       setAuthenticated: (isAuthenticated: boolean) =>
         set({ isAuthenticated }),
+      setUserProfile: (userProfile: UserProfile | null) =>
+        set({ userProfile }),
       loginByDevice: async (): Promise<string | null> => {
         try {
           // Use Device ID or generate a unique ID if not available
@@ -54,6 +59,18 @@ export const useAuthStore = create<AuthStore>()(
           if (response.data?.token) {
             const { token } = response.data;
             get().setToken(token);
+
+            // After successful login, fetch user profile
+            try {
+              const profileResponse = await getUserProfile();
+              if (profileResponse.data) {
+                get().setUserProfile(profileResponse.data);
+              }
+            } catch (profileError) {
+              console.error('Failed to fetch user profile:', profileError);
+              // Don't fail the login if profile fetch fails
+            }
+
             return token;
           }
 
@@ -71,6 +88,7 @@ export const useAuthStore = create<AuthStore>()(
       partialize: (state) => ({
         token: state.token,
         isAuthenticated: state.isAuthenticated,
+        userProfile: state.userProfile,
       }),
     }
   )
@@ -79,8 +97,10 @@ export const useAuthStore = create<AuthStore>()(
 // Selector hooks
 export const useAuthToken = () => useAuthStore((state) => state.token);
 export const useIsAuthenticated = () => useAuthStore((state) => state.isAuthenticated);
+export const useUserProfile = () => useAuthStore((state) => state.userProfile);
 export const useAuthActions = () => ({
   setToken: useAuthStore((state) => state.setToken),
   clearToken: useAuthStore((state) => state.clearToken),
   setAuthenticated: useAuthStore((state) => state.setAuthenticated),
+  setUserProfile: useAuthStore((state) => state.setUserProfile),
 });

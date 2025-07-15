@@ -19,6 +19,9 @@ export const ENDPOINTS = {
   AUTH: {
     LOGIN_BY_DEVICE: '/v1/auth/login-by-device',
   },
+  USERS: {
+    PROFILE: '/v1/users/profile',
+  },
   THREAD: {
     GET_HISTORY: '/v1/threads',
   },
@@ -28,6 +31,15 @@ export const ENDPOINTS = {
 export interface LoginResponse {
   type: string;
   token: string;
+}
+
+export interface UserProfile {
+  id: string;
+  email?: string;
+  name?: string;
+  avatar?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Thread {
