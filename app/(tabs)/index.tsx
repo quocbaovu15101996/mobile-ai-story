@@ -1,7 +1,13 @@
+
 import { Ionicons } from '@expo/vector-icons';
+import React, { useState } from 'react';
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import RollCallModal from '../../components/RollCallModal';
+
 
 export default function HomeScreen() {
+  const [modalVisible, setModalVisible] = useState(false);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -11,16 +17,15 @@ export default function HomeScreen() {
             <Text style={styles.tokenLabel}>Total Token</Text>
             <Text style={styles.tokenValue}>1234</Text>
           </View>
-          <TouchableOpacity style={styles.calendarIcon}>
+          <TouchableOpacity style={styles.calendarIcon} onPress={() => setModalVisible(true)}>
             <Ionicons name="calendar-outline" size={24} color="#333" />
           </TouchableOpacity>
         </View>
       </View>
-      {/* ...other content... */}
+      <RollCallModal visible={modalVisible} onClose={() => setModalVisible(false)} />
     </SafeAreaView>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
