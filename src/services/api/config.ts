@@ -21,6 +21,8 @@ export const ENDPOINTS = {
   },
   USERS: {
     PROFILE: '/v1/users/profile',
+    ROLL_CALL: '/v1/users/roll-call',
+    EARN_TOKEN_BY_ADS: '/v1/users/earn-token-by-ads',
   },
   THREAD: {
     GET_HISTORY: '/v1/threads',

@@ -4,6 +4,7 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
+import Toast from 'react-native-toast-message';
 
 import SplashScreen from '@/components/SplashScreen';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -49,6 +50,7 @@ export default function RootLayout() {
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />
+      <Toast />
     </ThemeProvider>
   );
 }
