@@ -1,8 +1,8 @@
+import { earnTokenByAds, rollCall } from '@/src/services/api/users';
+import { showErrorToast, showSuccessToast } from '@/src/utils/toast';
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { rollCall, earnTokenByAds } from '@/src/services/api/users';
-import { showSuccessToast, showErrorToast } from '@/src/utils/toast';
 
 type Props = {
   visible: boolean;
@@ -11,17 +11,12 @@ type Props = {
 
 export default function RollCallModal(props: Props) {
   const { visible, onClose } = props;
-  const [show, setShow] = useState(false);
   const [isCheckingIn, setIsCheckingIn] = useState(false);
   const [isWatchingAds, setIsWatchingAds] = useState(false);
 
-  useEffect(() => {
-    setShow(visible);
-  }, [visible]);
-
   const handleCheckIn = async () => {
     if (isCheckingIn) return;
-    
+
     setIsCheckingIn(true);
     try {
       await rollCall();
@@ -36,7 +31,7 @@ export default function RollCallModal(props: Props) {
 
   const handleWatchAds = async () => {
     if (isWatchingAds) return;
-    
+
     setIsWatchingAds(true);
     try {
       await earnTokenByAds();
@@ -51,8 +46,8 @@ export default function RollCallModal(props: Props) {
 
   return (
     <>
-      {show && <View style={styles.background} />}
-      <Modal visible={show} transparent animationType="slide">
+      {visible && <View style={styles.background} />}
+      <Modal visible={visible} transparent animationType="slide">
         <Pressable style={styles.modalBackdrop} onPress={onClose}>
           <View style={styles.modalContainer}>
             <View style={styles.modalHeader}>
@@ -76,8 +71,8 @@ export default function RollCallModal(props: Props) {
                 </View>
               ))}
             </View>
-            <TouchableOpacity 
-              style={[styles.modalCheckinBtn, isCheckingIn && styles.modalCheckinBtnDisabled]} 
+            <TouchableOpacity
+              style={[styles.modalCheckinBtn, isCheckingIn && styles.modalCheckinBtnDisabled]}
               onPress={handleCheckIn}
               disabled={isCheckingIn}
             >
@@ -85,8 +80,8 @@ export default function RollCallModal(props: Props) {
                 {isCheckingIn ? 'Checking In...' : 'Check-In'}
               </Text>
             </TouchableOpacity>
-            <TouchableOpacity 
-              style={[styles.modalAds, isWatchingAds && styles.modalAdsDisabled]} 
+            <TouchableOpacity
+              style={[styles.modalAds, isWatchingAds && styles.modalAdsDisabled]}
               onPress={handleWatchAds}
               disabled={isWatchingAds}
             >
