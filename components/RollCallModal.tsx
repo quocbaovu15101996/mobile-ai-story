@@ -2,7 +2,14 @@ import { earnTokenByAds, rollCall } from '@/src/services/api/users';
 import { showErrorToast, showSuccessToast } from '@/src/utils/toast';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Modal,
+  Pressable,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 type Props = {
   visible: boolean;
@@ -31,7 +38,6 @@ export default function RollCallModal(props: Props) {
 
   const handleWatchAds = async () => {
     if (isWatchingAds) return;
-
     setIsWatchingAds(true);
     try {
       await earnTokenByAds();
@@ -62,17 +68,32 @@ export default function RollCallModal(props: Props) {
               {[5, 6, 7, 8, 8, 8, 10].map((gem, idx) => (
                 <View
                   key={idx}
-                  style={[styles.modalCheckinDay, idx === 0 && styles.modalCheckinDayActive]}
+                  style={[
+                    styles.modalCheckinDay,
+                    idx === 0 && styles.modalCheckinDayActive,
+                  ]}
                 >
                   <Text style={styles.modalCheckinDayText}>Day {idx + 1}</Text>
-                  <Ionicons name="diamond" size={18} color="#7ee2ff" style={{ marginTop: 4 }} />
-                  <Text style={styles.modalCheckinDayGem}>{gem}</Text>
-                  <Text style={{ color: '#aaa', fontSize: 10, marginTop: 2 }}>{idx === 0 ? 'Check-In' : 'Unopened'}</Text>
+                  <View style={styles.modalCheckinDayIconContainer}>
+                    <Ionicons
+                      name="diamond"
+                      size={18}
+                      color="#7ee2ff"
+                      style={styles.modalCheckinDayIcon}
+                    />
+                    <Text style={styles.modalCheckinDayGem}>{gem}</Text>
+                  </View>
+                  <Text style={styles.modalCheckinDayText2}>
+                    {idx === 0 ? 'Check-In' : 'Unopened'}
+                  </Text>
                 </View>
               ))}
             </View>
             <TouchableOpacity
-              style={[styles.modalCheckinBtn, isCheckingIn && styles.modalCheckinBtnDisabled]}
+              style={[
+                styles.modalCheckinBtn,
+                isCheckingIn && styles.modalCheckinBtnDisabled,
+              ]}
               onPress={handleCheckIn}
               disabled={isCheckingIn}
             >
@@ -81,15 +102,23 @@ export default function RollCallModal(props: Props) {
               </Text>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.modalAds, isWatchingAds && styles.modalAdsDisabled]}
+              style={[
+                styles.modalAds,
+                isWatchingAds && styles.modalAdsDisabled,
+              ]}
               onPress={handleWatchAds}
               disabled={isWatchingAds}
             >
               <Text style={styles.modalAdsText}>
                 {isWatchingAds ? 'Watching Ads...' : 'Watch Ads (0/5)'}
-                <Text style={{ color: '#7ee2ff' }}>  Watch ads to earn 1 Gems</Text>
+                <Text style={{ color: '#7ee2ff' }}>
+                  {' '}
+                  Watch ads to earn 1 Gems
+                </Text>
               </Text>
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+              <View
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}
+              >
                 <Ionicons name="diamond" size={18} color="#7ee2ff" />
                 <Text style={styles.modalAdsGem}>+1</Text>
               </View>
@@ -153,12 +182,12 @@ const styles = StyleSheet.create({
   },
   modalCheckinRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 24,
+    justifyContent: 'flex-start',
+    gap: 4,
+    flexWrap: 'wrap',
   },
   modalCheckinDay: {
-    width: 60,
-    height: 80,
+    padding: 8,
     backgroundColor: '#2d2a4a',
     borderRadius: 16,
     alignItems: 'center',
@@ -217,5 +246,18 @@ const styles = StyleSheet.create({
     color: '#7ee2ff',
     fontWeight: 'bold',
     fontSize: 16,
+  },
+  modalCheckinDayIcon: {
+    marginTop: 4,
+  },
+  modalCheckinDayIconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+  },
+  modalCheckinDayText2: {
+    color: '#aaa',
+    fontSize: 10,
+    marginTop: 2,
   },
 });
