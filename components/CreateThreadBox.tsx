@@ -1,41 +1,48 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { FC, useState } from "react";
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import React, { FC, useState } from 'react';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
-type Props = {
-
-};
-
+type Props = {};
 
 const GENRES = [
-  { key: 'romantic', label: 'Romantic', image: require('../assets/images/romantic.jpg') },
-  { key: 'fantasy', label: 'Fantasy', image: require('../assets/images/fantasy.jpg') },
-  { key: 'horror', label: 'Horror', image: require('../assets/images/horror.jpg') },
-  { key: 'adventure', label: 'Adventure', image: require('../assets/images/adventure.jpg') },
-  { key: 'sci-fi', label: 'Sci-Fi', image: require('../assets/images/scifi.jpg') },
+  { key: 'romantic', label: 'Romantic', image: null },
+  { key: 'fantasy', label: 'Fantasy', image: null },
+  { key: 'horror', label: 'Horror', image: null },
+  { key: 'adventure', label: 'Adventure', image: null },
+  { key: 'sci-fi', label: 'Sci-Fi', image: null },
 ];
 
 const CreateThreadBox: FC<Props> = () => {
-  const [story, setStory] = useState("");
-  const [storySize, setStorySize] = useState("endless");
+  const [story, setStory] = useState('');
+  const [storySize, setStorySize] = useState('endless');
   const [showDetails, setShowDetails] = useState(false);
   const [genre, setGenre] = useState<string | null>(null);
-  const [characters, setCharacters] = useState("");
-  const [setting, setSetting] = useState("");
+  const [characters, setCharacters] = useState('');
+  const [setting, setSetting] = useState('');
 
   const isButtonDisabled = !story;
 
   return (
     <KeyboardAvoidingView
       style={{ flex: 1 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+      >
         {/* Header */}
         <View style={styles.headerRow}>
-          <TouchableOpacity>
-            <Ionicons name="close" size={28} color="#222" />
-          </TouchableOpacity>
           <Text style={styles.title}>Create story</Text>
           <View style={{ width: 28 }} />
         </View>
@@ -52,9 +59,21 @@ const CreateThreadBox: FC<Props> = () => {
             multiline
           />
           <View style={styles.inputIconsRow}>
-            <Ionicons name="bulb-outline" size={22} color="#bbb" style={{ marginRight: 8 }} />
-            <Ionicons name="bulb" size={22} color="#bbb" style={{ marginRight: 8 }} />
-            <View style={styles.proBadge}><Text style={styles.proText}>Pro</Text></View>
+            <Ionicons
+              name="bulb-outline"
+              size={22}
+              color="#bbb"
+              style={{ marginRight: 8 }}
+            />
+            <Ionicons
+              name="bulb"
+              size={22}
+              color="#bbb"
+              style={{ marginRight: 8 }}
+            />
+            <View style={styles.proBadge}>
+              <Text style={styles.proText}>Pro</Text>
+            </View>
           </View>
         </View>
 
@@ -62,32 +81,55 @@ const CreateThreadBox: FC<Props> = () => {
         <Text style={styles.label}>Story size</Text>
         <View style={styles.storySizeRow}>
           <TouchableOpacity
-            style={[styles.sizeButton, storySize === "endless" && styles.sizeButtonActive]}
-            onPress={() => setStorySize("endless")}
+            style={[
+              styles.sizeButton,
+              storySize === 'endless' && styles.sizeButtonActive,
+            ]}
+            onPress={() => setStorySize('endless')}
           >
             <Text style={styles.sizeButtonText}>Endless</Text>
             <Text style={styles.sizeButtonSub}>Step-by-step</Text>
-            {storySize === "endless" && <Ionicons name="checkmark" size={18} color="#222" style={styles.checkIcon} />}
+            {storySize === 'endless' && (
+              <Ionicons
+                name="checkmark"
+                size={18}
+                color="#222"
+                style={styles.checkIcon}
+              />
+            )}
           </TouchableOpacity>
         </View>
 
         {/* More details (optional) */}
-        <Pressable onPress={() => setShowDetails(!showDetails)} style={styles.detailsToggle}>
+        <Pressable
+          onPress={() => setShowDetails(!showDetails)}
+          style={styles.detailsToggle}
+        >
           <Text style={styles.detailsLabel}>More details (optional)</Text>
-          <Ionicons name={showDetails ? "chevron-up" : "chevron-down"} size={20} color="#222" />
+          <Ionicons
+            name={showDetails ? 'chevron-up' : 'chevron-down'}
+            size={20}
+            color="#222"
+          />
         </Pressable>
         {showDetails && (
           <View style={styles.detailsBox}>
             {/* Genre */}
             <Text style={styles.subLabel}>Genre</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.genreRow}>
-              {GENRES.map(g => (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={styles.genreRow}
+            >
+              {GENRES.map((g) => (
                 <TouchableOpacity
                   key={g.key}
-                  style={[styles.genreItem, genre === g.key && styles.genreItemActive]}
+                  style={[
+                    styles.genreItem,
+                    genre === g.key && styles.genreItemActive,
+                  ]}
                   onPress={() => setGenre(g.key)}
                 >
-                  {/* Replace with <Image> if you have images */}
                   <View style={styles.genreImagePlaceholder} />
                   <Text style={styles.genreText}>{g.label}</Text>
                 </TouchableOpacity>
@@ -120,7 +162,10 @@ const CreateThreadBox: FC<Props> = () => {
 
         {/* Start generate button */}
         <TouchableOpacity
-          style={[styles.generateButton, isButtonDisabled && styles.generateButtonDisabled]}
+          style={[
+            styles.generateButton,
+            isButtonDisabled && styles.generateButtonDisabled,
+          ]}
           disabled={isButtonDisabled}
         >
           <Text style={styles.generateButtonText}>Start generate</Text>
@@ -128,7 +173,7 @@ const CreateThreadBox: FC<Props> = () => {
       </ScrollView>
     </KeyboardAvoidingView>
   );
-}
+};
 
 export default CreateThreadBox;
 

@@ -7,10 +7,14 @@ export default function InAppPurchaseScreen() {
   const navigation = useNavigation();
   const [selectedPlan, setSelectedPlan] = useState('year');
 
+  const onClose = () => {
+    navigation.goBack();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Ionicons name="arrow-back" size={28} color="#222" />
+      <TouchableOpacity style={styles.backButton} onPress={onClose}>
+        <Ionicons name="close" size={28} color="#222" />
       </TouchableOpacity>
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <Text style={styles.title}>Get Unlimited{"\n"}Access</Text>

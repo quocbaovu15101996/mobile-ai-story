@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
+  ListRenderItem,
   RefreshControl,
   StyleSheet,
   Text,
@@ -44,7 +45,7 @@ export default function HistoryScreen() {
     fetchHistory(true);
   };
 
-  const renderItem = ({ item }: { item: Thread }) => (
+  const renderItem: ListRenderItem<Thread> = ({ item }) => (
     <ThreadItem thread={item} />
   );
 
@@ -62,6 +63,8 @@ export default function HistoryScreen() {
       <Text style={styles.errorText}>{error}</Text>
     </View>
   );
+
+  const keyExtractor = (item: Thread) => item.id;
 
   if (loading) {
     return (
@@ -81,7 +84,7 @@ export default function HistoryScreen() {
       <FlatList
         data={threads}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={keyExtractor}
         contentContainerStyle={styles.listContent}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

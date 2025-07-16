@@ -1,16 +1,33 @@
-
 import CreateThreadBox from '@/components/CreateThreadBox';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import RollCallModal from '../../components/RollCallModal';
 import { RootStackParamList } from '../_layout';
 
 export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const onPressToken = () => {
+    navigation.navigate('InAppPurchase');
+  };
+
+  const onPressCalendar = () => {
+    setModalVisible(true);
+  };
+  const onCloseModal = () => {
+    setModalVisible(false);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -19,19 +36,25 @@ export default function HomeScreen() {
         <View style={styles.headerRight}>
           <TouchableOpacity
             style={styles.tokenBox}
-            onPress={() => navigation.navigate('InAppPurchase')}
+            onPress={onPressToken}
             activeOpacity={0.7}
           >
-            <Text style={styles.tokenLabel}>Total Token</Text>
-            <Text style={styles.tokenValue}>1234</Text>
+            <Ionicons name="diamond" size={20} color="#7ee2ff" />
+            <Text style={styles.tokenValue}>20</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.calendarIcon} onPress={() => setModalVisible(true)}>
+          <TouchableOpacity
+            style={styles.calendarIcon}
+            onPress={onPressCalendar}
+          >
             <Ionicons name="calendar-outline" size={24} color="#333" />
           </TouchableOpacity>
         </View>
       </View>
       <CreateThreadBox />
-      <RollCallModal visible={modalVisible} onClose={() => setModalVisible(false)} />
+      <RollCallModal
+        visible={modalVisible}
+        onClose={onCloseModal}
+      />
     </SafeAreaView>
   );
 }
