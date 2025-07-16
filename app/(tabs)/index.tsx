@@ -1,23 +1,30 @@
 
 import CreateThreadBox from '@/components/CreateThreadBox';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import RollCallModal from '../../components/RollCallModal';
-
+import { RootStackParamList } from '../_layout';
 
 export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.appName}>AI Story</Text>
         <View style={styles.headerRight}>
-          <View style={styles.tokenBox}>
+          <TouchableOpacity
+            style={styles.tokenBox}
+            onPress={() => navigation.navigate('InAppPurchase')}
+            activeOpacity={0.7}
+          >
             <Text style={styles.tokenLabel}>Total Token</Text>
             <Text style={styles.tokenValue}>1234</Text>
-          </View>
+          </TouchableOpacity>
           <TouchableOpacity style={styles.calendarIcon} onPress={() => setModalVisible(true)}>
             <Ionicons name="calendar-outline" size={24} color="#333" />
           </TouchableOpacity>
