@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { createThread } from '../src/services/api/thread';
 
 type Props = {};
 
@@ -23,14 +24,35 @@ const GENRES = [
 ];
 
 const CreateThreadBox: FC<Props> = () => {
-  const [story, setStory] = useState('');
-  const [storySize, setStorySize] = useState('endless');
-  const [showDetails, setShowDetails] = useState(false);
+  const [storyIdea, setStoryIdea] = useState('');
+  const [storyLength, setStoryLength] = useState('endless');
+  const [extendDetails, setExtendDetails] = useState(false);
   const [genre, setGenre] = useState<string | null>(null);
   const [characters, setCharacters] = useState('');
   const [setting, setSetting] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const isButtonDisabled = !story;
+  const isButtonDisabled = !storyIdea || loading;
+
+  const onPressGenerate = async () => {
+    setLoading(true);
+    try {
+      await createThread({
+        storyIdea,
+        storyLength,
+        genreType: genre,
+        characterPrompt: characters,
+        settingPrompt: setting,
+        narrative: undefined, // You can add narrative state if needed
+      });
+      // Optionally reset form or show success message here
+    } catch (error) {
+      // Optionally handle error (e.g., show toast)
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -54,8 +76,8 @@ const CreateThreadBox: FC<Props> = () => {
             style={styles.textInput}
             placeholder="E.g., Love story with two women and one man."
             placeholderTextColor="#bbb"
-            value={story}
-            onChangeText={setStory}
+            value={storyIdea}
+            onChangeText={setStoryIdea}
             multiline
           />
           <View style={styles.inputIconsRow}>
@@ -83,13 +105,13 @@ const CreateThreadBox: FC<Props> = () => {
           <TouchableOpacity
             style={[
               styles.sizeButton,
-              storySize === 'endless' && styles.sizeButtonActive,
+              storyLength === 'endless' && styles.sizeButtonActive,
             ]}
-            onPress={() => setStorySize('endless')}
+            onPress={() => setStoryLength('endless')}
           >
             <Text style={styles.sizeButtonText}>Endless</Text>
             <Text style={styles.sizeButtonSub}>Step-by-step</Text>
-            {storySize === 'endless' && (
+            {storyLength === 'endless' && (
               <Ionicons
                 name="checkmark"
                 size={18}
@@ -102,17 +124,17 @@ const CreateThreadBox: FC<Props> = () => {
 
         {/* More details (optional) */}
         <Pressable
-          onPress={() => setShowDetails(!showDetails)}
+          onPress={() => setExtendDetails(!extendDetails)}
           style={styles.detailsToggle}
         >
           <Text style={styles.detailsLabel}>More details (optional)</Text>
           <Ionicons
-            name={showDetails ? 'chevron-up' : 'chevron-down'}
+            name={extendDetails ? 'chevron-up' : 'chevron-down'}
             size={20}
             color="#222"
           />
         </Pressable>
-        {showDetails && (
+        {extendDetails && (
           <View style={styles.detailsBox}>
             {/* Genre */}
             <Text style={styles.subLabel}>Genre</Text>
@@ -167,8 +189,11 @@ const CreateThreadBox: FC<Props> = () => {
             isButtonDisabled && styles.generateButtonDisabled,
           ]}
           disabled={isButtonDisabled}
+          onPress={onPressGenerate}
         >
-          <Text style={styles.generateButtonText}>Start generate</Text>
+          <Text style={styles.generateButtonText}>
+            {loading ? 'Generating...' : 'Start generate'}
+          </Text>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>

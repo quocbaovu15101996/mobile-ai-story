@@ -50,3 +50,12 @@ interface ThreadsResponse {
   page: number;
   limit: number;
 }
+
+interface CreateThreadPayload {
+  storyIdea: string;
+  storyLength: string;
+  genreType?: string | null;
+  characterPrompt?: string;
+  settingPrompt?: string;
+  narrative?: string;
+}
