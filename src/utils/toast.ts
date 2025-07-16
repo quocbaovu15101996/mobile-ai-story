@@ -1,18 +1,17 @@
-import { Alert } from 'react-native';
+import Toast from 'react-native-toast-message';
 
-export const showToast = (message: string, title: string = 'Success') => {
-  Alert.alert(title, message, [
-    {
-      text: 'OK',
-      style: 'default',
-    },
-  ]);
+export const showToast = (message: string, title: string = 'Success', type: 'success' | 'error' | 'info' = 'success') => {
+  Toast.show({
+    type,
+    text1: title,
+    text2: message,
+  });
 };
 
 export const showSuccessToast = (message: string) => {
-  showToast(message, 'Success');
+  showToast(message, 'Success', 'success');
 };
 
 export const showErrorToast = (message: string) => {
-  showToast(message, 'Error');
+  showToast(message, 'Error', 'error');
 };
