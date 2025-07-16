@@ -1,4 +1,5 @@
 
+import CreateThreadBox from '@/components/CreateThreadBox';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import { SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -22,6 +23,7 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
       </View>
+      <CreateThreadBox />
       <RollCallModal visible={modalVisible} onClose={() => setModalVisible(false)} />
     </SafeAreaView>
   );
