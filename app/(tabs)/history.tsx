@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { ThreadItem } from '../../components/ThreadItem';
 import { getHistory } from '../../src/services/api/thread';
+import { Thread } from '../../src/services/api/types';
 
 export default function HistoryScreen() {
   const [threads, setThreads] = useState<Thread[]>([]);
