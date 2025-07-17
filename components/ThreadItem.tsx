@@ -1,14 +1,23 @@
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Thread } from '@/src/services/api/types';
+import { RootStackParamList } from '@/app/_layout';
 
 interface ThreadItemProps {
   thread: Thread;
 }
 
 export const ThreadItem: React.FC<ThreadItemProps> = ({ thread }) => {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const handlePress = () => {
+    navigation.navigate('ThreadDetail', { threadId: thread.id });
+  };
+
   return (
-    <View style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={handlePress} activeOpacity={0.7}>
       <View style={styles.contentContainer}>
         <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
           {thread.title}
@@ -27,7 +36,7 @@ export const ThreadItem: React.FC<ThreadItemProps> = ({ thread }) => {
           resizeMode="cover"
         />
       )}
-    </View>
+    </TouchableOpacity>
   );
 };
 

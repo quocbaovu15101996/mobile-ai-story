@@ -60,3 +60,11 @@ export interface CreateThreadPayload {
   settingPrompt?: string;
   narrative?: string;
 }
+
+export interface CreateThreadResponse {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+}
