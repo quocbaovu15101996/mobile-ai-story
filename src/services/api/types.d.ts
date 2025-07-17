@@ -42,6 +42,7 @@ export interface Thread {
   image?: string;
   createdAt: string;
   updatedAt: string;
+  context?: string[]; // Array of context items for thread detail
 }
 
 export interface ThreadsResponse {

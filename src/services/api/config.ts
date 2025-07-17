@@ -26,6 +26,7 @@ export const ENDPOINTS = {
   },
   THREAD: {
     GET_HISTORY: '/v1/threads',
+    GET_DETAIL: '/v1/threads', // Will be used as `/v1/threads/{threadId}`
   },
 };
 
