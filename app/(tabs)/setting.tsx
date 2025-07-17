@@ -1,9 +1,78 @@
 
 import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import { router } from 'expo-router';
 import React from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Linking, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+const packageJson = require('../../package.json');
 
 export default function SettingScreen() {
+  const handleUpgrade = () => {
+    router.push('/InAppPurchase');
+  };
+
+  const handleShare = async () => {
+    try {
+      await Share.share({
+        message: 'Check out AI Story - Create amazing stories with AI! Download it now.',
+        title: 'AI Story App',
+      });
+    } catch (error) {
+      console.error('Error sharing:', error);
+    }
+  };
+
+  const handleRate = () => {
+    const storeUrl = 'https://play.google.com/store/apps/details?id=com.aistory.app';
+    Linking.openURL(storeUrl).catch(() => {
+      Alert.alert('Error', 'Unable to open app store');
+    });
+  };
+
+  const handleContact = () => {
+    Linking.openURL('mailto:support@aistory.com?subject=AI Story Support').catch(() => {
+      Alert.alert('Error', 'Unable to open email client');
+    });
+  };
+
+  const handleTerms = () => {
+    Linking.openURL('https://aistory.com/terms').catch(() => {
+      Alert.alert('Error', 'Unable to open terms and conditions');
+    });
+  };
+
+  const handlePrivacy = () => {
+    Linking.openURL('https://aistory.com/privacy').catch(() => {
+      Alert.alert('Error', 'Unable to open privacy policy');
+    });
+  };
+
+  const handleClearData = () => {
+    Alert.alert(
+      'Clear Data',
+      'Are you sure you want to clear all app data? This action cannot be undone.',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Clear',
+          style: 'destructive',
+          onPress: () => {
+            // TODO: Implement data clearing logic
+            Alert.alert('Success', 'App data has been cleared.');
+          },
+        },
+      ]
+    );
+  };
+
+  const handleRestorePurchase = () => {
+    // TODO: Implement restore purchase logic
+    Alert.alert('Restore Purchase', 'Purchase restoration is not implemented yet.');
+  };
+
   return (
     <View style={{ flex: 1, backgroundColor: '#f7f7fa' }}>
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 32 }} showsVerticalScrollIndicator={false}>
@@ -18,10 +87,10 @@ export default function SettingScreen() {
             <Ionicons name="checkmark-circle" size={22} color="#fff" />
             <Text style={styles.premiumFeature}>  Advanced AI Creativity</Text>
           </View>
-          <TouchableOpacity style={styles.subscribeBtn}>
+          <TouchableOpacity style={styles.subscribeBtn} onPress={handleUpgrade}>
             <Text style={styles.subscribeBtnText}>Subscribe  <Ionicons name="arrow-forward" size={18} color="#232136" /></Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{ marginTop: 8 }}>
+          <TouchableOpacity style={{ marginTop: 8 }} onPress={handleRestorePurchase}>
             <Text style={styles.restoreText}>Restore purchase</Text>
           </TouchableOpacity>
         </View>
@@ -29,17 +98,17 @@ export default function SettingScreen() {
         {/* General */}
         <Text style={styles.sectionTitle}>General</Text>
         <View style={styles.sectionCard}>
-          <TouchableOpacity style={styles.row}>
+          <TouchableOpacity style={styles.row} onPress={handleShare}>
             <MaterialCommunityIcons name="share-variant" size={22} color="#232136" />
             <Text style={styles.rowText}>Share AI Story</Text>
           </TouchableOpacity>
           <View style={styles.divider} />
-          <TouchableOpacity style={styles.row}>
+          <TouchableOpacity style={styles.row} onPress={handleRate}>
             <MaterialIcons name="star-rate" size={22} color="#232136" />
             <Text style={styles.rowText}>Give AI Story 5 stars</Text>
           </TouchableOpacity>
           <View style={styles.divider} />
-          <TouchableOpacity style={styles.row}>
+          <TouchableOpacity style={styles.row} onPress={handleContact}>
             <MaterialIcons name="alternate-email" size={22} color="#232136" />
             <Text style={styles.rowText}>Contact us</Text>
           </TouchableOpacity>
@@ -48,12 +117,12 @@ export default function SettingScreen() {
         {/* Terms & Privacy */}
         <Text style={styles.sectionTitle}>Terms & Privacy</Text>
         <View style={styles.sectionCard}>
-          <TouchableOpacity style={styles.row}>
+          <TouchableOpacity style={styles.row} onPress={handleTerms}>
             <MaterialIcons name="description" size={22} color="#232136" />
             <Text style={styles.rowText}>Terms and Conditions</Text>
           </TouchableOpacity>
           <View style={styles.divider} />
-          <TouchableOpacity style={styles.row}>
+          <TouchableOpacity style={styles.row} onPress={handlePrivacy}>
             <MaterialCommunityIcons name="shield-check" size={22} color="#232136" />
             <Text style={styles.rowText}>Privacy Policy</Text>
           </TouchableOpacity>
@@ -61,12 +130,12 @@ export default function SettingScreen() {
           <View style={[styles.row, { opacity: 0.7 }]}>
             <Ionicons name="information-circle-outline" size={22} color="#232136" />
             <Text style={styles.rowText}>App version</Text>
-            <Text style={styles.versionText}>2.2.10</Text>
+            <Text style={styles.versionText}>{packageJson.version}</Text>
           </View>
         </View>
       </ScrollView>
       {/* Clear data button */}
-      <TouchableOpacity style={styles.clearBtn}>
+      <TouchableOpacity style={styles.clearBtn} onPress={handleClearData}>
         <Text style={styles.clearBtnText}>Clear data</Text>
       </TouchableOpacity>
     </View>
