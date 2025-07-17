@@ -11,5 +11,5 @@ export const getThreadDetail = async (threadId: string): Promise<ApiResponse<Thr
 };
 
 export const createThread = async (payload: CreateThreadPayload): Promise<ApiResponse<CreateThreadResponse>> => {
-  return await api.post<CreateThreadResponse>('/v1/thread', payload);
+  return await api.post<CreateThreadResponse>(ENDPOINTS.THREAD.CREATE, payload);
 };
