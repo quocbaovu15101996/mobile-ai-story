@@ -1,12 +1,12 @@
 import {
   initConnection,
   endConnection,
-  getProducts,
-  requestPurchase,
+  getSubscriptions,
+  requestSubscription,
   purchaseUpdatedListener,
   purchaseErrorListener,
   finishTransaction,
-  Product,
+  Subscription,
   Purchase,
   PurchaseError,
 } from 'react-native-iap';
@@ -65,20 +65,20 @@ class InAppPurchaseService {
     );
   }
 
-  async getAvailableProducts(): Promise<Product[]> {
+  async getAvailableProducts(): Promise<Subscription[]> {
     try {
       if (!this.isInitialized) {
         await this.initialize();
       }
 
-      const products = await getProducts({
+      const subscriptions = await getSubscriptions({
         skus: Object.values(SUBSCRIPTION_IDS),
       });
 
-      console.log('Available products:', products);
-      return products;
+      console.log('Available subscriptions:', subscriptions);
+      return subscriptions;
     } catch (error) {
-      console.error('Failed to get products:', error);
+      console.error('Failed to get subscriptions:', error);
       showErrorToast('Failed to load subscription options');
       return [];
     }
@@ -91,7 +91,7 @@ class InAppPurchaseService {
       }
 
       console.log('Initiating purchase for:', subscriptionId);
-      await requestPurchase({ sku: subscriptionId });
+      await requestSubscription({ sku: subscriptionId });
     } catch (error) {
       console.error('Failed to initiate purchase:', error);
       showErrorToast('Failed to start purchase process');

@@ -2,14 +2,14 @@ import { FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-ico
 import { useNavigation } from '@react-navigation/native';
 import React, { useState, useEffect } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
-import { Product } from 'react-native-iap';
+import { Subscription } from 'react-native-iap';
 import { inAppPurchaseService, SUBSCRIPTION_IDS } from '@/src/services/inAppPurchase';
 import { showErrorToast } from '@/src/utils/toast';
 
 export default function InAppPurchaseScreen() {
   const navigation = useNavigation();
   const [selectedPlan, setSelectedPlan] = useState('year');
-  const [products, setProducts] = useState<Product[]>([]);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isPurchasing, setIsPurchasing] = useState(false);
 
@@ -29,7 +29,7 @@ export default function InAppPurchaseScreen() {
       
       if (initialized) {
         const availableProducts = await inAppPurchaseService.getAvailableProducts();
-        setProducts(availableProducts);
+        setSubscriptions(availableProducts);
       } else {
         showErrorToast('Failed to initialize purchase system');
       }
@@ -61,8 +61,25 @@ export default function InAppPurchaseScreen() {
   };
 
   const getProductPrice = (subscriptionId: string): string => {
-    const product = products.find(p => p.productId === subscriptionId);
-    return product?.localizedPrice || (subscriptionId === SUBSCRIPTION_IDS.ANNUAL ? '999.000 đ' : '125.000 đ');
+    const subscription = subscriptions.find(s => s.productId === subscriptionId);
+    if (!subscription) {
+      return subscriptionId === SUBSCRIPTION_IDS.ANNUAL ? '999.000 đ' : '125.000 đ';
+    }
+
+    // Handle different platforms
+    if (subscription.platform === 'ios') {
+      const iosSub = subscription as any;
+      return iosSub.localizedPrice || '999.000 đ';
+    } else if (subscription.platform === 'android') {
+      const androidSub = subscription as any;
+      if (androidSub.subscriptionOfferDetails && androidSub.subscriptionOfferDetails[0]) {
+        const pricingPhase = androidSub.subscriptionOfferDetails[0].pricingPhases?.pricingPhaseList?.[0];
+        return pricingPhase?.formattedPrice || (subscriptionId === SUBSCRIPTION_IDS.ANNUAL ? '999.000 đ' : '125.000 đ');
+      }
+    }
+    
+    // Fallback to hardcoded prices
+    return subscriptionId === SUBSCRIPTION_IDS.ANNUAL ? '999.000 đ' : '125.000 đ';
   };
 
   const onClose = () => {
