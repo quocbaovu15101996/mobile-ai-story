@@ -1,5 +1,6 @@
 import api, { ApiResponse } from "..";
 import { ENDPOINTS } from "../config";
+import { UserProfile } from "../types";
 
 export const getUserProfile = async () => {
   return await api.get<UserProfile>(

@@ -1,11 +1,11 @@
 // Centralized type definitions for API-related interfaces
 
-interface LoginResponse {
+export interface LoginResponse {
   type: string;
   token: string;
 }
 
-interface UserProfile {
+export interface UserProfile {
   id: string;
   username?: string;
   password?: string;
@@ -35,7 +35,7 @@ interface UserProfile {
   lastRefreshTotalWatchAds?: string; // Timestamp as ISO string
 }
 
-interface Thread {
+export interface Thread {
   id: string;
   title: string;
   content: string;
@@ -44,14 +44,14 @@ interface Thread {
   updatedAt: string;
 }
 
-interface ThreadsResponse {
+export interface ThreadsResponse {
   threads: Thread[];
   total: number;
   page: number;
   limit: number;
 }
 
-interface CreateThreadPayload {
+export interface CreateThreadPayload {
   storyIdea: string;
   storyLength: string;
   genreType?: string | null;
