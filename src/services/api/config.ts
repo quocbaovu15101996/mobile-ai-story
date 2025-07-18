@@ -24,11 +24,7 @@ export const ENDPOINTS = {
     ROLL_CALL: '/v1/users/roll-call',
     EARN_TOKEN_BY_ADS: '/v1/users/earn-token-by-ads',
   },
-  THREAD: {
-    GET_HISTORY: '/v1/threads',
-    GET_DETAIL: '/v1/threads', // Will be used as `/v1/threads/{threadId}`
-    CREATE: '/v1/threads',
-  },
+  THREADS: '/v1/threads',
 };
 
 // Types are now defined globally in src/services/api/types.d.ts
