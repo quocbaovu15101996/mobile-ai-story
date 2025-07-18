@@ -42,6 +42,7 @@ export interface Thread {
   image?: string;
   createdAt: string;
   updatedAt: string;
+  context?: string[]; // Array of context items for thread detail
 }
 
 export interface ThreadsResponse {
@@ -58,4 +59,12 @@ export interface CreateThreadPayload {
   characterPrompt?: string;
   settingPrompt?: string;
   narrative?: string;
+}
+
+export interface CreateThreadResponse {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
 }

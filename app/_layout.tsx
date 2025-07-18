@@ -12,6 +12,7 @@ import { useAuthStore } from '@/src/store/useAuthStore';
 
 export type RootStackParamList = {
   InAppPurchase: undefined;
+  ThreadDetail: { threadId: string };
 };
 
 export default function RootLayout() {
@@ -52,6 +53,7 @@ export default function RootLayout() {
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="InAppPurchase" options={{ headerShown: false }} />
+        <Stack.Screen name="ThreadDetail" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
       <StatusBar style="auto" />

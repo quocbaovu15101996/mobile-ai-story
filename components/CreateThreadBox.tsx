@@ -1,4 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { FC, useState } from 'react';
 import {
   KeyboardAvoidingView,
@@ -12,6 +14,7 @@ import {
   View,
 } from 'react-native';
 import { createThread } from '../src/services/api/thread';
+import { RootStackParamList } from '../app/_layout';
 
 type Props = {};
 
@@ -31,13 +34,15 @@ const CreateThreadBox: FC<Props> = () => {
   const [characters, setCharacters] = useState('');
   const [setting, setSetting] = useState('');
   const [loading, setLoading] = useState(false);
+  
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const isButtonDisabled = !storyIdea || loading;
 
   const onPressGenerate = async () => {
     setLoading(true);
     try {
-      await createThread({
+      const response = await createThread({
         storyIdea,
         storyLength,
         genreType: genre,
@@ -45,7 +50,11 @@ const CreateThreadBox: FC<Props> = () => {
         settingPrompt: setting,
         narrative: undefined, // You can add narrative state if needed
       });
-      // Optionally reset form or show success message here
+      
+      // Navigate to ThreadDetail after successful creation
+      if (response.data && response.data.id) {
+        navigation.navigate('ThreadDetail', { threadId: response.data.id });
+      }
     } catch (error) {
       // Optionally handle error (e.g., show toast)
       console.error(error);
