@@ -3,13 +3,13 @@ import { ENDPOINTS } from "../config";
 import { ThreadsResponse, CreateThreadPayload, CreateThreadResponse, Thread } from "../types";
 
 export const getHistory = async (): Promise<ApiResponse<ThreadsResponse>> => {
-  return await api.get<ThreadsResponse>(ENDPOINTS.THREAD.GET_HISTORY);
+  return await api.get<ThreadsResponse>(ENDPOINTS.THREADS);
 };
 
 export const getThreadDetail = async (threadId: string): Promise<ApiResponse<Thread>> => {
-  return await api.get<Thread>(`${ENDPOINTS.THREAD.GET_DETAIL}/${threadId}`);
+  return await api.get<Thread>(`${ENDPOINTS.THREADS}/${threadId}`);
 };
 
 export const createThread = async (payload: CreateThreadPayload): Promise<ApiResponse<CreateThreadResponse>> => {
-  return await api.post<CreateThreadResponse>(ENDPOINTS.THREAD.CREATE, payload);
+  return await api.post<CreateThreadResponse>(ENDPOINTS.THREADS, payload);
 };
