@@ -42,8 +42,7 @@
           "color": "#ffffff",
           "defaultChannel": "default"
         }
-      ],
-      "@notifee/react-native"
+      ]
     ],
     "experiments": {
       "typedRoutes": true

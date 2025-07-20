@@ -2,18 +2,17 @@ import CreateThreadBox from '@/components/CreateThreadBox';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  Alert,
+  View
 } from 'react-native';
 import RollCallModal from '../../components/RollCallModal';
 import { RootStackParamList } from '../_layout';
-import { NotificationService } from '../../src/services/notificationService';
+// import { NotificationService } from '../../src/services/notificationService';
 
 export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -22,64 +21,64 @@ export default function HomeScreen() {
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   // Setup notification listeners and permissions
-  const setupNotifications = useCallback(async () => {
-    try {
-      // Request notification permissions
-      const hasPermission = await NotificationService.requestPermissions();
-      setNotificationPermission(hasPermission);
+  // const setupNotifications = useCallback(async () => {
+  //   try {
+  //     // Request notification permissions
+  //     const hasPermission = await NotificationService.requestPermissions();
+  //     setNotificationPermission(hasPermission);
       
-      if (!hasPermission) {
-        Alert.alert(
-          'Notification Permission', 
-          'Please enable notifications to receive story updates and reminders.',
-          [
-            { text: 'Cancel', style: 'cancel' },
-            { text: 'Settings', onPress: () => {
-              // You could navigate to settings here
-            }}
-          ]
-        );
-        return;
-      }
+  //     if (!hasPermission) {
+  //       Alert.alert(
+  //         'Notification Permission', 
+  //         'Please enable notifications to receive story updates and reminders.',
+  //         [
+  //           { text: 'Cancel', style: 'cancel' },
+  //           { text: 'Settings', onPress: () => {
+  //             // You could navigate to settings here
+  //           }}
+  //         ]
+  //       );
+  //       return;
+  //     }
 
-      // Get push token for remote notifications
-      const pushToken = await NotificationService.getPushToken();
-      console.log('Push token:', pushToken);
+  //     // Get push token for remote notifications
+  //     const pushToken = await NotificationService.getPushToken();
+  //     console.log('Push token:', pushToken);
 
-      // Setup notification listeners
-      const cleanup = NotificationService.setupNotificationListeners(
-        (notification) => {
-          // Handle notification received while app is in foreground
-          console.log('Notification received in foreground:', notification);
-          Alert.alert(
-            notification.request.content.title || 'Notification',
-            notification.request.content.body || 'You have a new notification',
-            [{ text: 'OK' }]
-          );
-        },
-        (response) => {
-          // Handle notification press
-          console.log('Notification pressed:', response);
-          NotificationService.handleNotificationAction(response, navigation);
-        }
-      );
+  //     // Setup notification listeners
+  //     const cleanup = NotificationService.setupNotificationListeners(
+  //       (notification) => {
+  //         // Handle notification received while app is in foreground
+  //         console.log('Notification received in foreground:', notification);
+  //         Alert.alert(
+  //           notification.request.content.title || 'Notification',
+  //           notification.request.content.body || 'You have a new notification',
+  //           [{ text: 'OK' }]
+  //         );
+  //       },
+  //       (response) => {
+  //         // Handle notification press
+  //         console.log('Notification pressed:', response);
+  //         NotificationService.handleNotificationAction(response, navigation);
+  //       }
+  //     );
 
-      // Store cleanup function for later use
-      return cleanup;
-    } catch (error) {
-      console.error('Failed to setup notifications:', error);
-      Alert.alert('Error', 'Failed to setup notifications');
-    }
-  }, [navigation]);
+  //     // Store cleanup function for later use
+  //     return cleanup;
+  //   } catch (error) {
+  //     console.error('Failed to setup notifications:', error);
+  //     Alert.alert('Error', 'Failed to setup notifications');
+  //   }
+  // }, [navigation]);
 
   useEffect(() => {
-    setupNotifications();
+    // setupNotifications();
     
     // Cleanup listeners on unmount
     return () => {
       // Cleanup is handled by the service
     };
-  }, [setupNotifications]);
+  }, []);
 
   const onPressToken = () => {
     navigation.navigate('InAppPurchase');
@@ -95,28 +94,28 @@ export default function HomeScreen() {
 
   // Test notification function - for development purposes
   const testNotification = async () => {
-    try {
-      await NotificationService.showLocalNotification({
-        title: 'Test Notification',
-        body: 'This is a test notification from AI Story app!',
-        data: { type: 'test', timestamp: Date.now() },
-      });
-    } catch (error) {
-      console.error('Failed to show test notification:', error);
-    }
+    // try {
+    //   await NotificationService.showLocalNotification({
+    //     title: 'Test Notification',
+    //     body: 'This is a test notification from AI Story app!',
+    //     data: { type: 'test', timestamp: Date.now() },
+    //   });
+    // } catch (error) {
+    //   console.error('Failed to show test notification:', error);
+    // }
   };
 
   // Test notifee notification
   const testNotifeeNotification = async () => {
-    try {
-      await NotificationService.showNotifeeNotification({
-        title: 'Story Complete!',
-        body: 'Your AI story has been generated and is ready to read.',
-        data: { type: 'story_complete', threadId: 'test-123' },
-      });
-    } catch (error) {
-      console.error('Failed to show notifee notification:', error);
-    }
+    // try {
+    //   await NotificationService.showNotifeeNotification({
+    //     title: 'Story Complete!',
+    //     body: 'Your AI story has been generated and is ready to read.',
+    //     data: { type: 'story_complete', threadId: 'test-123' },
+    //   });
+    // } catch (error) {
+    //   console.error('Failed to show notifee notification:', error);
+    // }
   };
 
   return (
@@ -138,39 +137,10 @@ export default function HomeScreen() {
           >
             <Ionicons name="calendar-outline" size={24} color="#333" />
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[
-              styles.notificationIcon,
-              { backgroundColor: notificationPermission ? '#34d399' : '#f87171' }
-            ]}
-            onPress={testNotification}
-          >
-            <Ionicons 
-              name={notificationPermission ? "notifications" : "notifications-off"} 
-              size={20} 
-              color="#fff" 
-            />
-          </TouchableOpacity>
         </View>
       </View>
       
       <CreateThreadBox />
-      
-      {/* Test notification buttons - remove in production */}
-      <View style={styles.testButtonsContainer}>
-        <TouchableOpacity
-          style={styles.testButton}
-          onPress={testNotification}
-        >
-          <Text style={styles.testButtonText}>Test Expo Notification</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.testButton}
-          onPress={testNotifeeNotification}
-        >
-          <Text style={styles.testButtonText}>Test Notifee Notification</Text>
-        </TouchableOpacity>
-      </View>
       
       <RollCallModal
         visible={modalVisible}
