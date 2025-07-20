@@ -2,7 +2,7 @@
 import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React from 'react';
-import { Alert, Linking, ScrollView, Share, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, Linking, ScrollView, Share, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const packageJson = require('../../package.json');
 
@@ -75,6 +75,7 @@ export default function SettingScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#f7f7fa' }}>
+      <View style={{ height: StatusBar.currentHeight }} />
       <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 32 }} showsVerticalScrollIndicator={false}>
         {/* Upgrade Premium */}
         <View style={styles.premiumCard}>
