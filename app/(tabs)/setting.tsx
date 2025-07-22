@@ -80,11 +80,15 @@ export default function SettingScreen() {
         {/* Upgrade Premium */}
         <View style={styles.premiumCard}>
           <Text style={styles.premiumTitle}>Upgrade Premium</Text>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 16 }}>
+          <View style={styles.premiumFeatureContainer}>
+            <Ionicons name="checkmark-circle" size={22} color="#fff" />
+            <Text style={styles.premiumFeature}>  Free ads</Text>
+          </View>
+          <View style={styles.premiumFeatureContainer}>
             <Ionicons name="checkmark-circle" size={22} color="#fff" />
             <Text style={styles.premiumFeature}>  Unlimited story generations</Text>
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: 8 }}>
+          <View style={styles.premiumFeatureContainer}>
             <Ionicons name="checkmark-circle" size={22} color="#fff" />
             <Text style={styles.premiumFeature}>  Advanced AI Creativity</Text>
           </View>
@@ -241,5 +245,10 @@ const styles = StyleSheet.create({
     color: '#ff4d4f',
     fontWeight: 'bold',
     fontSize: 18,
+  },
+  premiumFeatureContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 16,
   },
 });
