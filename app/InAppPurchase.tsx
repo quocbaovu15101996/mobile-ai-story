@@ -1,21 +1,39 @@
-import { inAppPurchaseService, SUBSCRIPTION_IDS } from '@/src/services/inAppPurchase';
+import {
+  inAppPurchaseService,
+  SUBSCRIPTION_IDS,
+} from '@/src/services/inAppPurchase';
 import { showErrorToast } from '@/src/utils/toast';
-import { FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import {
+  FontAwesome5,
+  Ionicons,
+  MaterialCommunityIcons,
+} from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { ActivityIndicator, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  FlatList,
+  ListRenderItem,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { Subscription } from 'react-native-iap';
 
 export default function InAppPurchaseScreen() {
   const navigation = useNavigation();
-  const [selectedPlan, setSelectedPlan] = useState('year');
+  const [selectedPlan, setSelectedPlan] = useState(SUBSCRIPTION_IDS.ANNUAL);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isPurchasing, setIsPurchasing] = useState(false);
 
   useEffect(() => {
     initializeIAP();
-    
+
     // Cleanup on unmount
     return () => {
       inAppPurchaseService.cleanup();
@@ -26,9 +44,10 @@ export default function InAppPurchaseScreen() {
     try {
       setIsLoading(true);
       const initialized = await inAppPurchaseService.initialize();
-      
+
       if (initialized) {
-        const availableProducts = await inAppPurchaseService.getAvailableProducts();
+        const availableProducts =
+          await inAppPurchaseService.getAvailableProducts();
         setSubscriptions(availableProducts);
       } else {
         showErrorToast('Failed to initialize purchase system');
@@ -43,14 +62,15 @@ export default function InAppPurchaseScreen() {
 
   const handlePurchase = async () => {
     if (isPurchasing) return;
-    
+
     try {
       setIsPurchasing(true);
-      
-      const subscriptionId = selectedPlan === 'year' 
-        ? SUBSCRIPTION_IDS.ANNUAL 
-        : SUBSCRIPTION_IDS.WEEKLY;
-      
+
+      const subscriptionId =
+        selectedPlan === 'year'
+          ? SUBSCRIPTION_IDS.ANNUAL
+          : SUBSCRIPTION_IDS.WEEKLY;
+
       await inAppPurchaseService.purchaseSubscription(subscriptionId);
     } catch (error) {
       console.error('Purchase initiation error:', error);
@@ -61,9 +81,13 @@ export default function InAppPurchaseScreen() {
   };
 
   const getProductPrice = (subscriptionId: string): string => {
-    const subscription = subscriptions.find(s => s.productId === subscriptionId);
+    const subscription = subscriptions.find(
+      (s) => s.productId === subscriptionId
+    );
     if (!subscription) {
-      return subscriptionId === SUBSCRIPTION_IDS.ANNUAL ? '999.000 đ' : '125.000 đ';
+      return subscriptionId === SUBSCRIPTION_IDS.ANNUAL
+        ? '999.000 đ'
+        : '125.000 đ';
     }
 
     // Handle different platforms
@@ -72,105 +96,198 @@ export default function InAppPurchaseScreen() {
       return iosSub.localizedPrice || '999.000 đ';
     } else if (subscription.platform === 'android') {
       const androidSub = subscription as any;
-      if (androidSub.subscriptionOfferDetails && androidSub.subscriptionOfferDetails[0]) {
-        const pricingPhase = androidSub.subscriptionOfferDetails[0].pricingPhases?.pricingPhaseList?.[0];
-        return pricingPhase?.formattedPrice || (subscriptionId === SUBSCRIPTION_IDS.ANNUAL ? '999.000 đ' : '125.000 đ');
+      if (
+        androidSub.subscriptionOfferDetails &&
+        androidSub.subscriptionOfferDetails[0]
+      ) {
+        const pricingPhase =
+          androidSub.subscriptionOfferDetails[0].pricingPhases
+            ?.pricingPhaseList?.[0];
+        return (
+          pricingPhase?.formattedPrice ||
+          (subscriptionId === SUBSCRIPTION_IDS.ANNUAL
+            ? '999.000 đ'
+            : '125.000 đ')
+        );
       }
     }
-    
+
     // Fallback to hardcoded prices
-    return subscriptionId === SUBSCRIPTION_IDS.ANNUAL ? '999.000 đ' : '125.000 đ';
+    return subscriptionId === SUBSCRIPTION_IDS.ANNUAL
+      ? '999.000 đ'
+      : '125.000 đ';
   };
 
   const onClose = () => {
     navigation.goBack();
   };
 
+  const renderItem: ListRenderItem<any> = ({ item }) => (
+    <TouchableOpacity
+      style={[
+        styles.planBox,
+        selectedPlan === item.subscriptionId && styles.planBoxSelected,
+      ]}
+      onPress={() => setSelectedPlan(item.subscriptionId)}
+      activeOpacity={0.8}
+    >
+      <View style={styles.planRow}>
+        <Text style={styles.planRenew}>{item.label}</Text>
+        {item.saveTag && (
+          <View style={styles.saveTag}>
+            <Text style={styles.saveText}>{item.saveTag}</Text>
+          </View>
+        )}
+      </View>
+      <Text style={styles.planPrice}>
+        {item.price} <Text style={styles.planPeriod}>{item.period}</Text>
+      </Text>
+    </TouchableOpacity>
+  );
+
+  // Plan data for FlatList
+  const plans = [
+    {
+      label: 'Renews annually',
+      price: getProductPrice(SUBSCRIPTION_IDS.ANNUAL),
+      period: '/ year',
+      saveTag: 'Save 90%',
+      selected: selectedPlan === 'year',
+      subscriptionId: SUBSCRIPTION_IDS.ANNUAL,
+    },
+    {
+      label: 'Renews weekly',
+      price: getProductPrice(SUBSCRIPTION_IDS.WEEKLY),
+      period: '/ week',
+      saveTag: null,
+      selected: selectedPlan === 'week',
+      subscriptionId: SUBSCRIPTION_IDS.WEEKLY,
+    },
+  ];
+
+  const keyExtractor = (item: any) => item.key;
+
+  const renderEmpty = () => {
+    if (isLoading) {
+      return (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#222" />
+          <Text style={styles.loadingText}>
+            Loading subscription options...
+          </Text>
+        </View>
+      );
+    }
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>
+          No subscription options available
+        </Text>
+      </View>
+    );
+  };
+
+  const renderFooter = () => (
+    <TouchableOpacity
+      style={[
+        styles.subscribeBtn,
+        isPurchasing && styles.subscribeButtonDisabled,
+      ]}
+      onPress={handlePurchase}
+      disabled={isPurchasing}
+    >
+      {isPurchasing ? (
+        <>
+          <ActivityIndicator
+            size="small"
+            color="#fff"
+            style={{ marginRight: 8 }}
+          />
+          <Text style={styles.subscribeText}>Processing...</Text>
+        </>
+      ) : (
+        <>
+          <Text style={styles.subscribeText}>Subscribe</Text>
+          <Ionicons
+            name="arrow-forward"
+            size={22}
+            color="#fff"
+            style={{ marginLeft: 8 }}
+          />
+        </>
+      )}
+    </TouchableOpacity>
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity style={styles.backButton} onPress={onClose}>
         <Ionicons name="close" size={28} color="#222" />
       </TouchableOpacity>
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-        <Text style={styles.title}>Get Unlimited{"\n"}Access</Text>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <Text style={styles.title}>Get Unlimited{'\n'}Access</Text>
         <View style={styles.featureList}>
           <View style={styles.featureItem}>
-            <Ionicons name="infinite" size={28} color="#222" style={styles.featureIcon} />
+            <Ionicons
+              name="infinite"
+              size={28}
+              color="#222"
+              style={styles.featureIcon}
+            />
             <View>
               <Text style={styles.featureTitle}>Unlimited Access</Text>
               <Text style={styles.featureDesc}>Endless story creations</Text>
             </View>
           </View>
           <View style={styles.featureItem}>
-            <MaterialCommunityIcons name="crown-outline" size={28} color="#222" style={styles.featureIcon} />
+            <MaterialCommunityIcons
+              name="crown-outline"
+              size={28}
+              color="#222"
+              style={styles.featureIcon}
+            />
             <View>
               <Text style={styles.featureTitle}>Advanced AI</Text>
               <Text style={styles.featureDesc}>Smarter AI, richer & more</Text>
             </View>
           </View>
           <View style={styles.featureItem}>
-            <FontAwesome5 name="wallet" size={24} color="#222" style={styles.featureIcon} />
+            <FontAwesome5
+              name="wallet"
+              size={24}
+              color="#222"
+              style={styles.featureIcon}
+            />
             <View>
               <Text style={styles.featureTitle}>Ad-Free Experience</Text>
-              <Text style={styles.featureDesc}>Focus on stories, not distractions</Text>
+              <Text style={styles.featureDesc}>
+                Focus on stories, not distractions
+              </Text>
             </View>
           </View>
         </View>
-        
-        {isLoading ? (
-          <View style={styles.loadingContainer}>
-            <ActivityIndicator size="large" color="#222" />
-            <Text style={styles.loadingText}>Loading subscription options...</Text>
-          </View>
-        ) : (
-          <>
-            <View style={styles.planBoxWrapper}>
-              <TouchableOpacity
-                style={[styles.planBox, selectedPlan === 'year' && styles.planBoxSelected]}
-                onPress={() => setSelectedPlan('year')}
-                activeOpacity={0.8}
-              >
-                <View style={styles.planRow}>
-                  <Text style={styles.planRenew}>Renews annually</Text>
-                  <View style={styles.saveTag}><Text style={styles.saveText}>Save 90%</Text></View>
-                </View>
-                <Text style={styles.planPrice}>
-                  {getProductPrice(SUBSCRIPTION_IDS.ANNUAL)} <Text style={styles.planPeriod}>/ year</Text>
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.planBox, selectedPlan === 'week' && styles.planBoxSelected, styles.planBoxSecondary]}
-                onPress={() => setSelectedPlan('week')}
-                activeOpacity={0.8}
-              >
-                <Text style={[styles.planRenew, { color: '#bbb' }]}>Renews weekly</Text>
-                <Text style={[styles.planPrice, { color: '#bbb' }]}>
-                  {getProductPrice(SUBSCRIPTION_IDS.WEEKLY)} <Text style={styles.planPeriod}>/ week</Text>
-                </Text>
-              </TouchableOpacity>
-            </View>
-            <TouchableOpacity 
-              style={[styles.subscribeBtn, isPurchasing && styles.subscribeButtonDisabled]} 
-              onPress={handlePurchase}
-              disabled={isPurchasing}
-            >
-              {isPurchasing ? (
-                <>
-                  <ActivityIndicator size="small" color="#fff" style={{ marginRight: 8 }} />
-                  <Text style={styles.subscribeText}>Processing...</Text>
-                </>
-              ) : (
-                <>
-                  <Text style={styles.subscribeText}>Subscribe</Text>
-                  <Ionicons name="arrow-forward" size={22} color="#fff" style={{ marginLeft: 8 }} />
-                </>
-              )}
-            </TouchableOpacity>
-          </>
-        )}
-        
+
+        <View style={styles.planBoxWrapper}>
+          <FlatList
+            data={plans}
+            keyExtractor={keyExtractor}
+            renderItem={renderItem}
+            ListEmptyComponent={renderEmpty}
+            scrollEnabled={false}
+            ListFooterComponent={renderFooter}
+          />
+        </View>
+
         <Text style={styles.noteText}>
-          Payment will be charged to your Google Play account. Subscriptions auto-renew at the end of the subscription period unless canceled 24 hours in advance prior to the end of the current period. Your account will be charged for renewal within 24 hours before the end of the current period. You can manage and cancel your subscriptions in the Google Play store settings.
+          Payment will be charged to your Google Play account. Subscriptions
+          auto-renew at the end of the subscription period unless canceled 24
+          hours in advance prior to the end of the current period. Your account
+          will be charged for renewal within 24 hours before the end of the
+          current period. You can manage and cancel your subscriptions in the
+          Google Play store settings.
         </Text>
       </ScrollView>
     </SafeAreaView>
@@ -291,7 +408,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 18,
+    marginVertical: 18,
   },
   subscribeButtonDisabled: {
     backgroundColor: '#888',
