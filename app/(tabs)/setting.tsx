@@ -82,7 +82,7 @@ export default function SettingScreen() {
           <Text style={styles.premiumTitle}>Upgrade Premium</Text>
           <View style={styles.premiumFeatureContainer}>
             <Ionicons name="checkmark-circle" size={22} color="#fff" />
-            <Text style={styles.premiumFeature}>  Free ads</Text>
+            <Text style={styles.premiumFeature}>  Ad-Free Experience</Text>
           </View>
           <View style={styles.premiumFeatureContainer}>
             <Ionicons name="checkmark-circle" size={22} color="#fff" />

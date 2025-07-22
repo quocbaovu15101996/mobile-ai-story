@@ -1,10 +1,10 @@
-import { FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import React, { useState, useEffect } from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, ActivityIndicator } from 'react-native';
-import { Subscription } from 'react-native-iap';
 import { inAppPurchaseService, SUBSCRIPTION_IDS } from '@/src/services/inAppPurchase';
 import { showErrorToast } from '@/src/utils/toast';
+import { FontAwesome5, Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Subscription } from 'react-native-iap';
 
 export default function InAppPurchaseScreen() {
   const navigation = useNavigation();
@@ -181,10 +181,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fafbfc',
+    paddingTop: 16,
   },
   backButton: {
     position: 'absolute',
-    top: 18,
+    top: StatusBar.currentHeight ? StatusBar.currentHeight + 16 : 16,
     left: 16,
     zIndex: 10,
     backgroundColor: '#fff',
