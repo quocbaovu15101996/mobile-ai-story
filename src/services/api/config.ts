@@ -5,7 +5,7 @@ export const RESPONSE_CODES = {
 
 // Base API configuration
 export const API_CONFIG = {
-  BASE_URL: 'http://localhost:3000',
+  BASE_URL: 'https://viable-jointly-hen.ngrok-free.app',
   TIMEOUT: 30000, // 30 seconds
   HEADERS: {
     'Content-Type': 'application/json',

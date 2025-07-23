@@ -1,11 +1,11 @@
-import * as Device from 'expo-device';
 import * as SecureStore from 'expo-secure-store';
 import { Platform } from 'react-native';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { loginByDevice } from '../services/api/auth';
-import { getUserProfile } from '../services/api/users';
 import { UserProfile } from '../services/api/types';
+import { getUserProfile } from '../services/api/users';
+import getDeviceId from '../utils/devices';
 import { AuthState } from './types';
 
 // Custom storage object for expo-secure-store
@@ -52,10 +52,11 @@ export const useAuthStore = create<AuthStore>()(
       loginByDevice: async (): Promise<string | null> => {
         try {
           // Use Device ID or generate a unique ID if not available
-          const deviceId = Device.modelId || `web-${Math.random().toString(36).substring(7)}`;
-          const platform = Platform.OS === 'ios' ? 'ios' : 'android';
-
-          const response = await loginByDevice({ platform, deviceId });
+          const deviceId = await getDeviceId();
+          if (!deviceId) {
+            return null;
+          }
+          const response = await loginByDevice({ platform: Platform.OS, deviceId });
 
           if (response.data?.token) {
             const { token } = response.data;

@@ -10,6 +10,10 @@ import SplashScreen from '@/components/SplashScreen';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { useAuthStore } from '@/src/store/useAuthStore';
 
+if (__DEV__) {
+  require("../src/config/ReactotronConfig");
+}
+
 export type RootStackParamList = {
   InAppPurchase: undefined;
   ThreadDetail: { threadId: string };

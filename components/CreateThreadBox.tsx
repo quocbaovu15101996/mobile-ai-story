@@ -13,8 +13,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { createThread } from '../src/services/api/thread';
 import { RootStackParamList } from '../app/_layout';
+import { createThread } from '../src/services/api/thread';
 
 type Props = {};
 
@@ -65,7 +65,7 @@ const CreateThreadBox: FC<Props> = () => {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1 }}
+      style={styles.flex1}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView
@@ -88,20 +88,22 @@ const CreateThreadBox: FC<Props> = () => {
             value={storyIdea}
             onChangeText={setStoryIdea}
             multiline
+            textAlignVertical="top"
+            numberOfLines={4}
           />
           <View style={styles.inputIconsRow}>
             <Ionicons
               name="bulb-outline"
               size={22}
               color="#bbb"
-              style={{ marginRight: 8 }}
+              style={styles.iconSuggestion}
             />
-            <Ionicons
+            {/* <Ionicons
               name="bulb"
               size={22}
               color="#bbb"
               style={{ marginRight: 8 }}
-            />
+            /> */}
             <View style={styles.proBadge}>
               <Text style={styles.proText}>Pro</Text>
             </View>
@@ -212,6 +214,9 @@ const CreateThreadBox: FC<Props> = () => {
 export default CreateThreadBox;
 
 const styles = StyleSheet.create({
+  flex1: {
+    flex: 1
+  },
   container: {
     padding: 20,
     backgroundColor: '#fff',
@@ -241,7 +246,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   textInput: {
-    minHeight: 40,
+    minHeight: 60,
     fontSize: 15,
     color: '#222',
     marginBottom: 6,
@@ -365,4 +370,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
   },
+  iconSuggestion: { marginRight: 8 }
 });
