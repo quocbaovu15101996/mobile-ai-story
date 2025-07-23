@@ -1,4 +1,5 @@
 import { earnTokenByAds, rollCall } from '@/src/services/api/users';
+import { useUserProfile } from '@/src/store/useAuthStore';
 import { showErrorToast, showSuccessToast } from '@/src/utils/toast';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
@@ -20,6 +21,7 @@ export default function RollCallModal(props: Props) {
   const { visible, onClose } = props;
   const [isCheckingIn, setIsCheckingIn] = useState(false);
   const [isWatchingAds, setIsWatchingAds] = useState(false);
+  const userProfile = useUserProfile();
 
   const handleCheckIn = async () => {
     if (isCheckingIn) return;
@@ -60,7 +62,7 @@ export default function RollCallModal(props: Props) {
               <Text style={styles.modalTitle}>Check-In</Text>
               <View style={styles.modalGem}>
                 <Ionicons name="diamond" size={20} color="#7ee2ff" />
-                <Text style={styles.modalGemText}>28</Text>
+                <Text style={styles.modalGemText}>{userProfile?.tokenBalance}</Text>
               </View>
             </View>
             {/* Check-in days row */}

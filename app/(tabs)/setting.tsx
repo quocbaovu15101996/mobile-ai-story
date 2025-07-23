@@ -1,8 +1,21 @@
-
-import { Ionicons, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
+import {
+  Ionicons,
+  MaterialCommunityIcons,
+  MaterialIcons,
+} from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React from 'react';
-import { Alert, Linking, ScrollView, Share, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Alert,
+  Linking,
+  ScrollView,
+  Share,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 const packageJson = require('../../package.json');
 
@@ -14,7 +27,8 @@ export default function SettingScreen() {
   const handleShare = async () => {
     try {
       await Share.share({
-        message: 'Check out AI Story - Create amazing stories with AI! Download it now.',
+        message:
+          'Check out AI Story - Create amazing stories with AI! Download it now.',
         title: 'AI Story App',
       });
     } catch (error) {
@@ -23,14 +37,17 @@ export default function SettingScreen() {
   };
 
   const handleRate = () => {
-    const storeUrl = 'https://play.google.com/store/apps/details?id=com.aistory.app';
+    const storeUrl =
+      'https://play.google.com/store/apps/details?id=com.aistory.app';
     Linking.openURL(storeUrl).catch(() => {
       Alert.alert('Error', 'Unable to open app store');
     });
   };
 
   const handleContact = () => {
-    Linking.openURL('mailto:support@aistory.com?subject=AI Story Support').catch(() => {
+    Linking.openURL(
+      'mailto:support@aistory.com?subject=AI Story Support'
+    ).catch(() => {
       Alert.alert('Error', 'Unable to open email client');
     });
   };
@@ -70,32 +87,47 @@ export default function SettingScreen() {
 
   const handleRestorePurchase = () => {
     // TODO: Implement restore purchase logic
-    Alert.alert('Restore Purchase', 'Purchase restoration is not implemented yet.');
+    Alert.alert(
+      'Restore Purchase',
+      'Purchase restoration is not implemented yet.'
+    );
   };
 
   return (
     <View style={{ flex: 1, backgroundColor: '#f7f7fa' }}>
       <View style={{ height: StatusBar.currentHeight }} />
-      <ScrollView contentContainerStyle={{ padding: 16, paddingBottom: 32 }} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={{ padding: 16, paddingBottom: 32 }}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Upgrade Premium */}
         <View style={styles.premiumCard}>
           <Text style={styles.premiumTitle}>Upgrade Premium</Text>
           <View style={styles.premiumFeatureContainer}>
             <Ionicons name="checkmark-circle" size={22} color="#fff" />
-            <Text style={styles.premiumFeature}>  Ad-Free Experience</Text>
+            <Text style={styles.premiumFeature}> Ad-Free Experience</Text>
           </View>
           <View style={styles.premiumFeatureContainer}>
             <Ionicons name="checkmark-circle" size={22} color="#fff" />
-            <Text style={styles.premiumFeature}>  Unlimited story generations</Text>
+            <Text style={styles.premiumFeature}>
+              {' '}
+              Unlimited story generations
+            </Text>
           </View>
           <View style={styles.premiumFeatureContainer}>
             <Ionicons name="checkmark-circle" size={22} color="#fff" />
-            <Text style={styles.premiumFeature}>  Advanced AI Creativity</Text>
+            <Text style={styles.premiumFeature}> Advanced AI Creativity</Text>
           </View>
           <TouchableOpacity style={styles.subscribeBtn} onPress={handleUpgrade}>
-            <Text style={styles.subscribeBtnText}>Subscribe  <Ionicons name="arrow-forward" size={18} color="#232136" /></Text>
+            <Text style={styles.subscribeBtnText}>
+              Subscribe{' '}
+              <Ionicons name="arrow-forward" size={18} color="#232136" />
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={{ marginTop: 8 }} onPress={handleRestorePurchase}>
+          <TouchableOpacity
+            style={{ marginTop: 8 }}
+            onPress={handleRestorePurchase}
+          >
             <Text style={styles.restoreText}>Restore purchase</Text>
           </TouchableOpacity>
         </View>
@@ -104,7 +136,11 @@ export default function SettingScreen() {
         <Text style={styles.sectionTitle}>General</Text>
         <View style={styles.sectionCard}>
           <TouchableOpacity style={styles.row} onPress={handleShare}>
-            <MaterialCommunityIcons name="share-variant" size={22} color="#232136" />
+            <MaterialCommunityIcons
+              name="share-variant"
+              size={22}
+              color="#232136"
+            />
             <Text style={styles.rowText}>Share AI Story</Text>
           </TouchableOpacity>
           <View style={styles.divider} />
@@ -128,12 +164,20 @@ export default function SettingScreen() {
           </TouchableOpacity>
           <View style={styles.divider} />
           <TouchableOpacity style={styles.row} onPress={handlePrivacy}>
-            <MaterialCommunityIcons name="shield-check" size={22} color="#232136" />
+            <MaterialCommunityIcons
+              name="shield-check"
+              size={22}
+              color="#232136"
+            />
             <Text style={styles.rowText}>Privacy Policy</Text>
           </TouchableOpacity>
           <View style={styles.divider} />
           <View style={[styles.row, { opacity: 0.7 }]}>
-            <Ionicons name="information-circle-outline" size={22} color="#232136" />
+            <Ionicons
+              name="information-circle-outline"
+              size={22}
+              color="#232136"
+            />
             <Text style={styles.rowText}>App version</Text>
             <Text style={styles.versionText}>{packageJson.version}</Text>
           </View>

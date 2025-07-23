@@ -1,4 +1,6 @@
 import CreateThreadBox from '@/components/CreateThreadBox';
+import RollCallModal from '@/components/RollCallModal';
+import { useUserProfile } from '@/src/store/useAuthStore';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -8,9 +10,8 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
-import RollCallModal from '../../components/RollCallModal';
 import { RootStackParamList } from '../_layout';
 // import { NotificationService } from '../../src/services/notificationService';
 
@@ -19,6 +20,7 @@ export default function HomeScreen() {
   const [notificationPermission, setNotificationPermission] = useState(false);
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const userProfile = useUserProfile();
 
   // Setup notification listeners and permissions
   // const setupNotifications = useCallback(async () => {
@@ -26,10 +28,10 @@ export default function HomeScreen() {
   //     // Request notification permissions
   //     const hasPermission = await NotificationService.requestPermissions();
   //     setNotificationPermission(hasPermission);
-      
+
   //     if (!hasPermission) {
   //       Alert.alert(
-  //         'Notification Permission', 
+  //         'Notification Permission',
   //         'Please enable notifications to receive story updates and reminders.',
   //         [
   //           { text: 'Cancel', style: 'cancel' },
@@ -73,7 +75,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     // setupNotifications();
-    
+
     // Cleanup listeners on unmount
     return () => {
       // Cleanup is handled by the service
@@ -129,7 +131,7 @@ export default function HomeScreen() {
             activeOpacity={0.7}
           >
             <Ionicons name="diamond" size={20} color="#7ee2ff" />
-            <Text style={styles.tokenValue}>20</Text>
+            <Text style={styles.tokenValue}>{userProfile?.tokenBalance}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.calendarIcon}
@@ -139,13 +141,10 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
       </View>
-      
+
       <CreateThreadBox />
-      
-      <RollCallModal
-        visible={modalVisible}
-        onClose={onCloseModal}
-      />
+
+      <RollCallModal visible={modalVisible} onClose={onCloseModal} />
     </SafeAreaView>
   );
 }
