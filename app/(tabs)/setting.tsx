@@ -182,11 +182,10 @@ export default function SettingScreen() {
             <Text style={styles.versionText}>{packageJson.version}</Text>
           </View>
         </View>
+        <TouchableOpacity style={styles.clearBtn} onPress={handleClearData}>
+          <Text style={styles.clearBtnText}>Clear data</Text>
+        </TouchableOpacity>
       </ScrollView>
-      {/* Clear data button */}
-      <TouchableOpacity style={styles.clearBtn} onPress={handleClearData}>
-        <Text style={styles.clearBtnText}>Clear data</Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -279,7 +278,6 @@ const styles = StyleSheet.create({
   clearBtn: {
     backgroundColor: '#fff',
     borderRadius: 32,
-    margin: 16,
     paddingVertical: 14,
     alignItems: 'center',
     borderWidth: 1,

@@ -1,4 +1,4 @@
-import { earnTokenByAds, rollCall } from '@/src/services/api/users';
+import { earnTokenByAds, getUserProfile, rollCall } from '@/src/services/api/users';
 import { useUserProfile } from '@/src/store/useAuthStore';
 import { showErrorToast, showSuccessToast } from '@/src/utils/toast';
 import { Ionicons } from '@expo/vector-icons';
@@ -29,7 +29,8 @@ export default function RollCallModal(props: Props) {
     setIsCheckingIn(true);
     try {
       await rollCall();
-      showSuccessToast('Check-in successful! You earned tokens.');
+      await getUserProfile();
+
     } catch (error) {
       console.error('Check-in failed:', error);
       showErrorToast('Failed to check in. Please try again.');
