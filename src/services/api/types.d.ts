@@ -27,7 +27,7 @@ export interface UserProfile {
   modifiedDate?: string; // Timestamp as ISO string
   vipPackageId?: string;
   vipPackageCode?: string;
-  tokenBalance?: number; // User's token balance
+  diamond?: number; // User's token balance
   lastRollCallDate?: string; // Date as ISO string
   rollCallStreak?: number; // Current streak in days
   weeklyRollCallDays?: Set<string>; // Days user has rolled this week

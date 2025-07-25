@@ -131,7 +131,7 @@ export default function HomeScreen() {
             activeOpacity={0.7}
           >
             <Ionicons name="diamond" size={20} color="#7ee2ff" />
-            <Text style={styles.tokenValue}>{userProfile?.tokenBalance}</Text>
+            <Text style={styles.tokenValue}>{userProfile?.diamond}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.calendarIcon}

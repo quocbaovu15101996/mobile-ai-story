@@ -1,6 +1,6 @@
 import { earnTokenByAds, getUserProfile, rollCall } from '@/src/services/api/users';
 import { useUserProfile } from '@/src/store/useAuthStore';
-import { showErrorToast, showSuccessToast } from '@/src/utils/toast';
+import { showErrorToast } from '@/src/utils/toast';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
 import {
@@ -30,7 +30,6 @@ export default function RollCallModal(props: Props) {
     try {
       await rollCall();
       await getUserProfile();
-
     } catch (error) {
       console.error('Check-in failed:', error);
       showErrorToast('Failed to check in. Please try again.');
@@ -44,7 +43,7 @@ export default function RollCallModal(props: Props) {
     setIsWatchingAds(true);
     try {
       await earnTokenByAds();
-      showSuccessToast('Successfully earned tokens by watching ads!');
+      await getUserProfile();
     } catch (error) {
       console.error('Watch ads failed:', error);
       showErrorToast('Failed to earn tokens. Please try again.');
@@ -63,7 +62,7 @@ export default function RollCallModal(props: Props) {
               <Text style={styles.modalTitle}>Check-In</Text>
               <View style={styles.modalGem}>
                 <Ionicons name="diamond" size={20} color="#7ee2ff" />
-                <Text style={styles.modalGemText}>{userProfile?.tokenBalance}</Text>
+                <Text style={styles.modalGemText}>{userProfile?.diamond}</Text>
               </View>
             </View>
             {/* Check-in days row */}
