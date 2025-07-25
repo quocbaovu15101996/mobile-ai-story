@@ -9,7 +9,7 @@ import {
   RefreshControl,
   StyleSheet,
   Text,
-  View
+  View,
 } from 'react-native';
 
 export default function HistoryScreen() {

@@ -1,11 +1,13 @@
 import CreateThreadBox from '@/components/CreateThreadBox';
 import RollCallModal from '@/components/RollCallModal';
+import { NotificationService } from '@/src/services/notificationService';
 import { useUserProfile } from '@/src/store/useAuthStore';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
+  Alert,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -13,7 +15,6 @@ import {
   View,
 } from 'react-native';
 import { RootStackParamList } from '../_layout';
-// import { NotificationService } from '../../src/services/notificationService';
 
 export default function HomeScreen() {
   const [modalVisible, setModalVisible] = useState(false);
@@ -23,55 +24,57 @@ export default function HomeScreen() {
   const userProfile = useUserProfile();
 
   // Setup notification listeners and permissions
-  // const setupNotifications = useCallback(async () => {
-  //   try {
-  //     // Request notification permissions
-  //     const hasPermission = await NotificationService.requestPermissions();
-  //     setNotificationPermission(hasPermission);
+  const setupNotifications = useCallback(async () => {
+    try {
+      // Request notification permissions
+      const hasPermission = await NotificationService.requestPermissions();
+      setNotificationPermission(hasPermission);
 
-  //     if (!hasPermission) {
-  //       Alert.alert(
-  //         'Notification Permission',
-  //         'Please enable notifications to receive story updates and reminders.',
-  //         [
-  //           { text: 'Cancel', style: 'cancel' },
-  //           { text: 'Settings', onPress: () => {
-  //             // You could navigate to settings here
-  //           }}
-  //         ]
-  //       );
-  //       return;
-  //     }
+      if (!hasPermission) {
+        Alert.alert(
+          'Notification Permission',
+          'Please enable notifications to receive story updates and reminders.',
+          [
+            { text: 'Cancel', style: 'cancel' },
+            {
+              text: 'Settings', onPress: () => {
+                // You could navigate to settings here
+              }
+            }
+          ]
+        );
+        return;
+      }
 
-  //     // Get push token for remote notifications
-  //     const pushToken = await NotificationService.getPushToken();
-  //     console.log('Push token:', pushToken);
+      // Get push token for remote notifications
+      const pushToken = await NotificationService.getPushToken();
+      console.log('Push token:', pushToken);
 
-  //     // Setup notification listeners
-  //     const cleanup = NotificationService.setupNotificationListeners(
-  //       (notification) => {
-  //         // Handle notification received while app is in foreground
-  //         console.log('Notification received in foreground:', notification);
-  //         Alert.alert(
-  //           notification.request.content.title || 'Notification',
-  //           notification.request.content.body || 'You have a new notification',
-  //           [{ text: 'OK' }]
-  //         );
-  //       },
-  //       (response) => {
-  //         // Handle notification press
-  //         console.log('Notification pressed:', response);
-  //         NotificationService.handleNotificationAction(response, navigation);
-  //       }
-  //     );
+      // Setup notification listeners
+      const cleanup = NotificationService.setupNotificationListeners(
+        (notification) => {
+          // Handle notification received while app is in foreground
+          console.log('Notification received in foreground:', notification);
+          Alert.alert(
+            notification.request.content.title || 'Notification',
+            notification.request.content.body || 'You have a new notification',
+            [{ text: 'OK' }]
+          );
+        },
+        (response) => {
+          // Handle notification press
+          console.log('Notification pressed:', response);
+          NotificationService.handleNotificationAction(response, navigation);
+        }
+      );
 
-  //     // Store cleanup function for later use
-  //     return cleanup;
-  //   } catch (error) {
-  //     console.error('Failed to setup notifications:', error);
-  //     Alert.alert('Error', 'Failed to setup notifications');
-  //   }
-  // }, [navigation]);
+      // Store cleanup function for later use
+      return cleanup;
+    } catch (error) {
+      console.error('Failed to setup notifications:', error);
+      Alert.alert('Error', 'Failed to setup notifications');
+    }
+  }, [navigation]);
 
   useEffect(() => {
     // setupNotifications();

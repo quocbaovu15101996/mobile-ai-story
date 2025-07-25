@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "357874709429",
+    "project_id": "ai-apps-a1de3",
+    "storage_bucket": "ai-apps-a1de3.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:357874709429:android:646ccb4620b73a77475ffc",
+        "android_client_info": {
+          "package_name": "com.codezap.ai.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCj0KeoJD-syc-qbgCsURze92UbUw5jj9A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
