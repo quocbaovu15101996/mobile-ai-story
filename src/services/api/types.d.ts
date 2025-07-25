@@ -47,9 +47,12 @@ export interface Thread {
 
 export interface ThreadsResponse {
   threads: Thread[];
-  total: number;
-  page: number;
-  limit: number;
+  currentPage: number;
+  totalPages: number;
+  totalElements: number;
+  pageSize: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
 }
 
 export interface CreateThreadPayload {
