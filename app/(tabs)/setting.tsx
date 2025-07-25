@@ -38,7 +38,7 @@ export default function SettingScreen() {
 
   const handleRate = () => {
     const storeUrl =
-      'https://play.google.com/store/apps/details?id=com.aistory.app';
+      'https://play.google.com/store/apps/details?id=com.codezap.ai.story';
     Linking.openURL(storeUrl).catch(() => {
       Alert.alert('Error', 'Unable to open app store');
     });
@@ -172,7 +172,7 @@ export default function SettingScreen() {
             <Text style={styles.rowText}>Privacy Policy</Text>
           </TouchableOpacity>
           <View style={styles.divider} />
-          <View style={[styles.row, { opacity: 0.7 }]}>
+          <View style={styles.row}>
             <Ionicons
               name="information-circle-outline"
               size={22}
