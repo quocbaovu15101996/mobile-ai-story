@@ -25,14 +25,15 @@ export default function ThreadDetail() {
   const [thread, setThread] = useState<Thread | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<ThreadDetailRouteProp>();
   const { threadId } = route.params;
 
   useEffect(() => {
     loadThreadDetail();
-  }, [threadId]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const loadThreadDetail = async () => {
     try {
@@ -100,14 +101,14 @@ export default function ThreadDetail() {
         <Text style={styles.headerTitle}>Thread Detail</Text>
         <View style={styles.headerRightPlaceholder} />
       </View>
-      
+
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
         <View style={styles.threadContainer}>
           <Text style={styles.threadTitle}>{thread.title}</Text>
           <Text style={styles.threadDate}>
             {new Date(thread.createdAt).toLocaleDateString()}
           </Text>
-          
+
           {/* Thread content */}
           {thread.content && (
             <View style={styles.contentSection}>
@@ -115,7 +116,7 @@ export default function ThreadDetail() {
               <Text style={styles.contentText}>{thread.content}</Text>
             </View>
           )}
-          
+
           {/* Thread context array */}
           {thread.context && thread.context.length > 0 && (
             <View style={styles.contextSection}>

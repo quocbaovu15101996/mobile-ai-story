@@ -18,6 +18,13 @@ import { createThread } from '../src/services/api/thread';
 
 type Props = {};
 
+const STORY_TYPE = [
+  { key: 'endless', label: 'Endless', subLabel: 'Step-by-step', value: 1 },
+  { key: 'story', label: 'Story', subLabel: 'Full story', value: 0 },
+];
+
+const STORY_LENGTH = ['Short', 'Medium', 'Long'];
+
 const GENRES = [
   { key: 'romantic', label: 'Romantic', image: null },
   { key: 'fantasy', label: 'Fantasy', image: null },
@@ -28,13 +35,14 @@ const GENRES = [
 
 const CreateThreadBox: FC<Props> = () => {
   const [storyIdea, setStoryIdea] = useState('');
-  const [storyLength, setStoryLength] = useState('endless');
+  const [storyType, setStoryType] = useState('endless');
+  const [storyLength, setStoryLength] = useState('Short');
   const [extendDetails, setExtendDetails] = useState(false);
   const [genre, setGenre] = useState<string | null>(null);
   const [characters, setCharacters] = useState('');
   const [setting, setSetting] = useState('');
   const [loading, setLoading] = useState(false);
-  
+
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const isButtonDisabled = !storyIdea || loading;
@@ -42,15 +50,17 @@ const CreateThreadBox: FC<Props> = () => {
   const onPressGenerate = async () => {
     setLoading(true);
     try {
-      const response = await createThread({
+      const payload = {
         storyIdea,
-        storyLength,
+        isCanInteract: STORY_TYPE.find((s) => s.key === storyType)?.value || 1,
+        storyLength: storyLength.toLocaleUpperCase(),
         genreType: genre,
         characterPrompt: characters,
         settingPrompt: setting,
-        narrative: undefined, // You can add narrative state if needed
-      });
-      
+        narrative: "FIRST_PERSON",
+      }
+      const response = await createThread(payload);
+
       // Navigate to ThreadDetail after successful creation
       if (response.data && response.data.id) {
         navigation.navigate('ThreadDetail', { threadId: response.data.id });
@@ -113,25 +123,51 @@ const CreateThreadBox: FC<Props> = () => {
         {/* Story size */}
         <Text style={styles.label}>Story size</Text>
         <View style={styles.storySizeRow}>
-          <TouchableOpacity
-            style={[
-              styles.sizeButton,
-              storyLength === 'endless' && styles.sizeButtonActive,
-            ]}
-            onPress={() => setStoryLength('endless')}
-          >
-            <Text style={styles.sizeButtonText}>Endless</Text>
-            <Text style={styles.sizeButtonSub}>Step-by-step</Text>
-            {storyLength === 'endless' && (
-              <Ionicons
-                name="checkmark"
-                size={18}
-                color="#222"
-                style={styles.checkIcon}
-              />
-            )}
-          </TouchableOpacity>
+          {STORY_TYPE.map((s) => (
+            <TouchableOpacity
+              key={s.key}
+              style={[
+                styles.sizeButton,
+                storyType === s.key && styles.sizeButtonActive,
+              ]}
+              onPress={() => setStoryType(s.key)}
+            >
+              <Text style={styles.sizeButtonText}>{s.label}</Text>
+              <Text style={styles.sizeButtonSub}>{s.subLabel}</Text>
+              {storyType === s.key && (
+                <Ionicons
+                  name="checkmark"
+                  size={18}
+                  color="#222"
+                  style={styles.checkIcon}
+                />
+              )}
+            </TouchableOpacity>
+          ))}
         </View>
+        {storyType === 'story' && <View style={styles.storySizeRow}>
+          {STORY_LENGTH.map((s) => (
+            <TouchableOpacity
+              key={s}
+              style={[
+                styles.sizeButton,
+                storyLength === s && styles.sizeButtonActive,
+              ]}
+              onPress={() => setStoryLength(s)}
+            >
+              <Text style={styles.sizeButtonText}>{s}</Text>
+              {storyLength === s && (
+                <Ionicons
+                  name="checkmark"
+                  size={18}
+                  color="#222"
+                  style={styles.checkIcon}
+                />
+              )}
+            </TouchableOpacity>
+          ))}
+        </View>
+        }
 
         {/* More details (optional) */}
         <Pressable

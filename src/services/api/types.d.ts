@@ -57,6 +57,7 @@ export interface ThreadsResponse {
 
 export interface CreateThreadPayload {
   storyIdea: string;
+  isCanInteract: number; // 1 | 0
   storyLength: string;
   genreType?: string | null;
   characterPrompt?: string;
