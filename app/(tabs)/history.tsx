@@ -12,6 +12,8 @@ import {
   View
 } from 'react-native';
 
+const PAGE_SIZE = 10;
+
 export default function HistoryScreen() {
   const [threads, setThreads] = useState<Thread[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,9 +34,9 @@ export default function HistoryScreen() {
       }
       setError(null);
 
-      const response = await getHistory(page, 10);
+      const response = await getHistory(page, PAGE_SIZE);
       const newThreads = response.data.threads || [];
-      
+
       if (page === 0) {
         // First page or refresh - replace all threads
         setThreads(newThreads);
@@ -44,7 +46,7 @@ export default function HistoryScreen() {
         setThreads(prevThreads => [...prevThreads, ...newThreads]);
         setCurrentPage(page);
       }
-      
+
       setHasNext(response.data.hasNext);
     } catch (err) {
       console.error('Failed to fetch history:', err);
@@ -85,7 +87,7 @@ export default function HistoryScreen() {
 
   const renderFooter = () => {
     if (!loadingMore) return null;
-    
+
     return (
       <View style={styles.loadMoreContainer}>
         <ActivityIndicator size="small" color="#007AFF" />
