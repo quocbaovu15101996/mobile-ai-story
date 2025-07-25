@@ -9,13 +9,17 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.codezap.ai.story"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
+      "package": "com.codezap.ai.story",
+      "notificationIcon": "./assets/images/notification-icon.png",
+      "notificationColor": "#ffffff",
       "edgeToEdgeEnabled": true
     },
     "web": {

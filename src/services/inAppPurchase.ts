@@ -1,23 +1,23 @@
+import { Platform } from 'react-native';
 import {
-  initConnection,
   endConnection,
-  getSubscriptions,
-  requestSubscription,
-  purchaseUpdatedListener,
-  purchaseErrorListener,
   finishTransaction,
-  Subscription,
+  getSubscriptions,
+  initConnection,
   Purchase,
   PurchaseError,
+  purchaseErrorListener,
+  purchaseUpdatedListener,
+  requestSubscription,
+  Subscription,
 } from 'react-native-iap';
-import { Platform } from 'react-native';
-import api from './api';
 import { showErrorToast, showSuccessToast } from '../utils/toast';
+import api from './api';
 
 // Subscription IDs
 export const SUBSCRIPTION_IDS = {
-  WEEKLY: 'com.codezap.ai.app.1w',
-  ANNUAL: 'com.codezap.ai.app.12m',
+  WEEKLY: 'com.codezap.ai.story.1w',
+  ANNUAL: 'com.codezap.ai.story.12m',
 };
 
 export interface InAppPurchasePayload {
