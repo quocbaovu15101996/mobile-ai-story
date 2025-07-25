@@ -16,25 +16,43 @@ export default function HistoryScreen() {
   const [threads, setThreads] = useState<Thread[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [hasNext, setHasNext] = useState(true);
 
-  const fetchHistory = async (isRefresh = false) => {
+  const fetchHistory = async (isRefresh = false, page = 0) => {
     try {
       if (isRefresh) {
         setRefreshing(true);
-      } else {
+      } else if (page === 0) {
         setLoading(true);
+      } else {
+        setLoadingMore(true);
       }
       setError(null);
 
-      const response = await getHistory();
-      setThreads(response.data.threads || []);
+      const response = await getHistory(page, 10);
+      const newThreads = response.data.threads || [];
+      
+      if (page === 0) {
+        // First page or refresh - replace all threads
+        setThreads(newThreads);
+        setCurrentPage(0);
+      } else {
+        // Load more - append to existing threads
+        setThreads(prevThreads => [...prevThreads, ...newThreads]);
+        setCurrentPage(page);
+      }
+      
+      setHasNext(response.data.hasNext);
     } catch (err) {
       console.error('Failed to fetch history:', err);
       setError('Failed to load history. Please try again.');
     } finally {
       setLoading(false);
       setRefreshing(false);
+      setLoadingMore(false);
     }
   };
 
@@ -43,7 +61,13 @@ export default function HistoryScreen() {
   }, []);
 
   const onRefresh = () => {
-    fetchHistory(true);
+    fetchHistory(true, 0);
+  };
+
+  const handleLoadMore = () => {
+    if (!loadingMore && hasNext) {
+      fetchHistory(false, currentPage + 1);
+    }
   };
 
   const renderItem: ListRenderItem<Thread> = ({ item }) => (
@@ -58,6 +82,17 @@ export default function HistoryScreen() {
       </Text>
     </View>
   );
+
+  const renderFooter = () => {
+    if (!loadingMore) return null;
+    
+    return (
+      <View style={styles.loadMoreContainer}>
+        <ActivityIndicator size="small" color="#007AFF" />
+        <Text style={styles.loadMoreText}>Loading more stories...</Text>
+      </View>
+    );
+  };
 
   const renderError = () => (
     <View style={styles.errorContainer}>
@@ -91,6 +126,9 @@ export default function HistoryScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         ListEmptyComponent={renderEmpty}
+        ListFooterComponent={renderFooter}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.1}
         showsVerticalScrollIndicator={false}
       />
     </View>
@@ -146,5 +184,16 @@ const styles = StyleSheet.create({
     color: '#FF3B30',
     textAlign: 'center',
     lineHeight: 24,
+  },
+  loadMoreContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 16,
+  },
+  loadMoreText: {
+    marginLeft: 8,
+    fontSize: 14,
+    color: '#666666',
   },
 });

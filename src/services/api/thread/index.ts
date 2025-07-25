@@ -2,8 +2,8 @@ import api, { ApiResponse } from "..";
 import { ENDPOINTS } from "../config";
 import { ThreadsResponse, CreateThreadPayload, CreateThreadResponse, Thread } from "../types";
 
-export const getHistory = async (): Promise<ApiResponse<ThreadsResponse>> => {
-  return await api.get<ThreadsResponse>(ENDPOINTS.THREAD.GET_HISTORY);
+export const getHistory = async (page: number = 0, size: number = 10): Promise<ApiResponse<ThreadsResponse>> => {
+  return await api.get<ThreadsResponse>(`${ENDPOINTS.THREAD.GET_HISTORY}?page=${page}&size=${size}`);
 };
 
 export const getThreadDetail = async (threadId: string): Promise<ApiResponse<Thread>> => {
