@@ -33,6 +33,14 @@ const GENRES = [
   { key: 'sci-fi', label: 'Sci-Fi', image: null },
 ];
 
+const NARRATIVE = [{
+  value: 'FIRST_PERSON',
+  label: 'First person',
+}, {
+  value: 'THIRD_PERSON',
+  label: 'Third person',
+}];
+
 const CreateThreadBox: FC<Props> = () => {
   const [storyIdea, setStoryIdea] = useState('');
   const [storyType, setStoryType] = useState('endless');
@@ -42,6 +50,7 @@ const CreateThreadBox: FC<Props> = () => {
   const [characters, setCharacters] = useState('');
   const [setting, setSetting] = useState('');
   const [loading, setLoading] = useState(false);
+  const [narrative, setNarrative] = useState('FIRST_PERSON');
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
@@ -57,7 +66,7 @@ const CreateThreadBox: FC<Props> = () => {
         genreType: genre,
         characterPrompt: characters,
         settingPrompt: setting,
-        narrative: "FIRST_PERSON",
+        narrative: NARRATIVE.find((n) => n.value === narrative)?.value,
       }
       const response = await createThread(payload);
 
@@ -226,6 +235,23 @@ const CreateThreadBox: FC<Props> = () => {
               onChangeText={setSetting}
               multiline
             />
+            {/* Narrative */}
+            <Text style={styles.subLabel}>Narrative</Text>
+            <View style={styles.genreRow}>
+              {NARRATIVE.map((n) => (
+                <TouchableOpacity
+                  key={n.value}
+                  style={[
+                    styles.genreItem,
+                    narrative === n.value && styles.genreItemActive,
+                  ]}
+                  onPress={() => setNarrative(n.value)}
+                >
+                  <View style={styles.genreImagePlaceholder} />
+                  <Text style={styles.genreText}>{n.label}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
         )}
 
