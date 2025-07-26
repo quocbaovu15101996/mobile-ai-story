@@ -1,5 +1,4 @@
 import {
-  inAppPurchaseService,
   SUBSCRIPTION_IDS,
 } from '@/src/services/inAppPurchase';
 import { showErrorToast } from '@/src/utils/toast';
@@ -22,12 +21,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Subscription } from 'react-native-iap';
 
 export default function InAppPurchaseScreen() {
   const navigation = useNavigation();
   const [selectedPlan, setSelectedPlan] = useState(SUBSCRIPTION_IDS.ANNUAL);
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const [subscriptions, setSubscriptions] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isPurchasing, setIsPurchasing] = useState(false);
 
@@ -36,22 +34,21 @@ export default function InAppPurchaseScreen() {
 
     // Cleanup on unmount
     return () => {
-      inAppPurchaseService.cleanup();
     };
   }, []);
 
   const initializeIAP = async () => {
     try {
       setIsLoading(true);
-      const initialized = await inAppPurchaseService.initialize();
+      // const initialized = await inAppPurchaseService.initialize();
 
-      if (initialized) {
-        const availableProducts =
-          await inAppPurchaseService.getAvailableProducts();
-        setSubscriptions(availableProducts);
-      } else {
-        showErrorToast('Failed to initialize purchase system');
-      }
+      // if (initialized) {
+      // const availableProducts =
+      //   await inAppPurchaseService.getAvailableProducts();
+      // setSubscriptions(availableProducts);
+      // } else {
+      //   showErrorToast('Failed to initialize purchase system');
+      // }
     } catch (error) {
       console.error('IAP initialization error:', error);
       showErrorToast('Failed to load subscription options');
@@ -71,7 +68,7 @@ export default function InAppPurchaseScreen() {
           ? SUBSCRIPTION_IDS.ANNUAL
           : SUBSCRIPTION_IDS.WEEKLY;
 
-      await inAppPurchaseService.purchaseSubscription(subscriptionId);
+      // await inAppPurchaseService.purchaseSubscription(subscriptionId);
     } catch (error) {
       console.error('Purchase initiation error:', error);
       showErrorToast('Failed to start purchase');

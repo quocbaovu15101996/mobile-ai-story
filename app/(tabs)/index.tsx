@@ -123,7 +123,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.appName}>AI Story</Text>
+        <Text style={styles.appName}>StoryForge AI</Text>
         <View style={styles.headerRight}>
           <TouchableOpacity
             style={styles.tokenBox}
