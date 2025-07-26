@@ -1,7 +1,9 @@
 import {
   SUBSCRIPTION_IDS,
+  inAppPurchaseService,
+  SubscriptionProduct,
 } from '@/src/services/inAppPurchase';
-import { showErrorToast } from '@/src/utils/toast';
+import { showErrorToast, showSuccessToast } from '@/src/utils/toast';
 import {
   FontAwesome5,
   Ionicons,
@@ -25,30 +27,40 @@ import {
 export default function InAppPurchaseScreen() {
   const navigation = useNavigation();
   const [selectedPlan, setSelectedPlan] = useState(SUBSCRIPTION_IDS.ANNUAL);
-  const [subscriptions, setSubscriptions] = useState<any[]>([]);
+  const [subscriptions, setSubscriptions] = useState<SubscriptionProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isPurchasing, setIsPurchasing] = useState(false);
+  const [isRestoring, setIsRestoring] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
 
   useEffect(() => {
     initializeIAP();
 
     // Cleanup on unmount
     return () => {
+      inAppPurchaseService.cleanup();
     };
   }, []);
 
   const initializeIAP = async () => {
     try {
       setIsLoading(true);
-      // const initialized = await inAppPurchaseService.initialize();
+      const initialized = await inAppPurchaseService.initialize();
 
-      // if (initialized) {
-      // const availableProducts =
-      //   await inAppPurchaseService.getAvailableProducts();
-      // setSubscriptions(availableProducts);
-      // } else {
-      //   showErrorToast('Failed to initialize purchase system');
-      // }
+      if (initialized) {
+        const availableProducts = await inAppPurchaseService.getAvailableProducts();
+        setSubscriptions(availableProducts);
+        
+        // Check if user is already subscribed
+        const subscriptionStatus = inAppPurchaseService.isUserSubscribed();
+        setIsSubscribed(subscriptionStatus);
+        
+        if (subscriptionStatus) {
+          showSuccessToast('You already have an active subscription!');
+        }
+      } else {
+        showErrorToast('Failed to initialize purchase system');
+      }
     } catch (error) {
       console.error('IAP initialization error:', error);
       showErrorToast('Failed to load subscription options');
@@ -63,17 +75,46 @@ export default function InAppPurchaseScreen() {
     try {
       setIsPurchasing(true);
 
-      const subscriptionId =
-        selectedPlan === 'year'
-          ? SUBSCRIPTION_IDS.ANNUAL
-          : SUBSCRIPTION_IDS.WEEKLY;
-
-      // await inAppPurchaseService.purchaseSubscription(subscriptionId);
-    } catch (error) {
+      const result = await inAppPurchaseService.purchaseSubscription(selectedPlan);
+      
+      if (result.success) {
+        showSuccessToast('Subscription activated successfully!');
+        // Navigate back or to main screen
+        navigation.goBack();
+      }
+    } catch (error: any) {
       console.error('Purchase initiation error:', error);
-      showErrorToast('Failed to start purchase');
+      const errorMessage = error.message || 'Failed to start purchase';
+      showErrorToast(errorMessage);
     } finally {
       setIsPurchasing(false);
+    }
+  };
+
+  const handleRestorePurchases = async () => {
+    if (isRestoring) return;
+
+    try {
+      setIsRestoring(true);
+      const result = await inAppPurchaseService.restorePurchases();
+      
+      if (result.success && result.customerInfo) {
+        const hasActiveSubscription = inAppPurchaseService.isUserSubscribed();
+        setIsSubscribed(hasActiveSubscription);
+        
+        if (hasActiveSubscription) {
+          showSuccessToast('Purchases restored successfully!');
+          navigation.goBack();
+        } else {
+          showErrorToast('No active subscriptions found');
+        }
+      }
+    } catch (error: any) {
+      console.error('Restore purchases error:', error);
+      const errorMessage = error.message || 'Failed to restore purchases';
+      showErrorToast(errorMessage);
+    } finally {
+      setIsRestoring(false);
     }
   };
 
@@ -87,32 +128,8 @@ export default function InAppPurchaseScreen() {
         : '125.000 đ';
     }
 
-    // Handle different platforms
-    if (subscription.platform === 'ios') {
-      const iosSub = subscription as any;
-      return iosSub.localizedPrice || '999.000 đ';
-    } else if (subscription.platform === 'android') {
-      const androidSub = subscription as any;
-      if (
-        androidSub.subscriptionOfferDetails &&
-        androidSub.subscriptionOfferDetails[0]
-      ) {
-        const pricingPhase =
-          androidSub.subscriptionOfferDetails[0].pricingPhases
-            ?.pricingPhaseList?.[0];
-        return (
-          pricingPhase?.formattedPrice ||
-          (subscriptionId === SUBSCRIPTION_IDS.ANNUAL
-            ? '999.000 đ'
-            : '125.000 đ')
-        );
-      }
-    }
-
-    // Fallback to hardcoded prices
-    return subscriptionId === SUBSCRIPTION_IDS.ANNUAL
-      ? '999.000 đ'
-      : '125.000 đ';
+    return subscription.localizedPrice || 
+      (subscriptionId === SUBSCRIPTION_IDS.ANNUAL ? '999.000 đ' : '125.000 đ');
   };
 
   const onClose = () => {
@@ -162,7 +179,7 @@ export default function InAppPurchaseScreen() {
     },
   ];
 
-  const keyExtractor = (item: any) => item.key;
+  const keyExtractor = (item: any) => item.subscriptionId;
 
   const renderEmpty = () => {
     if (isLoading) {
@@ -185,35 +202,61 @@ export default function InAppPurchaseScreen() {
   };
 
   const renderFooter = () => (
-    <TouchableOpacity
-      style={[
-        styles.subscribeBtn,
-        isPurchasing && styles.subscribeButtonDisabled,
-      ]}
-      onPress={handlePurchase}
-      disabled={isPurchasing}
-    >
-      {isPurchasing ? (
-        <>
-          <ActivityIndicator
-            size="small"
-            color="#fff"
-            style={{ marginRight: 8 }}
-          />
-          <Text style={styles.subscribeText}>Processing...</Text>
-        </>
-      ) : (
-        <>
-          <Text style={styles.subscribeText}>Subscribe</Text>
-          <Ionicons
-            name="arrow-forward"
-            size={22}
-            color="#fff"
-            style={{ marginLeft: 8 }}
-          />
-        </>
-      )}
-    </TouchableOpacity>
+    <View>
+      <TouchableOpacity
+        style={[
+          styles.subscribeBtn,
+          (isPurchasing || isSubscribed) && styles.subscribeButtonDisabled,
+        ]}
+        onPress={handlePurchase}
+        disabled={isPurchasing || isSubscribed}
+      >
+        {isPurchasing ? (
+          <>
+            <ActivityIndicator
+              size="small"
+              color="#fff"
+              style={{ marginRight: 8 }}
+            />
+            <Text style={styles.subscribeText}>Processing...</Text>
+          </>
+        ) : isSubscribed ? (
+          <Text style={styles.subscribeText}>Already Subscribed</Text>
+        ) : (
+          <>
+            <Text style={styles.subscribeText}>Subscribe</Text>
+            <Ionicons
+              name="arrow-forward"
+              size={22}
+              color="#fff"
+              style={{ marginLeft: 8 }}
+            />
+          </>
+        )}
+      </TouchableOpacity>
+      
+      <TouchableOpacity
+        style={[
+          styles.restoreBtn,
+          isRestoring && styles.restoreButtonDisabled,
+        ]}
+        onPress={handleRestorePurchases}
+        disabled={isRestoring}
+      >
+        {isRestoring ? (
+          <>
+            <ActivityIndicator
+              size="small"
+              color="#666"
+              style={{ marginRight: 8 }}
+            />
+            <Text style={styles.restoreText}>Restoring...</Text>
+          </>
+        ) : (
+          <Text style={styles.restoreText}>Restore Purchases</Text>
+        )}
+      </TouchableOpacity>
+    </View>
   );
 
   return (
@@ -226,6 +269,13 @@ export default function InAppPurchaseScreen() {
         showsVerticalScrollIndicator={false}
       >
         <Text style={styles.title}>Get Unlimited{'\n'}Access</Text>
+        
+        {isSubscribed && (
+          <View style={styles.subscribedBanner}>
+            <Ionicons name="checkmark-circle" size={24} color="#10b981" />
+            <Text style={styles.subscribedText}>You have an active subscription!</Text>
+          </View>
+        )}
         <View style={styles.featureList}>
           <View style={styles.featureItem}>
             <Ionicons
@@ -324,6 +374,22 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     lineHeight: 38,
   },
+  subscribedBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#dcfce7',
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    marginBottom: 24,
+  },
+  subscribedText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#059669',
+    marginLeft: 8,
+  },
   featureList: {
     marginBottom: 32,
   },
@@ -409,6 +475,23 @@ const styles = StyleSheet.create({
   },
   subscribeButtonDisabled: {
     backgroundColor: '#888',
+  },
+  restoreBtn: {
+    backgroundColor: 'transparent',
+    borderRadius: 16,
+    paddingVertical: 12,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 12,
+  },
+  restoreButtonDisabled: {
+    opacity: 0.6,
+  },
+  restoreText: {
+    color: '#666',
+    fontSize: 16,
+    fontWeight: '500',
   },
   subscribeText: {
     color: '#fff',
