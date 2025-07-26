@@ -1,15 +1,12 @@
 
+import { Platform } from 'react-native';
 import Purchases, {
   CustomerInfo,
-  PurchasesOffering,
-  PurchasesPackage,
-  PurchasesStoreProduct,
-  PURCHASES_ERROR_CODE,
   LOG_LEVEL,
+  PurchasesPackage,
 } from 'react-native-purchases';
-import { Platform } from 'react-native';
+import { ENTITLEMENTS, REVENUECAT_CONFIG } from '../config/purchases';
 import { inAppPurchaseApi } from './api/inAppPurchase';
-import { REVENUECAT_CONFIG, ENTITLEMENTS } from '../config/purchases';
 
 // Subscription IDs
 export const SUBSCRIPTION_IDS = {
@@ -153,19 +150,7 @@ class InAppPurchaseService {
       };
     } catch (error: any) {
       console.error('Purchase failed:', error);
-
-      // Handle specific purchase errors
-      if (error.code === PURCHASES_ERROR_CODE.PURCHASE_CANCELLED) {
-        throw new Error('Purchase was cancelled');
-      } else if (error.code === PURCHASES_ERROR_CODE.USER_CANCELLED) {
-        throw new Error('Purchase was cancelled by user');
-      } else if (error.code === PURCHASES_ERROR_CODE.PAYMENT_PENDING) {
-        throw new Error('Payment is pending approval');
-      } else if (error.code === PURCHASES_ERROR_CODE.PRODUCT_NOT_AVAILABLE_FOR_PURCHASE) {
-        throw new Error('Product is not available for purchase');
-      } else {
-        throw new Error(error.message || 'Purchase failed');
-      }
+      throw new Error(error.message || 'Purchase failed');
     }
   }
 

@@ -1,5 +1,5 @@
 import { earnTokenByAds, getUserProfile, rollCall } from '@/src/services/api/users';
-import { useUserProfile } from '@/src/store/useAuthStore';
+import { useAuthStore } from '@/src/store/useAuthStore';
 import { showErrorToast } from '@/src/utils/toast';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
@@ -21,7 +21,15 @@ export default function RollCallModal(props: Props) {
   const { visible, onClose } = props;
   const [isCheckingIn, setIsCheckingIn] = useState(false);
   const [isWatchingAds, setIsWatchingAds] = useState(false);
-  const userProfile = useUserProfile();
+  const { setUserProfile, userProfile } = useAuthStore();
+
+
+  const handleUpdateProfile = async () => {
+    const response = await getUserProfile();
+    if (response && response.data) {
+      setUserProfile(response.data);
+    }
+  };
 
   const handleCheckIn = async () => {
     if (isCheckingIn) return;
@@ -29,7 +37,7 @@ export default function RollCallModal(props: Props) {
     setIsCheckingIn(true);
     try {
       await rollCall();
-      await getUserProfile();
+      await handleUpdateProfile();
     } catch (error) {
       console.error('Check-in failed:', error);
       showErrorToast('Failed to check in. Please try again.');
@@ -43,7 +51,7 @@ export default function RollCallModal(props: Props) {
     setIsWatchingAds(true);
     try {
       await earnTokenByAds();
-      await getUserProfile();
+      await handleUpdateProfile();
     } catch (error) {
       console.error('Watch ads failed:', error);
       showErrorToast('Failed to earn tokens. Please try again.');
@@ -52,6 +60,7 @@ export default function RollCallModal(props: Props) {
     }
   };
 
+  console.log('userProfile', userProfile);
   return (
     <>
       {visible && <View style={styles.background} />}
@@ -112,17 +121,17 @@ export default function RollCallModal(props: Props) {
               disabled={isWatchingAds}
             >
               <Text style={styles.modalAdsText}>
-                {isWatchingAds ? 'Watching Ads...' : 'Watch Ads (0/5)'}
+                {isWatchingAds ? 'Watching Ads...' : `Watch Ads (${5 - (userProfile?.totalAmountWatchAds || 0)}/5)`}
                 <Text style={{ color: '#7ee2ff' }}>
                   {' '}
-                  Watch ads to earn 1 Gems
+                  Watch ads to earn 10 Gems
                 </Text>
               </Text>
               <View
-                style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}
+                style={styles.modalAdsGemContainer}
               >
                 <Ionicons name="diamond" size={18} color="#7ee2ff" />
-                <Text style={styles.modalAdsGem}>+1</Text>
+                <Text style={styles.modalAdsGem}>+10</Text>
               </View>
             </TouchableOpacity>
           </View>
@@ -261,5 +270,10 @@ const styles = StyleSheet.create({
     color: '#aaa',
     fontSize: 10,
     marginTop: 2,
+  },
+  modalAdsGemContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
 });

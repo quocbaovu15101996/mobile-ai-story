@@ -57,7 +57,6 @@ export const useAuthStore = create<AuthStore>()(
             return null;
           }
           const response = await loginByDevice({ platform: Platform.OS, deviceId });
-
           if (response.data?.token) {
             const { token } = response.data;
             get().setToken(token);
