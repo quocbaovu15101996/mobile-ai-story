@@ -1,4 +1,5 @@
 import TextApp from '@/components/TextApp';
+import { useGetThemeColor } from '@/hooks/useThemeColor';
 import {
   Ionicons,
   MaterialCommunityIcons,
@@ -13,28 +14,36 @@ import {
   ScrollView,
   Share,
   StatusBar,
+  StyleProp,
   StyleSheet,
   TouchableOpacity,
   View,
+  ViewStyle,
 } from 'react-native';
 
 const packageJson = require('../../package.json');
 
 interface ItemProps {
   icon: any;
+  iconRight?: any;
   onPress: () => void;
   title: string;
+  style?: StyleProp<ViewStyle>;
 }
 
-const SettingItem: React.FC<ItemProps> = ({ icon, onPress, title }) => (
-  <TouchableOpacity style={styles.row} onPress={onPress}>
-    {icon}
-    <TextApp style={styles.rowText}>{title}</TextApp>
+const SettingItem: React.FC<ItemProps> = ({ icon, iconRight, onPress, title, style }) => (
+  <TouchableOpacity style={[styles.itemBox, style]} onPress={onPress}>
+    <View style={styles.row}>
+      {icon}
+      <TextApp style={styles.rowText}>{title}</TextApp>
+    </View>
+    {iconRight}
   </TouchableOpacity>
 );
 
 export default function SettingScreen() {
   const { colors } = useTheme();
+  const themeColors = useGetThemeColor('dark');
 
   const handleUpgrade = () => {
     router.push('/InAppPurchase');
@@ -153,42 +162,51 @@ export default function SettingScreen() {
 
         {/* General */}
         <TextApp style={styles.sectionTitle}>General</TextApp>
-        <View style={styles.sectionCard}>
-          <SettingItem
-            icon={
-              <MaterialCommunityIcons
-                name="share-variant"
-                size={22}
-                color="#232136"
-              />
-            }
-            onPress={handleShare}
-            title="Share AI Story"
-          />
-          <View style={styles.divider} />
-          <SettingItem
-            icon={
-              <MaterialIcons name="star-rate" size={22} color="#232136" />
-            }
-            onPress={handleRate}
-            title="Give AI Story 5 stars"
-          />
-          <View style={styles.divider} />
-          <SettingItem
-            icon={
-              <MaterialIcons name="alternate-email" size={22} color="#232136" />
-            }
-            onPress={handleContact}
-            title="Contact us"
-          />
-        </View>
+        <SettingItem
+          icon={
+            <MaterialCommunityIcons
+              name="share-variant"
+              size={22}
+              color={themeColors.text}
+            />
+          }
+          iconRight={
+            <Ionicons name="arrow-forward" size={22} color={themeColors.text} />
+          }
+          onPress={handleShare}
+          title="Share AI Story"
+          style={{ backgroundColor: 'gray' }}
+        />
+        <SettingItem
+          icon={
+            <MaterialIcons name="star-rate" size={22} color={themeColors.text} />
+          }
+          iconRight={
+            <Ionicons name="arrow-forward" size={22} color={themeColors.text} />
+          }
+          onPress={handleRate}
+          title="Give AI Story 5 stars"
+        />
+        <SettingItem
+          icon={
+            <MaterialIcons name="alternate-email" size={22} color={themeColors.text} />
+          }
+          iconRight={
+            <Ionicons name="arrow-forward" size={22} color={themeColors.text} />
+          }
+          onPress={handleContact}
+          title="Contact us"
+        />
 
         {/* Terms & Privacy */}
         <TextApp style={styles.sectionTitle}>Terms & Privacy</TextApp>
         <View style={styles.sectionCard}>
           <SettingItem
             icon={
-              <MaterialIcons name="description" size={22} color="#232136" />
+              <MaterialIcons name="description" size={22} color={themeColors.text} />
+            }
+            iconRight={
+              <Ionicons name="arrow-forward" size={22} color={themeColors.text} />
             }
             onPress={handleTerms}
             title="Terms and Conditions"
@@ -199,8 +217,11 @@ export default function SettingScreen() {
               <MaterialCommunityIcons
                 name="shield-check"
                 size={22}
-                color="#232136"
+                color={themeColors.text}
               />
+            }
+            iconRight={
+              <Ionicons name="arrow-forward" size={22} color={themeColors.text} />
             }
             onPress={handlePrivacy}
             title="Privacy Policy"
@@ -210,7 +231,7 @@ export default function SettingScreen() {
             <Ionicons
               name="information-circle-outline"
               size={22}
-              color="#232136"
+              color={themeColors.text}
             />
             <TextApp style={styles.rowText}>App version</TextApp>
             <TextApp style={styles.versionText}>{packageJson.version}</TextApp>
@@ -284,15 +305,19 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  row: {
+  itemBox: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingVertical: 16,
     paddingHorizontal: 8,
+    justifyContent: 'space-between',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   rowText: {
     fontSize: 16,
-    color: '#232136',
     marginLeft: 12,
     flex: 1,
     fontWeight: '500',

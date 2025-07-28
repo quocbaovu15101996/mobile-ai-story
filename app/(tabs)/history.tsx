@@ -109,7 +109,7 @@ export default function HistoryScreen() {
 
   if (loading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={[styles.loadingContainer, { backgroundColor: colors.background }]}>
         <ActivityIndicator size="large" color="#007AFF" />
         <TextApp style={styles.loadingText}>Loading your stories...</TextApp>
       </View>

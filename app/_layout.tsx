@@ -1,4 +1,4 @@
-import { DarkTheme, ThemeProvider } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
@@ -19,6 +19,21 @@ export type RootStackParamList = {
   ThreadDetail: { threadId: string };
 };
 
+const DefaultDarkTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    backgroundGray: 'rbg(20,20,20)',
+  },
+}
+
+const DefaultLightTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    backgroundGray: 'rbg(20,20,20)',
+  },
+}
 export default function RootLayout() {
   // const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -55,7 +70,7 @@ export default function RootLayout() {
   return (
     <ThemeProvider
       // value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-      value={DarkTheme}
+      value={DefaultDarkTheme}
     >
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
