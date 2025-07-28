@@ -180,9 +180,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#1a1a1a',
     borderRadius: 8,
     paddingVertical: 4,
-    paddingHorizontal: 12,
+    paddingHorizontal: 8,
     marginRight: 8,
+    gap: 4,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   tokenLabel: {
     fontSize: 12,

@@ -104,7 +104,7 @@ const CreateThreadBox: FC<Props> = () => {
         <TextApp style={styles.label}>What do you want to write story about?</TextApp>
         <View style={styles.inputBox}>
           <TextInput
-            style={styles.textInput}
+            style={[styles.textInput, { color: colors.text }]}
             placeholder="E.g., Love story with two women and one man."
             placeholderTextColor="#888"
             value={storyIdea}
