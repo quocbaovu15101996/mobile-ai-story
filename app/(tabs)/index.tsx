@@ -126,7 +126,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={[styles.header, { backgroundColor: colors.background }]}>
-        <TextApp style={styles.appName}>StoryForge AI</TextApp>
+        <TextApp style={styles.appName}>AuraWrite AI</TextApp>
         <View style={styles.headerRight}>
           <TouchableOpacity
             style={styles.tokenBox}

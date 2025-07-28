@@ -1,8 +1,10 @@
+import TextApp from '@/components/TextApp';
 import {
   Ionicons,
   MaterialCommunityIcons,
   MaterialIcons,
 } from '@expo/vector-icons';
+import { useTheme } from '@react-navigation/native';
 import { router } from 'expo-router';
 import React from 'react';
 import {
@@ -12,14 +14,28 @@ import {
   Share,
   StatusBar,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 
 const packageJson = require('../../package.json');
 
+interface ItemProps {
+  icon: any;
+  onPress: () => void;
+  title: string;
+}
+
+const SettingItem: React.FC<ItemProps> = ({ icon, onPress, title }) => (
+  <TouchableOpacity style={styles.row} onPress={onPress}>
+    {icon}
+    <TextApp style={styles.rowText}>{title}</TextApp>
+  </TouchableOpacity>
+);
+
 export default function SettingScreen() {
+  const { colors } = useTheme();
+
   const handleUpgrade = () => {
     router.push('/InAppPurchase');
   };
@@ -94,7 +110,7 @@ export default function SettingScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#f7f7fa' }}>
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
       <View style={{ height: StatusBar.currentHeight }} />
       <ScrollView
         contentContainerStyle={{ padding: 16, paddingBottom: 32 }}
@@ -102,75 +118,93 @@ export default function SettingScreen() {
       >
         {/* Upgrade Premium */}
         <View style={styles.premiumCard}>
-          <Text style={styles.premiumTitle}>Upgrade Premium</Text>
+          <TextApp style={styles.premiumTitle}>Upgrade Premium</TextApp>
           <View style={styles.premiumFeatureContainer}>
             <Ionicons name="checkmark-circle" size={22} color="#fff" />
-            <Text style={styles.premiumFeature}> Ad-Free Experience</Text>
+            <TextApp style={styles.premiumFeature}> Ad-Free Experience</TextApp>
           </View>
           <View style={styles.premiumFeatureContainer}>
             <Ionicons name="checkmark-circle" size={22} color="#fff" />
-            <Text style={styles.premiumFeature}>
+            <TextApp style={styles.premiumFeature}>
               {' '}
               Unlimited story generations
-            </Text>
+            </TextApp>
           </View>
           <View style={styles.premiumFeatureContainer}>
             <Ionicons name="checkmark-circle" size={22} color="#fff" />
-            <Text style={styles.premiumFeature}> Advanced AI Creativity</Text>
+            <TextApp style={styles.premiumFeature}>
+              {' '}
+              Advanced AI Creativity
+            </TextApp>
           </View>
           <TouchableOpacity style={styles.subscribeBtn} onPress={handleUpgrade}>
-            <Text style={styles.subscribeBtnText}>
+            <TextApp style={styles.subscribeBtnText}>
               Subscribe{' '}
               <Ionicons name="arrow-forward" size={18} color="#232136" />
-            </Text>
+            </TextApp>
           </TouchableOpacity>
           <TouchableOpacity
             style={{ marginTop: 8 }}
             onPress={handleRestorePurchase}
           >
-            <Text style={styles.restoreText}>Restore purchase</Text>
+            <TextApp style={styles.restoreText}>Restore purchase</TextApp>
           </TouchableOpacity>
         </View>
 
         {/* General */}
-        <Text style={styles.sectionTitle}>General</Text>
+        <TextApp style={styles.sectionTitle}>General</TextApp>
         <View style={styles.sectionCard}>
-          <TouchableOpacity style={styles.row} onPress={handleShare}>
-            <MaterialCommunityIcons
-              name="share-variant"
-              size={22}
-              color="#232136"
-            />
-            <Text style={styles.rowText}>Share AI Story</Text>
-          </TouchableOpacity>
+          <SettingItem
+            icon={
+              <MaterialCommunityIcons
+                name="share-variant"
+                size={22}
+                color="#232136"
+              />
+            }
+            onPress={handleShare}
+            title="Share AI Story"
+          />
           <View style={styles.divider} />
-          <TouchableOpacity style={styles.row} onPress={handleRate}>
-            <MaterialIcons name="star-rate" size={22} color="#232136" />
-            <Text style={styles.rowText}>Give AI Story 5 stars</Text>
-          </TouchableOpacity>
+          <SettingItem
+            icon={
+              <MaterialIcons name="star-rate" size={22} color="#232136" />
+            }
+            onPress={handleRate}
+            title="Give AI Story 5 stars"
+          />
           <View style={styles.divider} />
-          <TouchableOpacity style={styles.row} onPress={handleContact}>
-            <MaterialIcons name="alternate-email" size={22} color="#232136" />
-            <Text style={styles.rowText}>Contact us</Text>
-          </TouchableOpacity>
+          <SettingItem
+            icon={
+              <MaterialIcons name="alternate-email" size={22} color="#232136" />
+            }
+            onPress={handleContact}
+            title="Contact us"
+          />
         </View>
 
         {/* Terms & Privacy */}
-        <Text style={styles.sectionTitle}>Terms & Privacy</Text>
+        <TextApp style={styles.sectionTitle}>Terms & Privacy</TextApp>
         <View style={styles.sectionCard}>
-          <TouchableOpacity style={styles.row} onPress={handleTerms}>
-            <MaterialIcons name="description" size={22} color="#232136" />
-            <Text style={styles.rowText}>Terms and Conditions</Text>
-          </TouchableOpacity>
+          <SettingItem
+            icon={
+              <MaterialIcons name="description" size={22} color="#232136" />
+            }
+            onPress={handleTerms}
+            title="Terms and Conditions"
+          />
           <View style={styles.divider} />
-          <TouchableOpacity style={styles.row} onPress={handlePrivacy}>
-            <MaterialCommunityIcons
-              name="shield-check"
-              size={22}
-              color="#232136"
-            />
-            <Text style={styles.rowText}>Privacy Policy</Text>
-          </TouchableOpacity>
+          <SettingItem
+            icon={
+              <MaterialCommunityIcons
+                name="shield-check"
+                size={22}
+                color="#232136"
+              />
+            }
+            onPress={handlePrivacy}
+            title="Privacy Policy"
+          />
           <View style={styles.divider} />
           <View style={styles.row}>
             <Ionicons
@@ -178,12 +212,12 @@ export default function SettingScreen() {
               size={22}
               color="#232136"
             />
-            <Text style={styles.rowText}>App version</Text>
-            <Text style={styles.versionText}>{packageJson.version}</Text>
+            <TextApp style={styles.rowText}>App version</TextApp>
+            <TextApp style={styles.versionText}>{packageJson.version}</TextApp>
           </View>
         </View>
         <TouchableOpacity style={styles.clearBtn} onPress={handleClearData}>
-          <Text style={styles.clearBtnText}>Clear data</Text>
+          <TextApp style={styles.clearBtnText}>Clear data</TextApp>
         </TouchableOpacity>
       </ScrollView>
     </View>
@@ -235,7 +269,6 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#232136',
     marginBottom: 8,
     marginLeft: 2,
   },

@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "mobile-ai-story",
-    "slug": "ai-story-app",
+    "name": "AuraWrite AI",
+    "slug": "aura-write-ai",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
-    "scheme": "mobileaistory",
+    "icon": "./assets/images/adaptive-icon.png",
+    "scheme": "aurawriteai",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -32,7 +32,7 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/adaptive-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
