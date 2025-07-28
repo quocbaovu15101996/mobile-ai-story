@@ -126,7 +126,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
       <View style={[styles.header, { backgroundColor: colors.background }]}>
-        <TextApp style={[styles.appName, { color: colors.text }]}>StoryForge AI</TextApp>
+        <TextApp style={styles.appName}>StoryForge AI</TextApp>
         <View style={styles.headerRight}>
           <TouchableOpacity
             style={styles.tokenBox}
@@ -134,7 +134,7 @@ export default function HomeScreen() {
             activeOpacity={0.7}
           >
             <Ionicons name="diamond" size={20} color="#7ee2ff" />
-            <TextApp style={[styles.tokenValue, { color: colors.text }]}>{userProfile?.diamond}</TextApp>
+            <TextApp style={styles.tokenValue}>{userProfile?.diamond}</TextApp>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.calendarIcon}

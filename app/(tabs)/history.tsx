@@ -1,6 +1,8 @@
+import TextApp from '@/components/TextApp';
 import { ThreadItem } from '@/components/ThreadItem';
 import { getHistory } from '@/src/services/api/thread';
 import { Thread } from '@/src/services/api/types';
+import { useTheme } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -8,13 +10,14 @@ import {
   ListRenderItem,
   RefreshControl,
   StyleSheet,
-  Text,
   View
 } from 'react-native';
 
 const PAGE_SIZE = 10;
 
 export default function HistoryScreen() {
+  const { colors } = useTheme();
+
   const [threads, setThreads] = useState<Thread[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -78,10 +81,10 @@ export default function HistoryScreen() {
 
   const renderEmpty = () => (
     <View style={styles.emptyContainer}>
-      <Text style={styles.emptyText}>No stories yet</Text>
-      <Text style={styles.emptySubText}>
+      <TextApp style={styles.emptyText}>No stories yet</TextApp>
+      <TextApp style={styles.emptySubText}>
         Start creating your AI stories to see them here
-      </Text>
+      </TextApp>
     </View>
   );
 
@@ -91,14 +94,14 @@ export default function HistoryScreen() {
     return (
       <View style={styles.loadMoreContainer}>
         <ActivityIndicator size="small" color="#007AFF" />
-        <Text style={styles.loadMoreText}>Loading more stories...</Text>
+        <TextApp style={styles.loadMoreText}>Loading more stories...</TextApp>
       </View>
     );
   };
 
   const renderError = () => (
     <View style={styles.errorContainer}>
-      <Text style={styles.errorText}>{error}</Text>
+      <TextApp style={styles.errorText}>{error}</TextApp>
     </View>
   );
 
@@ -108,7 +111,7 @@ export default function HistoryScreen() {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#007AFF" />
-        <Text style={styles.loadingText}>Loading your stories...</Text>
+        <TextApp style={styles.loadingText}>Loading your stories...</TextApp>
       </View>
     );
   }
@@ -118,7 +121,7 @@ export default function HistoryScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <FlatList
         data={threads}
         renderItem={renderItem}
@@ -140,7 +143,6 @@ export default function HistoryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
   listContent: {
     paddingVertical: 16,

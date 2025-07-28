@@ -1,9 +1,10 @@
+import { RootStackParamList } from '@/app/_layout';
+import { Thread } from '@/src/services/api/types';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Thread } from '@/src/services/api/types';
-import { RootStackParamList } from '@/app/_layout';
+import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import TextApp from './TextApp';
 
 interface ThreadItemProps {
   thread: Thread;
@@ -19,15 +20,15 @@ export const ThreadItem: React.FC<ThreadItemProps> = ({ thread }) => {
   return (
     <TouchableOpacity style={styles.container} onPress={handlePress} activeOpacity={0.7}>
       <View style={styles.contentContainer}>
-        <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
+        <TextApp style={styles.title} numberOfLines={1} ellipsizeMode="tail">
           {thread.title}
-        </Text>
-        <Text style={styles.content} numberOfLines={3} ellipsizeMode="tail">
+        </TextApp>
+        <TextApp style={styles.content} numberOfLines={3} ellipsizeMode="tail">
           {thread.content}
-        </Text>
-        <Text style={styles.date}>
+        </TextApp>
+        <TextApp style={styles.date}>
           {new Date(thread.createdAt).toLocaleDateString()}
-        </Text>
+        </TextApp>
       </View>
       {thread.image && (
         <Image

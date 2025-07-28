@@ -85,7 +85,6 @@ const CreateThreadBox: FC<Props> = () => {
     }
   };
 
-  const textColorStyle = { color: colors.text }
   return (
     <KeyboardAvoidingView
       style={styles.flex1}
@@ -97,12 +96,12 @@ const CreateThreadBox: FC<Props> = () => {
       >
         {/* Header */}
         <View style={styles.headerRow}>
-          <TextApp style={[styles.title, textColorStyle]}>Create story</TextApp>
+          <TextApp style={styles.title}>Create story</TextApp>
           <View style={{ width: 28 }} />
         </View>
 
         {/* Story prompt */}
-        <TextApp style={[styles.label, textColorStyle]}>What do you want to write story about?</TextApp>
+        <TextApp style={styles.label}>What do you want to write story about?</TextApp>
         <View style={styles.inputBox}>
           <TextInput
             style={styles.textInput}
@@ -134,7 +133,7 @@ const CreateThreadBox: FC<Props> = () => {
         </View>
 
         {/* Story size */}
-        <TextApp style={[styles.label, textColorStyle]}>Story size</TextApp>
+        <TextApp style={styles.label}>Story size</TextApp>
         <View style={styles.storySizeRow}>
           {STORY_TYPE.map((s) => (
             <TouchableOpacity
@@ -187,7 +186,7 @@ const CreateThreadBox: FC<Props> = () => {
           onPress={() => setExtendDetails(!extendDetails)}
           style={styles.detailsToggle}
         >
-          <TextApp style={[styles.detailsLabel, textColorStyle]}>More details (optional)</TextApp>
+          <TextApp style={styles.detailsLabel}>More details (optional)</TextApp>
           <Ionicons
             name={extendDetails ? 'chevron-up' : 'chevron-down'}
             size={20}
@@ -197,7 +196,7 @@ const CreateThreadBox: FC<Props> = () => {
         {extendDetails && (
           <View style={styles.detailsBox}>
             {/* Genre */}
-            <TextApp style={[styles.subLabel, textColorStyle]}>Genre</TextApp>
+            <TextApp style={styles.subLabel}>Genre</TextApp>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -219,7 +218,7 @@ const CreateThreadBox: FC<Props> = () => {
             </ScrollView>
 
             {/* Character details */}
-            <TextApp style={[styles.subLabel, textColorStyle]}>Character details</TextApp>
+            <TextApp style={styles.subLabel}>Character details</TextApp>
             <TextInput
               style={styles.textInput}
               placeholder="E.g., A rebellious princess and a humble village boy."
@@ -230,7 +229,7 @@ const CreateThreadBox: FC<Props> = () => {
             />
 
             {/* Story's setting */}
-            <TextApp style={[styles.subLabel, textColorStyle]}>Story&apos;s setting</TextApp>
+            <TextApp style={styles.subLabel}>Story&apos;s setting</TextApp>
             <TextInput
               style={styles.textInput}
               placeholder="Where does the story take place?"
@@ -240,7 +239,7 @@ const CreateThreadBox: FC<Props> = () => {
               multiline
             />
             {/* Narrative */}
-            <TextApp style={[styles.subLabel, textColorStyle]}>Narrative</TextApp>
+            <TextApp style={styles.subLabel}>Narrative</TextApp>
             <View style={styles.genreRow}>
               {NARRATIVE.map((n) => (
                 <TouchableOpacity
@@ -268,7 +267,7 @@ const CreateThreadBox: FC<Props> = () => {
           disabled={isButtonDisabled}
           onPress={onPressGenerate}
         >
-          <TextApp style={[styles.generateButtonText, textColorStyle]}>
+          <TextApp style={styles.generateButtonText}>
             {loading ? 'Generating...' : 'Start generate'}
           </TextApp>
         </TouchableOpacity>
