@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useTheme } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { FC, useState } from 'react';
 import {
@@ -15,7 +15,6 @@ import {
 } from 'react-native';
 import { RootStackParamList } from '../app/_layout';
 import { createThread } from '../src/services/api/thread';
-import { PRIMARY_COLOR, TEXT_COLOR } from '../constants/color';
 import TextApp from './TextApp';
 
 type Props = {};
@@ -44,6 +43,8 @@ const NARRATIVE = [{
 }];
 
 const CreateThreadBox: FC<Props> = () => {
+  const { colors } = useTheme();
+
   const [storyIdea, setStoryIdea] = useState('');
   const [storyType, setStoryType] = useState('endless');
   const [storyLength, setStoryLength] = useState('Short');
@@ -84,23 +85,24 @@ const CreateThreadBox: FC<Props> = () => {
     }
   };
 
+  const textColorStyle = { color: colors.text }
   return (
     <KeyboardAvoidingView
       style={styles.flex1}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView
-        contentContainerStyle={styles.container}
+        contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}
         keyboardShouldPersistTaps="handled"
       >
         {/* Header */}
         <View style={styles.headerRow}>
-          <TextApp style={styles.title}>Create story</TextApp>
+          <TextApp style={[styles.title, textColorStyle]}>Create story</TextApp>
           <View style={{ width: 28 }} />
         </View>
 
         {/* Story prompt */}
-        <TextApp style={styles.label}>What do you want to write story about?</TextApp>
+        <TextApp style={[styles.label, textColorStyle]}>What do you want to write story about?</TextApp>
         <View style={styles.inputBox}>
           <TextInput
             style={styles.textInput}
@@ -132,7 +134,7 @@ const CreateThreadBox: FC<Props> = () => {
         </View>
 
         {/* Story size */}
-        <TextApp style={styles.label}>Story size</TextApp>
+        <TextApp style={[styles.label, textColorStyle]}>Story size</TextApp>
         <View style={styles.storySizeRow}>
           {STORY_TYPE.map((s) => (
             <TouchableOpacity
@@ -149,7 +151,7 @@ const CreateThreadBox: FC<Props> = () => {
                 <Ionicons
                   name="checkmark"
                   size={18}
-                  color={TEXT_COLOR}
+                  color={colors.text}
                   style={styles.checkIcon}
                 />
               )}
@@ -171,7 +173,7 @@ const CreateThreadBox: FC<Props> = () => {
                 <Ionicons
                   name="checkmark"
                   size={18}
-                  color={TEXT_COLOR}
+                  color={colors.text}
                   style={styles.checkIcon}
                 />
               )}
@@ -185,17 +187,17 @@ const CreateThreadBox: FC<Props> = () => {
           onPress={() => setExtendDetails(!extendDetails)}
           style={styles.detailsToggle}
         >
-          <TextApp style={styles.detailsLabel}>More details (optional)</TextApp>
+          <TextApp style={[styles.detailsLabel, textColorStyle]}>More details (optional)</TextApp>
           <Ionicons
             name={extendDetails ? 'chevron-up' : 'chevron-down'}
             size={20}
-            color={TEXT_COLOR}
+            color={colors.text}
           />
         </Pressable>
         {extendDetails && (
           <View style={styles.detailsBox}>
             {/* Genre */}
-            <TextApp style={styles.subLabel}>Genre</TextApp>
+            <TextApp style={[styles.subLabel, textColorStyle]}>Genre</TextApp>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -217,18 +219,18 @@ const CreateThreadBox: FC<Props> = () => {
             </ScrollView>
 
             {/* Character details */}
-            <TextApp style={styles.subLabel}>Character details</TextApp>
+            <TextApp style={[styles.subLabel, textColorStyle]}>Character details</TextApp>
             <TextInput
               style={styles.textInput}
               placeholder="E.g., A rebellious princess and a humble village boy."
-              placeholderTextColor="#888"
+              placeholderTextColor={colors.text}
               value={characters}
               onChangeText={setCharacters}
               multiline
             />
 
             {/* Story's setting */}
-            <TextApp style={styles.subLabel}>Story&apos;s setting</TextApp>
+            <TextApp style={[styles.subLabel, textColorStyle]}>Story&apos;s setting</TextApp>
             <TextInput
               style={styles.textInput}
               placeholder="Where does the story take place?"
@@ -238,7 +240,7 @@ const CreateThreadBox: FC<Props> = () => {
               multiline
             />
             {/* Narrative */}
-            <TextApp style={styles.subLabel}>Narrative</TextApp>
+            <TextApp style={[styles.subLabel, textColorStyle]}>Narrative</TextApp>
             <View style={styles.genreRow}>
               {NARRATIVE.map((n) => (
                 <TouchableOpacity
@@ -266,7 +268,7 @@ const CreateThreadBox: FC<Props> = () => {
           disabled={isButtonDisabled}
           onPress={onPressGenerate}
         >
-          <TextApp style={styles.generateButtonText}>
+          <TextApp style={[styles.generateButtonText, textColorStyle]}>
             {loading ? 'Generating...' : 'Start generate'}
           </TextApp>
         </TouchableOpacity>
@@ -283,7 +285,6 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: 20,
-    backgroundColor: PRIMARY_COLOR,
     flexGrow: 1,
   },
   headerRow: {
@@ -295,13 +296,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: TEXT_COLOR,
   },
   label: {
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 6,
-    color: TEXT_COLOR,
   },
   inputBox: {
     backgroundColor: '#2a2a2a',
@@ -312,7 +311,6 @@ const styles = StyleSheet.create({
   textInput: {
     minHeight: 60,
     fontSize: 15,
-    color: TEXT_COLOR,
     marginBottom: 6,
   },
   inputIconsRow: {
@@ -350,7 +348,6 @@ const styles = StyleSheet.create({
   },
   sizeButtonText: {
     fontWeight: '600',
-    color: TEXT_COLOR,
     fontSize: 15,
   },
   sizeButtonSub: {
@@ -373,7 +370,6 @@ const styles = StyleSheet.create({
   detailsLabel: {
     fontWeight: '600',
     fontSize: 15,
-    color: TEXT_COLOR,
   },
   detailsBox: {
     backgroundColor: '#2a2a2a',
@@ -386,7 +382,6 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginTop: 8,
     marginBottom: 4,
-    color: TEXT_COLOR,
   },
   genreRow: {
     flexDirection: 'row',
@@ -415,7 +410,6 @@ const styles = StyleSheet.create({
   },
   genreText: {
     fontSize: 13,
-    color: TEXT_COLOR,
     fontWeight: '500',
   },
   generateButton: {

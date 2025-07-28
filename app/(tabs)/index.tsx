@@ -1,7 +1,6 @@
 import CreateThreadBox from '@/components/CreateThreadBox';
 import RollCallModal from '@/components/RollCallModal';
 import TextApp from '@/components/TextApp';
-import { PRIMARY_COLOR, TEXT_COLOR } from '@/constants/color';
 import { useUserProfile } from '@/src/store/useAuthStore';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -10,14 +9,16 @@ import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from 'react-native';
 import { RootStackParamList } from '../_layout';
 // import { NotificationService } from '../../src/services/notificationService';
+import { useTheme } from '@react-navigation/native';
 
 export default function HomeScreen() {
+  const { colors } = useTheme();
+
   const [modalVisible, setModalVisible] = useState(false);
   const [notificationPermission, setNotificationPermission] = useState(false);
   const navigation =
@@ -123,9 +124,9 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TextApp style={styles.appName}>StoryForge AI</TextApp>
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={[styles.header, { backgroundColor: colors.background }]}>
+        <TextApp style={[styles.appName, { color: colors.text }]}>StoryForge AI</TextApp>
         <View style={styles.headerRight}>
           <TouchableOpacity
             style={styles.tokenBox}
@@ -133,13 +134,13 @@ export default function HomeScreen() {
             activeOpacity={0.7}
           >
             <Ionicons name="diamond" size={20} color="#7ee2ff" />
-            <TextApp style={styles.tokenValue}>{userProfile?.diamond}</TextApp>
+            <TextApp style={[styles.tokenValue, { color: colors.text }]}>{userProfile?.diamond}</TextApp>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.calendarIcon}
             onPress={onPressCalendar}
           >
-            <Ionicons name="calendar-outline" size={24} color={TEXT_COLOR} />
+            <Ionicons name="calendar-outline" size={24} color={colors.text} />
           </TouchableOpacity>
         </View>
       </View>
@@ -153,7 +154,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: PRIMARY_COLOR,
   },
   header: {
     flexDirection: 'row',
@@ -162,14 +162,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 32,
     paddingBottom: 12,
-    backgroundColor: PRIMARY_COLOR,
     borderBottomWidth: 1,
     borderBottomColor: '#333',
   },
   appName: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: TEXT_COLOR,
     letterSpacing: 1,
   },
   headerRight: {
@@ -188,7 +186,6 @@ const styles = StyleSheet.create({
   },
   tokenLabel: {
     fontSize: 12,
-    color: TEXT_COLOR,
   },
   tokenValue: {
     fontSize: 16,
