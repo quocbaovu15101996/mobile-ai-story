@@ -15,6 +15,8 @@ import {
 } from 'react-native';
 import { RootStackParamList } from '../app/_layout';
 import { createThread } from '../src/services/api/thread';
+import { PRIMARY_COLOR, TEXT_COLOR } from '../constants/color';
+import TextApp from './TextApp';
 
 type Props = {};
 
@@ -93,17 +95,17 @@ const CreateThreadBox: FC<Props> = () => {
       >
         {/* Header */}
         <View style={styles.headerRow}>
-          <Text style={styles.title}>Create story</Text>
+          <TextApp style={styles.title}>Create story</TextApp>
           <View style={{ width: 28 }} />
         </View>
 
         {/* Story prompt */}
-        <Text style={styles.label}>What do you want to write story about?</Text>
+        <TextApp style={styles.label}>What do you want to write story about?</TextApp>
         <View style={styles.inputBox}>
           <TextInput
             style={styles.textInput}
             placeholder="E.g., Love story with two women and one man."
-            placeholderTextColor="#bbb"
+            placeholderTextColor="#888"
             value={storyIdea}
             onChangeText={setStoryIdea}
             multiline
@@ -114,7 +116,7 @@ const CreateThreadBox: FC<Props> = () => {
             <Ionicons
               name="bulb-outline"
               size={22}
-              color="#bbb"
+              color="#888"
               style={styles.iconSuggestion}
             />
             {/* <Ionicons
@@ -130,7 +132,7 @@ const CreateThreadBox: FC<Props> = () => {
         </View>
 
         {/* Story size */}
-        <Text style={styles.label}>Story size</Text>
+        <TextApp style={styles.label}>Story size</TextApp>
         <View style={styles.storySizeRow}>
           {STORY_TYPE.map((s) => (
             <TouchableOpacity
@@ -141,13 +143,13 @@ const CreateThreadBox: FC<Props> = () => {
               ]}
               onPress={() => setStoryType(s.key)}
             >
-              <Text style={styles.sizeButtonText}>{s.label}</Text>
-              <Text style={styles.sizeButtonSub}>{s.subLabel}</Text>
+              <TextApp style={styles.sizeButtonText}>{s.label}</TextApp>
+              <TextApp style={styles.sizeButtonSub}>{s.subLabel}</TextApp>
               {storyType === s.key && (
                 <Ionicons
                   name="checkmark"
                   size={18}
-                  color="#222"
+                  color={TEXT_COLOR}
                   style={styles.checkIcon}
                 />
               )}
@@ -164,12 +166,12 @@ const CreateThreadBox: FC<Props> = () => {
               ]}
               onPress={() => setStoryLength(s)}
             >
-              <Text style={styles.sizeButtonText}>{s}</Text>
+              <TextApp style={styles.sizeButtonText}>{s}</TextApp>
               {storyLength === s && (
                 <Ionicons
                   name="checkmark"
                   size={18}
-                  color="#222"
+                  color={TEXT_COLOR}
                   style={styles.checkIcon}
                 />
               )}
@@ -183,17 +185,17 @@ const CreateThreadBox: FC<Props> = () => {
           onPress={() => setExtendDetails(!extendDetails)}
           style={styles.detailsToggle}
         >
-          <Text style={styles.detailsLabel}>More details (optional)</Text>
+          <TextApp style={styles.detailsLabel}>More details (optional)</TextApp>
           <Ionicons
             name={extendDetails ? 'chevron-up' : 'chevron-down'}
             size={20}
-            color="#222"
+            color={TEXT_COLOR}
           />
         </Pressable>
         {extendDetails && (
           <View style={styles.detailsBox}>
             {/* Genre */}
-            <Text style={styles.subLabel}>Genre</Text>
+            <TextApp style={styles.subLabel}>Genre</TextApp>
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -209,34 +211,34 @@ const CreateThreadBox: FC<Props> = () => {
                   onPress={() => setGenre(g.key)}
                 >
                   <View style={styles.genreImagePlaceholder} />
-                  <Text style={styles.genreText}>{g.label}</Text>
+                  <TextApp style={styles.genreText}>{g.label}</TextApp>
                 </TouchableOpacity>
               ))}
             </ScrollView>
 
             {/* Character details */}
-            <Text style={styles.subLabel}>Character details</Text>
+            <TextApp style={styles.subLabel}>Character details</TextApp>
             <TextInput
               style={styles.textInput}
               placeholder="E.g., A rebellious princess and a humble village boy."
-              placeholderTextColor="#bbb"
+              placeholderTextColor="#888"
               value={characters}
               onChangeText={setCharacters}
               multiline
             />
 
             {/* Story's setting */}
-            <Text style={styles.subLabel}>Story’s setting</Text>
+            <TextApp style={styles.subLabel}>Story&apos;s setting</TextApp>
             <TextInput
               style={styles.textInput}
               placeholder="Where does the story take place?"
-              placeholderTextColor="#bbb"
+              placeholderTextColor="#888"
               value={setting}
               onChangeText={setSetting}
               multiline
             />
             {/* Narrative */}
-            <Text style={styles.subLabel}>Narrative</Text>
+            <TextApp style={styles.subLabel}>Narrative</TextApp>
             <View style={styles.genreRow}>
               {NARRATIVE.map((n) => (
                 <TouchableOpacity
@@ -248,7 +250,7 @@ const CreateThreadBox: FC<Props> = () => {
                   onPress={() => setNarrative(n.value)}
                 >
                   <View style={styles.genreImagePlaceholder} />
-                  <Text style={styles.genreText}>{n.label}</Text>
+                  <TextApp style={styles.genreText}>{n.label}</TextApp>
                 </TouchableOpacity>
               ))}
             </View>
@@ -264,9 +266,9 @@ const CreateThreadBox: FC<Props> = () => {
           disabled={isButtonDisabled}
           onPress={onPressGenerate}
         >
-          <Text style={styles.generateButtonText}>
+          <TextApp style={styles.generateButtonText}>
             {loading ? 'Generating...' : 'Start generate'}
-          </Text>
+          </TextApp>
         </TouchableOpacity>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -281,7 +283,7 @@ const styles = StyleSheet.create({
   },
   container: {
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: PRIMARY_COLOR,
     flexGrow: 1,
   },
   headerRow: {
@@ -293,16 +295,16 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#222',
+    color: TEXT_COLOR,
   },
   label: {
     fontSize: 16,
     fontWeight: '600',
     marginBottom: 6,
-    color: '#222',
+    color: TEXT_COLOR,
   },
   inputBox: {
-    backgroundColor: '#f5f5f7',
+    backgroundColor: '#2a2a2a',
     borderRadius: 12,
     padding: 12,
     marginBottom: 16,
@@ -310,7 +312,7 @@ const styles = StyleSheet.create({
   textInput: {
     minHeight: 60,
     fontSize: 15,
-    color: '#222',
+    color: TEXT_COLOR,
     marginBottom: 6,
   },
   inputIconsRow: {
@@ -334,21 +336,21 @@ const styles = StyleSheet.create({
   },
   sizeButton: {
     borderWidth: 1,
-    borderColor: '#e5e7eb',
+    borderColor: '#444',
     borderRadius: 10,
     padding: 12,
     marginRight: 10,
-    backgroundColor: '#fff',
+    backgroundColor: '#2a2a2a',
     minWidth: 100,
     position: 'relative',
   },
   sizeButtonActive: {
     borderColor: '#6366f1',
-    backgroundColor: '#eef2ff',
+    backgroundColor: '#1e1e3f',
   },
   sizeButtonText: {
     fontWeight: '600',
-    color: '#222',
+    color: TEXT_COLOR,
     fontSize: 15,
   },
   sizeButtonSub: {
@@ -371,10 +373,10 @@ const styles = StyleSheet.create({
   detailsLabel: {
     fontWeight: '600',
     fontSize: 15,
-    color: '#222',
+    color: TEXT_COLOR,
   },
   detailsBox: {
-    backgroundColor: '#f5f5f7',
+    backgroundColor: '#2a2a2a',
     borderRadius: 12,
     padding: 12,
     marginBottom: 18,
@@ -384,7 +386,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginTop: 8,
     marginBottom: 4,
-    color: '#222',
+    color: TEXT_COLOR,
   },
   genreRow: {
     flexDirection: 'row',
@@ -396,24 +398,24 @@ const styles = StyleSheet.create({
     padding: 6,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: '#e5e7eb',
-    backgroundColor: '#fff',
+    borderColor: '#444',
+    backgroundColor: '#1a1a1a',
     minWidth: 70,
   },
   genreItemActive: {
     borderColor: '#6366f1',
-    backgroundColor: '#eef2ff',
+    backgroundColor: '#1e1e3f',
   },
   genreImagePlaceholder: {
     width: 60,
     height: 40,
-    backgroundColor: '#ddd',
+    backgroundColor: '#555',
     borderRadius: 6,
     marginBottom: 4,
   },
   genreText: {
     fontSize: 13,
-    color: '#222',
+    color: TEXT_COLOR,
     fontWeight: '500',
   },
   generateButton: {
@@ -425,7 +427,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   generateButtonDisabled: {
-    backgroundColor: '#e5e7eb',
+    backgroundColor: '#444',
   },
   generateButtonText: {
     color: '#fff',
