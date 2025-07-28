@@ -1,5 +1,7 @@
 import CreateThreadBox from '@/components/CreateThreadBox';
 import RollCallModal from '@/components/RollCallModal';
+import TextApp from '@/components/TextApp';
+import { PRIMARY_COLOR, TEXT_COLOR } from '@/constants/color';
 import { useUserProfile } from '@/src/store/useAuthStore';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
@@ -123,7 +125,7 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.appName}>StoryForge AI</Text>
+        <TextApp style={styles.appName}>StoryForge AI</TextApp>
         <View style={styles.headerRight}>
           <TouchableOpacity
             style={styles.tokenBox}
@@ -131,13 +133,13 @@ export default function HomeScreen() {
             activeOpacity={0.7}
           >
             <Ionicons name="diamond" size={20} color="#7ee2ff" />
-            <Text style={styles.tokenValue}>{userProfile?.diamond}</Text>
+            <TextApp style={styles.tokenValue}>{userProfile?.diamond}</TextApp>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.calendarIcon}
             onPress={onPressCalendar}
           >
-            <Ionicons name="calendar-outline" size={24} color="#333" />
+            <Ionicons name="calendar-outline" size={24} color={TEXT_COLOR} />
           </TouchableOpacity>
         </View>
       </View>
@@ -151,7 +153,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: PRIMARY_COLOR,
   },
   header: {
     flexDirection: 'row',
@@ -160,14 +162,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 32,
     paddingBottom: 12,
-    backgroundColor: '#f8f8f8',
+    backgroundColor: PRIMARY_COLOR,
     borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderBottomColor: '#333',
   },
   appName: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#222',
+    color: TEXT_COLOR,
     letterSpacing: 1,
   },
   headerRight: {
@@ -177,7 +179,7 @@ const styles = StyleSheet.create({
   },
   tokenBox: {
     flexDirection: 'row',
-    backgroundColor: '#e0e7ff',
+    backgroundColor: '#1a1a1a',
     borderRadius: 8,
     paddingVertical: 4,
     paddingHorizontal: 12,
@@ -186,17 +188,17 @@ const styles = StyleSheet.create({
   },
   tokenLabel: {
     fontSize: 12,
-    color: '#555',
+    color: TEXT_COLOR,
   },
   tokenValue: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#3b82f6',
+    color: '#7ee2ff',
   },
   calendarIcon: {
     padding: 6,
     borderRadius: 6,
-    backgroundColor: '#e5e7eb',
+    backgroundColor: '#1a1a1a',
   },
   notificationIcon: {
     padding: 6,
