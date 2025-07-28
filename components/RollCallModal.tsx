@@ -17,8 +17,9 @@ type Props = {
   onClose: () => void;
 };
 
-export default function RollCallModal(props: Props) {
-  const { visible, onClose } = props;
+const MAX_WATCH_ADS_PER_DAY = 5;
+
+export default function RollCallModal({ visible, onClose }: Props) {
   const [isCheckingIn, setIsCheckingIn] = useState(false);
   const [isWatchingAds, setIsWatchingAds] = useState(false);
   const { setUserProfile, userProfile } = useAuthStore();
@@ -60,7 +61,8 @@ export default function RollCallModal(props: Props) {
     }
   };
 
-  console.log('userProfile', userProfile);
+  const disabledWatchAds = isWatchingAds || userProfile?.totalAmountWatchAds === 0;
+
   return (
     <>
       {visible && <View style={styles.background} />}
@@ -115,16 +117,15 @@ export default function RollCallModal(props: Props) {
             <TouchableOpacity
               style={[
                 styles.modalAds,
-                isWatchingAds && styles.modalAdsDisabled,
+                disabledWatchAds && styles.btnDisabled,
               ]}
               onPress={handleWatchAds}
-              disabled={isWatchingAds}
+              disabled={disabledWatchAds}
             >
               <Text style={styles.modalAdsText}>
-                {isWatchingAds ? 'Watching Ads...' : `Watch Ads (${5 - (userProfile?.totalAmountWatchAds || 0)}/5)`}
+                {isWatchingAds ? 'Watching Ads...' : `Watch Ads (${MAX_WATCH_ADS_PER_DAY - (userProfile?.totalAmountWatchAds || 0)}/${MAX_WATCH_ADS_PER_DAY})`}
                 <Text style={{ color: '#7ee2ff' }}>
-                  {' '}
-                  Watch ads to earn 10 Gems
+                  {'  '}Watch ads to earn{' '}
                 </Text>
               </Text>
               <View
@@ -220,6 +221,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginTop: 4,
   },
+  btnDisabled: {
+    opacity: 0.6,
+  },
   modalCheckinBtn: {
     marginTop: 32,
     backgroundColor: '#7ee2ff',
@@ -243,7 +247,6 @@ const styles = StyleSheet.create({
     padding: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
   },
   modalAdsDisabled: {
     backgroundColor: '#1a1829',
