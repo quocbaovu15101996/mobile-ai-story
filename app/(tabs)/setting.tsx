@@ -1,5 +1,6 @@
 import TextApp from '@/components/TextApp';
 import { useGetThemeColor } from '@/hooks/useThemeColor';
+import { SCREEN_WIDTH } from '@/src/utils';
 import {
   Ionicons,
   MaterialCommunityIcons,
@@ -32,8 +33,8 @@ interface ItemProps {
 }
 
 const SettingItem: React.FC<ItemProps> = ({ icon, iconRight, onPress, title, style }) => (
-  <TouchableOpacity style={[styles.itemBox, style]} onPress={onPress}>
-    <View style={styles.row}>
+  <TouchableOpacity onPress={onPress} style={[styles.itemBox, style]}>
+    <View style={styles.itemContent}>
       {icon}
       <TextApp style={styles.rowText}>{title}</TextApp>
     </View>
@@ -162,42 +163,45 @@ export default function SettingScreen() {
 
         {/* General */}
         <TextApp style={styles.sectionTitle}>General</TextApp>
-        <SettingItem
-          icon={
-            <MaterialCommunityIcons
-              name="share-variant"
-              size={22}
-              color={themeColors.text}
-            />
-          }
-          iconRight={
-            <Ionicons name="arrow-forward" size={22} color={themeColors.text} />
-          }
-          onPress={handleShare}
-          title="Share AI Story"
-          style={{ backgroundColor: 'gray' }}
-        />
-        <SettingItem
-          icon={
-            <MaterialIcons name="star-rate" size={22} color={themeColors.text} />
-          }
-          iconRight={
-            <Ionicons name="arrow-forward" size={22} color={themeColors.text} />
-          }
-          onPress={handleRate}
-          title="Give AI Story 5 stars"
-        />
-        <SettingItem
-          icon={
-            <MaterialIcons name="alternate-email" size={22} color={themeColors.text} />
-          }
-          iconRight={
-            <Ionicons name="arrow-forward" size={22} color={themeColors.text} />
-          }
-          onPress={handleContact}
-          title="Contact us"
-        />
-
+        <View style={styles.sectionCard}>
+          <SettingItem
+            icon={
+              <MaterialCommunityIcons
+                name="share-variant"
+                size={22}
+                color={themeColors.text}
+              />
+            }
+            iconRight={
+              <Ionicons name="arrow-forward" size={22} color={themeColors.text} />
+            }
+            onPress={handleShare}
+            title="Share AI Story"
+            style={{ backgroundColor: themeColors.backgroundGray }}
+          />
+          <SettingItem
+            icon={
+              <MaterialIcons name="star-rate" size={22} color={themeColors.text} />
+            }
+            iconRight={
+              <Ionicons name="arrow-forward" size={22} color={themeColors.text} />
+            }
+            onPress={handleRate}
+            title="Give AI Story 5 stars"
+            style={{ backgroundColor: themeColors.backgroundGray }}
+          />
+          <SettingItem
+            icon={
+              <MaterialIcons name="alternate-email" size={22} color={themeColors.text} />
+            }
+            iconRight={
+              <Ionicons name="arrow-forward" size={22} color={themeColors.text} />
+            }
+            onPress={handleContact}
+            title="Contact us"
+            style={{ backgroundColor: themeColors.backgroundGray }}
+          />
+        </View>
         {/* Terms & Privacy */}
         <TextApp style={styles.sectionTitle}>Terms & Privacy</TextApp>
         <View style={styles.sectionCard}>
@@ -210,8 +214,8 @@ export default function SettingScreen() {
             }
             onPress={handleTerms}
             title="Terms and Conditions"
+            style={{ backgroundColor: themeColors.backgroundGray }}
           />
-          <View style={styles.divider} />
           <SettingItem
             icon={
               <MaterialCommunityIcons
@@ -225,23 +229,30 @@ export default function SettingScreen() {
             }
             onPress={handlePrivacy}
             title="Privacy Policy"
+            style={{ backgroundColor: themeColors.backgroundGray }}
           />
-          <View style={styles.divider} />
-          <View style={styles.row}>
-            <Ionicons
-              name="information-circle-outline"
-              size={22}
-              color={themeColors.text}
-            />
-            <TextApp style={styles.rowText}>App version</TextApp>
-            <TextApp style={styles.versionText}>{packageJson.version}</TextApp>
-          </View>
+
+          <SettingItem
+            icon={
+              <Ionicons
+                name="information-circle-outline"
+                size={22}
+                color={themeColors.text}
+              />
+            }
+            iconRight={
+              <TextApp style={styles.versionText}>{packageJson.version}</TextApp>
+            }
+            onPress={handlePrivacy}
+            title="App version"
+            style={{ backgroundColor: themeColors.backgroundGray }}
+          />
         </View>
         <TouchableOpacity style={styles.clearBtn} onPress={handleClearData}>
           <TextApp style={styles.clearBtnText}>Clear data</TextApp>
         </TouchableOpacity>
-      </ScrollView>
-    </View>
+      </ScrollView >
+    </View >
   );
 }
 
@@ -294,32 +305,26 @@ const styles = StyleSheet.create({
     marginLeft: 2,
   },
   sectionCard: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    marginBottom: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 4,
-    elevation: 2,
+    gap: 8,
+    paddingBottom: 24,
   },
   itemBox: {
+    flex: 1,
+    width: SCREEN_WIDTH - 32,
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 16,
     paddingHorizontal: 8,
-    justifyContent: 'space-between',
+    borderRadius: 16,
   },
-  row: {
+  itemContent: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   rowText: {
     fontSize: 16,
     marginLeft: 12,
-    flex: 1,
     fontWeight: '500',
   },
   divider: {
@@ -330,7 +335,6 @@ const styles = StyleSheet.create({
   versionText: {
     fontSize: 15,
     color: '#bdbdc7',
-    marginRight: 8,
     fontWeight: '500',
   },
   clearBtn: {
@@ -339,6 +343,7 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     alignItems: 'center',
     borderWidth: 1,
+    marginTop: 12,
     borderColor: '#ff4d4f',
   },
   clearBtnText: {
