@@ -33,6 +33,7 @@ export interface UserProfile {
   weeklyRollCallDays?: Set<string>; // Days user has rolled this week
   totalAmountWatchAds?: number; // Number of times user can watch ads today
   lastRefreshTotalWatchAds?: string; // Timestamp as ISO string
+  maxWatchAdsPerDay?: number;
 }
 
 export interface Thread {
