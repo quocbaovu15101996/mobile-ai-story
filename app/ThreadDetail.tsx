@@ -16,9 +16,10 @@ import {
   FlatList,
   Image,
   ListRenderItem,
-  SafeAreaView,
-  StyleSheet,
   Pressable,
+  SafeAreaView,
+  StatusBar,
+  StyleSheet,
   View
 } from 'react-native';
 import { RootStackParamList } from './_layout';
@@ -191,47 +192,46 @@ export default function ThreadDetail() {
   }
 
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        {/* Header */}
-        <View style={[styles.header, { backgroundColor: colors.background }]}>
-          <Pressable style={styles.backButton} onPress={handleGoBack}>
-            <Ionicons name="close" size={24} color={colors.text} />
+    <SafeAreaView style={styles.safeArea}>
+      <View style={{ height: StatusBar.currentHeight }} />
+      {/* Header */}
+      <View style={[styles.header, { backgroundColor: colors.background }]}>
+        <Pressable style={styles.backButton} onPress={handleGoBack}>
+          <Ionicons name="arrow-back" size={24} color={colors.text} />
+        </Pressable>
+        <View style={styles.headerRight}>
+          <Pressable style={styles.actionButton}>
+            <Ionicons name="refresh" size={24} color={colors.text} />
           </Pressable>
-          <View style={styles.headerRight}>
-            <Pressable style={styles.actionButton}>
-              <Ionicons name="refresh" size={24} color={colors.text} />
-            </Pressable>
-            <Pressable style={styles.actionButton}>
-              <Ionicons name="ellipsis-horizontal" size={24} color={colors.text} />
-            </Pressable>
-          </View>
+          <Pressable style={styles.actionButton}>
+            <Ionicons name="ellipsis-horizontal" size={24} color={colors.text} />
+          </Pressable>
         </View>
+      </View>
 
-        {/* Content */}
-        <FlatList
-          data={passages}
-          renderItem={renderItem}
-          keyExtractor={keyExtractor}
-          ListHeaderComponent={renderHeader}
-          style={styles.flatListContainer}
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.flatListContent}
-        />
+      {/* Content */}
+      <FlatList
+        data={passages}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        ListHeaderComponent={renderHeader}
+        style={styles.flatListContainer}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.flatListContent}
+      />
 
-        {/* Bottom Actions */}
-        <ThemedView style={styles.bottomActions}>
-          <Pressable style={[styles.actionButtonLarge, styles.continueButton]}>
-            <Ionicons name="play" size={20} color="#fff" />
-            <TextApp style={styles.actionButtonText}>Continue</TextApp>
-          </Pressable>
-          <Pressable style={[styles.actionButtonLarge, styles.expandButton]}>
-            <Ionicons name="expand" size={20} color="#fff" />
-            <TextApp style={styles.actionButtonText}>Expand</TextApp>
-          </Pressable>
-        </ThemedView>
-      </SafeAreaView>
-    </ThemedView>
+      {/* Bottom Actions */}
+      <ThemedView style={styles.bottomActions}>
+        <Pressable style={[styles.actionButtonLarge, styles.continueButton]}>
+          <Ionicons name="play" size={20} color="#fff" />
+          <TextApp style={styles.actionButtonText}>Continue</TextApp>
+        </Pressable>
+        <Pressable style={[styles.actionButtonLarge, styles.expandButton]}>
+          <Ionicons name="expand" size={20} color="#fff" />
+          <TextApp style={styles.actionButtonText}>Expand</TextApp>
+        </Pressable>
+      </ThemedView>
+    </SafeAreaView>
   );
 }
 
