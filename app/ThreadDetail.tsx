@@ -1,6 +1,6 @@
 import TextApp from '@/components/TextApp';
 import { ThemedView } from '@/components/ThemedView';
-import { createARunThread, getThreadDetail, getThreadMessages } from '@/src/services/api/thread';
+import { continueThread, createARunThread, expandThread, getThreadDetail, getThreadMessages } from '@/src/services/api/thread';
 import { MessageItem, Thread } from '@/src/services/api/types';
 import { Ionicons } from '@expo/vector-icons';
 import {
@@ -28,11 +28,22 @@ type ThreadDetailScreenRouteProp = RouteProp<
   'ThreadDetail'
 >;
 
+const TONE_TYPE = {
+  DEFAULT: 'DEFAULT',
+  CHARACTER: 'CHARACTER',
+  SPICY: 'SPICY',
+  EMOTION: 'EMOTION',
+  DARK: 'DARK',
+  COMEDY: 'COMEDY',
+  CLASH: 'CLASH'
+}
+
 export default function ThreadDetail() {
   const { colors } = useTheme();
 
   const [thread, setThread] = useState<Thread | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingPassage, setLoadingPassage] = useState(false);
   const [passages, setPassages] = useState<MessageItem[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,27 +52,32 @@ export default function ThreadDetail() {
   const route = useRoute<ThreadDetailScreenRouteProp>();
   const { threadId, isCreate } = route.params;
 
+  const createTempMessage = (messageId: string, content: string, type: string, role: string) => {
+    const newMessage: MessageItem = {
+      id: messageId,
+      object: '',
+      created_at: '',
+      thread_id: '',
+      run_id: '',
+      role: role,
+      content: {
+        type: type,
+        text: {
+          value: content,
+        },
+      },
+      metadata: {
+        type: type,
+        content: content,
+      },
+    };
+    return newMessage;
+  };
+
   const runThread = async () => {
     try {
       const response = await createARunThread(threadId);
-      const newMessage: MessageItem = {
-        id: response.data.id,
-        object: '',
-        created_at: '',
-        thread_id: '',
-        run_id: '',
-        role: 'assistant',
-        content: {
-          type: 'text',
-          text: {
-            value: response.data.content,
-          },
-        },
-        metadata: {
-          type: 'text',
-          content: response.data.content,
-        },
-      };
+      const newMessage = createTempMessage(response.data.id, response.data.content, 'text', 'assistant');
       setPassages([newMessage]);
     } catch (err) {
       console.error('Error loading thread detail:', err);
@@ -130,25 +146,55 @@ export default function ThreadDetail() {
     </ThemedView>
   );
 
+  const renderFooter = () => loadingPassage ? <ActivityIndicator size="small" color="#007AFF" /> : null;
 
+  const onContinue = async () => {
+    setLoadingPassage(true);
+    const continueMessage = createTempMessage('', '', 'continue', 'user');
+    setPassages([...passages, continueMessage]);
+    const response = await continueThread(threadId);
+    const newMessage = createTempMessage(response.data.id, response.data.content, 'text', 'assistant');
+    setPassages([...passages, newMessage]);
+    setLoadingPassage(false);
+  };
+
+  const onExpand = async () => {
+    setLoadingPassage(true);
+    const payload = {
+      content: 'we have some conflict',
+      tone: TONE_TYPE.DEFAULT
+    }
+    const expandMessage = createTempMessage('', '', 'expand', 'user');
+    setPassages([...passages, expandMessage]);
+    const response = await expandThread(threadId, payload);
+    const newMessage = createTempMessage(response.data.id, response.data.content, 'text', 'assistant');
+    setPassages([...passages, newMessage]);
+    setLoadingPassage(false);
+  };
+
+  const renderThreadHeader = () => {
+    return (
+      <View style={[styles.header, { backgroundColor: colors.background }]}>
+        <Pressable style={styles.backButton} onPress={handleGoBack}>
+          <Ionicons name="close" size={24} color={colors.text} />
+        </Pressable>
+        <View style={styles.headerRight}>
+          <Pressable style={styles.actionButton}>
+            <Ionicons name="refresh" size={24} color={colors.text} />
+          </Pressable>
+          <Pressable style={styles.actionButton}>
+            <Ionicons name="ellipsis-vertical" size={24} color={colors.text} />
+          </Pressable>
+        </View>
+      </View>
+    )
+  };
 
   if (loading) {
     return (
       <ThemedView style={styles.container}>
         <SafeAreaView style={styles.safeArea}>
-          <View style={[styles.header, { backgroundColor: colors.background }]}>
-            <Pressable style={styles.backButton} onPress={handleGoBack}>
-              <Ionicons name="close" size={24} color={colors.text} />
-            </Pressable>
-            <View style={styles.headerRight}>
-              <Pressable style={styles.actionButton}>
-                <Ionicons name="refresh" size={24} color={colors.text} />
-              </Pressable>
-              <Pressable style={styles.actionButton}>
-                <Ionicons name="ellipsis-horizontal" size={24} color={colors.text} />
-              </Pressable>
-            </View>
-          </View>
+          {renderThreadHeader()}
           <ThemedView style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#6366f1" />
             <TextApp style={styles.loadingText}>Loading thread details...</TextApp>
@@ -162,19 +208,7 @@ export default function ThreadDetail() {
     return (
       <ThemedView style={styles.container}>
         <SafeAreaView style={styles.safeArea}>
-          <View style={[styles.header, { backgroundColor: colors.background }]}>
-            <Pressable style={styles.backButton} onPress={handleGoBack}>
-              <Ionicons name="close" size={24} color={colors.text} />
-            </Pressable>
-            <View style={styles.headerRight}>
-              <Pressable style={styles.actionButton}>
-                <Ionicons name="refresh" size={24} color={colors.text} />
-              </Pressable>
-              <Pressable style={styles.actionButton}>
-                <Ionicons name="ellipsis-horizontal" size={24} color={colors.text} />
-              </Pressable>
-            </View>
-          </View>
+          {renderThreadHeader()}
           <ThemedView style={styles.errorContainer}>
             <Ionicons name="alert-circle-outline" size={48} color="#ef4444" />
             <TextApp style={styles.errorText}>{error || 'Thread not found'}</TextApp>
@@ -193,19 +227,7 @@ export default function ThreadDetail() {
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* Header */}
-      <View style={[styles.header, { backgroundColor: colors.background }]}>
-        <Pressable style={styles.backButton} onPress={handleGoBack}>
-          <Ionicons name="arrow-back" size={24} color={colors.text} />
-        </Pressable>
-        <View style={styles.headerRight}>
-          <Pressable style={styles.actionButton}>
-            <Ionicons name="refresh" size={24} color={colors.text} />
-          </Pressable>
-          <Pressable style={styles.actionButton}>
-            <Ionicons name="ellipsis-horizontal" size={24} color={colors.text} />
-          </Pressable>
-        </View>
-      </View>
+      {renderThreadHeader()}
 
       {/* Content */}
       <FlatList
@@ -213,6 +235,7 @@ export default function ThreadDetail() {
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         ListHeaderComponent={renderHeader}
+        ListFooterComponent={renderFooter}
         style={styles.flatListContainer}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.flatListContent}
@@ -220,11 +243,11 @@ export default function ThreadDetail() {
 
       {/* Bottom Actions */}
       <ThemedView style={styles.bottomActions}>
-        <Pressable style={[styles.actionButtonLarge, styles.continueButton]}>
+        <Pressable style={[styles.actionButtonLarge, styles.continueButton]} onPress={onContinue}>
           <Ionicons name="play" size={20} color="#fff" />
           <TextApp style={styles.actionButtonText}>Continue</TextApp>
         </Pressable>
-        <Pressable style={[styles.actionButtonLarge, styles.expandButton]}>
+        <Pressable style={[styles.actionButtonLarge, styles.expandButton]} onPress={onExpand}>
           <Ionicons name="expand" size={20} color="#fff" />
           <TextApp style={styles.actionButtonText}>Expand</TextApp>
         </Pressable>

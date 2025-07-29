@@ -127,3 +127,8 @@ export interface MessageItem {
   content: Content;
   metadata: Metadata
 }
+
+export interface ExpandThreadPayload {
+  content: string;
+  tone: string;
+}

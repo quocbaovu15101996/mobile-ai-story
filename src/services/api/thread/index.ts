@@ -1,6 +1,6 @@
 import api, { ApiResponse } from "..";
 import { ENDPOINTS } from "../config";
-import { CreateThreadPayload, CreateThreadResponse, MessageItem, MessageResponse, Thread, ThreadsResponse } from "../types";
+import { CreateThreadPayload, CreateThreadResponse, ExpandThreadPayload, MessageItem, MessageResponse, Thread, ThreadsResponse } from "../types";
 
 export const getHistory = async (page: number = 0, size: number = 10): Promise<ApiResponse<ThreadsResponse>> => {
   return await api.get<ThreadsResponse>(`${ENDPOINTS.THREAD.URL}?page=${page}&size=${size}`);
@@ -18,5 +18,13 @@ export const createThread = async (payload: CreateThreadPayload): Promise<ApiRes
 };
 
 export const createARunThread = async (threadId: string): Promise<ApiResponse<MessageResponse>> => {
-  return await api.post<MessageResponse>(ENDPOINTS.THREAD.URL + '/' + threadId + ENDPOINTS.THREAD.RUN);
+  return await api.post<MessageResponse>(ENDPOINTS.THREAD.URL + '/' + threadId + ENDPOINTS.THREAD.RUNS);
+};
+
+export const continueThread = async (threadId: string): Promise<ApiResponse<MessageResponse>> => {
+  return await api.post<MessageResponse>(ENDPOINTS.THREAD.URL + '/' + threadId + ENDPOINTS.THREAD.CONTINUE);
+};
+
+export const expandThread = async (threadId: string, payload: ExpandThreadPayload): Promise<ApiResponse<MessageResponse>> => {
+  return await api.post<MessageResponse>(ENDPOINTS.THREAD.URL + '/' + threadId + ENDPOINTS.THREAD.EXPAND, payload);
 };

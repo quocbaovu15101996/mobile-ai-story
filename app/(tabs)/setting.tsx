@@ -22,7 +22,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const packageJson = require('../../package.json');
+const appJson = require('../../app.json');
 
 interface ItemProps {
   icon: any;
@@ -210,7 +210,7 @@ export default function SettingScreen() {
               />
             }
             iconRight={
-              <TextApp style={styles.versionText}>{packageJson.version}</TextApp>
+              <TextApp style={styles.versionText}>{appJson.version}</TextApp>
             }
             onPress={handlePrivacy}
             title="App version"

@@ -3,6 +3,8 @@ export const RESPONSE_CODES = {
   TOKEN_EXPIRED: 498,
 };
 
+const appJson = require('../../../app.json');
+
 // Base API configuration
 export const API_CONFIG = {
   BASE_URL: 'https://viable-jointly-hen.ngrok-free.app',
@@ -10,6 +12,7 @@ export const API_CONFIG = {
   HEADERS: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
+    'User-Agent': appJson.version,
   },
   AUTH_TYPE: 'Bearer',
 };
@@ -26,7 +29,9 @@ export const ENDPOINTS = {
   },
   THREAD: {
     URL: '/v1/threads',
-    RUN: '/run',
+    RUNS: '/runs',
+    CONTINUE: '/continue',
+    EXPAND: '/expand'
   },
 };
 
