@@ -1,4 +1,5 @@
 import TextApp from '@/components/TextApp';
+import { ThemedView } from '@/components/ThemedView';
 import { createARunThread, getThreadDetail, getThreadMessages } from '@/src/services/api/thread';
 import { MessageItem, Thread } from '@/src/services/api/types';
 import { Ionicons } from '@expo/vector-icons';
@@ -12,11 +13,10 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
-  FlatList,
-  ListRenderItem,
+  Image,
   SafeAreaView,
+  ScrollView,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View
 } from 'react-native';
@@ -32,7 +32,6 @@ export default function ThreadDetail() {
 
   const [thread, setThread] = useState<Thread | null>(null);
   const [loading, setLoading] = useState(true);
-  const [loadingPassage, setLoadingPassage] = useState(false);
   const [passages, setPassages] = useState<MessageItem[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -43,7 +42,6 @@ export default function ThreadDetail() {
 
   const runThread = async () => {
     try {
-      setLoadingPassage(true);
       const response = await createARunThread(threadId);
       const newMessage: MessageItem = {
         id: response.data.id,
@@ -66,8 +64,6 @@ export default function ThreadDetail() {
       setPassages([newMessage]);
     } catch (err) {
       console.error('Error loading thread detail:', err);
-    } finally {
-      setLoadingPassage(false);
     }
   };
 
@@ -103,115 +99,207 @@ export default function ThreadDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCreate]);
 
-  const renderItem: ListRenderItem<MessageItem> = ({ item }) => (
-    <View style={styles.messageContainer}>
-      <TextApp>{item.content.text.value}</TextApp>
-    </View>
-  );
 
-  const keyExtractor = (item: MessageItem, index: number) => item.id + index.toString();
-
-  const renderHeader = () => (
-    <View style={styles.threadContainer}>
-      <TextApp style={styles.threadTitle}>{thread?.title}</TextApp>
-      <TextApp style={styles.threadDate}>{thread?.createdDate}</TextApp>
-    </View>
-  );
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
-            <Ionicons name="arrow-back" size={24} color="#333" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Thread Detail</Text>
-          <View style={styles.headerRightPlaceholder} />
-        </View>
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#6366f1" />
-          <Text style={styles.loadingText}>Loading thread details...</Text>
-        </View>
-      </SafeAreaView>
+      <ThemedView style={styles.container}>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={[styles.header, { backgroundColor: colors.background }]}>
+            <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
+              <Ionicons name="close" size={24} color={colors.text} />
+            </TouchableOpacity>
+            <View style={styles.headerRight}>
+              <TouchableOpacity style={styles.actionButton}>
+                <Ionicons name="refresh" size={24} color={colors.text} />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.actionButton}>
+                <Ionicons name="ellipsis-horizontal" size={24} color={colors.text} />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <ThemedView style={styles.loadingContainer}>
+            <ActivityIndicator size="large" color="#6366f1" />
+            <TextApp style={styles.loadingText}>Loading thread details...</TextApp>
+          </ThemedView>
+        </SafeAreaView>
+      </ThemedView>
     );
   }
 
   if (error || !thread) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
-            <Ionicons name="arrow-back" size={24} color="#333" />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Thread Detail</Text>
-          <View style={styles.headerRightPlaceholder} />
-        </View>
-        <View style={styles.errorContainer}>
-          <Ionicons name="alert-circle-outline" size={48} color="#ef4444" />
-          <Text style={styles.errorText}>{error || 'Thread not found'}</Text>
-          <TouchableOpacity
-            style={styles.retryButton}
-            onPress={loadThreadDetail}
-          >
-            <Text style={styles.retryButtonText}>Retry</Text>
-          </TouchableOpacity>
-        </View>
-      </SafeAreaView>
+      <ThemedView style={styles.container}>
+        <SafeAreaView style={styles.safeArea}>
+          <View style={[styles.header, { backgroundColor: colors.background }]}>
+            <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
+              <Ionicons name="close" size={24} color={colors.text} />
+            </TouchableOpacity>
+            <View style={styles.headerRight}>
+              <TouchableOpacity style={styles.actionButton}>
+                <Ionicons name="refresh" size={24} color={colors.text} />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.actionButton}>
+                <Ionicons name="ellipsis-horizontal" size={24} color={colors.text} />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <ThemedView style={styles.errorContainer}>
+            <Ionicons name="alert-circle-outline" size={48} color="#ef4444" />
+            <TextApp style={styles.errorText}>{error || 'Thread not found'}</TextApp>
+            <TouchableOpacity
+              style={styles.retryButton}
+              onPress={loadThreadDetail}
+            >
+              <TextApp style={styles.retryButtonText}>Retry</TextApp>
+            </TouchableOpacity>
+          </ThemedView>
+        </SafeAreaView>
+      </ThemedView>
     );
   }
 
   return (
-    <SafeAreaView
-      style={[styles.container, { backgroundColor: colors.background }]}
-    >
-      <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
-          <Ionicons name="arrow-back" size={24} color="#333" />
-        </TouchableOpacity>
-        <TextApp style={styles.headerTitle}>Thread Detail</TextApp>
-        <View style={styles.headerRightPlaceholder} />
-      </View>
+    <ThemedView style={styles.container}>
+      <SafeAreaView style={styles.safeArea}>
+        {/* Header */}
+        <View style={[styles.header, { backgroundColor: colors.background }]}>
+          <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
+            <Ionicons name="close" size={24} color={colors.text} />
+          </TouchableOpacity>
+          <View style={styles.headerRight}>
+            <TouchableOpacity style={styles.actionButton}>
+              <Ionicons name="refresh" size={24} color={colors.text} />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.actionButton}>
+              <Ionicons name="ellipsis-horizontal" size={24} color={colors.text} />
+            </TouchableOpacity>
+          </View>
+        </View>
 
-      <FlatList
-        data={passages}
-        renderItem={renderItem}
-        keyExtractor={keyExtractor}
-        ListHeaderComponent={renderHeader}
-        showsVerticalScrollIndicator={false}
-      />
+        {/* Content */}
+        <ScrollView 
+          style={styles.scrollContainer}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Hero Image */}
+          {thread?.image && (
+            <View style={styles.heroImageContainer}>
+              <Image
+                source={{ uri: thread.image }}
+                style={styles.heroImage}
+                resizeMode="cover"
+              />
+            </View>
+          )}
 
-    </SafeAreaView>
+          {/* Story Content */}
+          <ThemedView style={styles.contentContainer}>
+            <TextApp style={styles.storyTitle}>{thread?.title}</TextApp>
+            {passages.map((passage, index) => (
+              <TextApp key={`${passage.id}-${index}`} style={styles.storyText}>
+                {passage.content.text.value}
+              </TextApp>
+            ))}
+          </ThemedView>
+        </ScrollView>
+
+        {/* Bottom Actions */}
+        <ThemedView style={styles.bottomActions}>
+          <TouchableOpacity style={[styles.actionButtonLarge, styles.continueButton]}>
+            <Ionicons name="play" size={20} color="#fff" />
+            <TextApp style={styles.actionButtonText}>Continue</TextApp>
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.actionButtonLarge, styles.expandButton]}>
+            <Ionicons name="expand" size={20} color="#fff" />
+            <TextApp style={styles.actionButtonText}>Expand</TextApp>
+          </TouchableOpacity>
+        </ThemedView>
+      </SafeAreaView>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+  },
+  safeArea: {
+    flex: 1,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 16,
-    backgroundColor: '#f8f8f8',
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    paddingTop: 8,
+    paddingBottom: 8,
+    zIndex: 1000,
   },
   backButton: {
     padding: 8,
-    borderRadius: 8,
-    backgroundColor: '#e5e7eb',
   },
-  headerTitle: {
-    fontSize: 18,
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  actionButton: {
+    padding: 8,
+    marginLeft: 8,
+  },
+  scrollContainer: {
+    flex: 1,
+  },
+  heroImageContainer: {
+    width: '100%',
+    height: 400,
+    position: 'relative',
+  },
+  heroImage: {
+    width: '100%',
+    height: '100%',
+  },
+  contentContainer: {
+    padding: 24,
+    flex: 1,
+  },
+  storyTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    lineHeight: 34,
+  },
+  storyText: {
+    fontSize: 16,
+    lineHeight: 24,
+    marginBottom: 16,
+  },
+  bottomActions: {
+    flexDirection: 'row',
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    gap: 12,
+  },
+  actionButtonLarge: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    borderRadius: 50,
+    gap: 8,
+  },
+  continueButton: {
+    backgroundColor: '#000',
+  },
+  expandButton: {
+    backgroundColor: '#000',
+  },
+  actionButtonText: {
+    color: '#fff',
+    fontSize: 16,
     fontWeight: '600',
-    color: '#222',
-  },
-  headerRightPlaceholder: {
-    width: 40,
   },
   loadingContainer: {
     flex: 1,
@@ -246,70 +334,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  content: {
-    flex: 1,
-  },
-  threadContainer: {
-    padding: 20,
-  },
-  threadTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#222',
-    marginBottom: 8,
-  },
-  threadDate: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 24,
-  },
-  contentSection: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#222',
-    marginBottom: 12,
-  },
-  contentText: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: '#444',
-  },
-  contextSection: {
-    marginBottom: 24,
-  },
-  contextItem: {
-    backgroundColor: '#f8f8f8',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    borderLeftWidth: 4,
-    borderLeftColor: '#6366f1',
-  },
-  contextItemHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  contextItemIndex: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#6366f1',
-    backgroundColor: '#e0e7ff',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 6,
-    minWidth: 24,
-    textAlign: 'center',
-  },
-  contextItemText: {
-    fontSize: 15,
-    lineHeight: 22,
-    color: '#444',
-  },
-  messageContainer: {
-
-  }
 });
