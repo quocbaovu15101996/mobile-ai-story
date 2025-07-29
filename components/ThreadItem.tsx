@@ -3,7 +3,7 @@ import { Thread } from '@/src/services/api/types';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, StyleSheet, Pressable, View } from 'react-native';
 import TextApp from './TextApp';
 
 interface ThreadItemProps {
@@ -18,7 +18,7 @@ export const ThreadItem: React.FC<ThreadItemProps> = ({ thread }) => {
   };
 
   return (
-    <TouchableOpacity style={styles.container} onPress={handlePress} activeOpacity={0.7}>
+    <Pressable style={({pressed}) => [styles.container, pressed && { opacity: 0.7 }]} onPress={handlePress}>
       <View style={styles.contentContainer}>
         <TextApp style={styles.title} numberOfLines={1} ellipsizeMode="tail">
           {thread.title}
@@ -37,7 +37,7 @@ export const ThreadItem: React.FC<ThreadItemProps> = ({ thread }) => {
           resizeMode="cover"
         />
       )}
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 

@@ -17,7 +17,7 @@ import {
   StatusBar,
   StyleProp,
   StyleSheet,
-  TouchableOpacity,
+  Pressable,
   View,
   ViewStyle,
 } from 'react-native';
@@ -33,13 +33,13 @@ interface ItemProps {
 }
 
 const SettingItem: React.FC<ItemProps> = ({ icon, iconRight, onPress, title, style }) => (
-  <TouchableOpacity onPress={onPress} style={[styles.itemBox, style]}>
+  <Pressable onPress={onPress} style={[styles.itemBox, style]}>
     <View style={styles.itemContent}>
       {icon}
       <TextApp style={styles.rowText}>{title}</TextApp>
     </View>
     {iconRight}
-  </TouchableOpacity>
+  </Pressable>
 );
 
 export default function SettingScreen() {
@@ -147,18 +147,18 @@ export default function SettingScreen() {
               Advanced AI Creativity
             </TextApp>
           </View>
-          <TouchableOpacity style={styles.subscribeBtn} onPress={handleUpgrade}>
+          <Pressable style={styles.subscribeBtn} onPress={handleUpgrade}>
             <TextApp style={styles.subscribeBtnText}>
               Subscribe{' '}
               <Ionicons name="arrow-forward" size={18} color="#232136" />
             </TextApp>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </Pressable>
+          <Pressable
             style={{ marginTop: 8 }}
             onPress={handleRestorePurchase}
           >
             <TextApp style={styles.restoreText}>Restore purchase</TextApp>
-          </TouchableOpacity>
+          </Pressable>
         </View>
 
         {/* General */}
@@ -248,9 +248,9 @@ export default function SettingScreen() {
             style={{ backgroundColor: themeColors.backgroundGray }}
           />
         </View>
-        <TouchableOpacity style={styles.clearBtn} onPress={handleClearData}>
+        <Pressable style={styles.clearBtn} onPress={handleClearData}>
           <TextApp style={styles.clearBtnText}>Clear data</TextApp>
-        </TouchableOpacity>
+        </Pressable>
       </ScrollView >
     </View >
   );
