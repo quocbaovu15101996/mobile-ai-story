@@ -14,7 +14,7 @@ export const ThreadItem: React.FC<ThreadItemProps> = ({ thread }) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const handlePress = () => {
-    navigation.navigate('ThreadDetail', { threadId: thread.id });
+    navigation.navigate('ThreadDetail', { threadId: thread.threadId, isCreate: false });
   };
 
   return (
@@ -27,7 +27,7 @@ export const ThreadItem: React.FC<ThreadItemProps> = ({ thread }) => {
           {thread.content}
         </TextApp>
         <TextApp style={styles.date}>
-          {new Date(thread.createdAt).toLocaleDateString()}
+          {new Date(thread.createdDate).toLocaleDateString()}
         </TextApp>
       </View>
       {thread.image && (

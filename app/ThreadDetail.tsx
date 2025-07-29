@@ -1,46 +1,84 @@
+import TextApp from '@/components/TextApp';
+import { createARunThread, getThreadDetail, getThreadMessages } from '@/src/services/api/thread';
+import { MessageItem, Thread } from '@/src/services/api/types';
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import {
+  RouteProp,
+  useNavigation,
+  useRoute,
+  useTheme,
+} from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
+  FlatList,
+  ListRenderItem,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
-import { getThreadDetail } from '../src/services/api/thread';
-import { Thread } from '../src/services/api/types';
 import { RootStackParamList } from './_layout';
 
-type ThreadDetailRouteProp = {
-  key: string;
-  name: 'ThreadDetail';
-  params: { threadId: string };
-};
+type ThreadDetailScreenRouteProp = RouteProp<
+  RootStackParamList,
+  'ThreadDetail'
+>;
 
 export default function ThreadDetail() {
+  const { colors } = useTheme();
+
   const [thread, setThread] = useState<Thread | null>(null);
   const [loading, setLoading] = useState(true);
+  const [loadingPassage, setLoadingPassage] = useState(false);
+  const [passages, setPassages] = useState<MessageItem[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const route = useRoute<ThreadDetailRouteProp>();
-  const { threadId } = route.params;
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const route = useRoute<ThreadDetailScreenRouteProp>();
+  const { threadId, isCreate } = route.params;
 
-  useEffect(() => {
-    loadThreadDetail();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const runThread = async () => {
+    try {
+      setLoadingPassage(true);
+      const response = await createARunThread(threadId);
+      const newMessage: MessageItem = {
+        id: response.data.id,
+        object: '',
+        created_at: '',
+        thread_id: '',
+        run_id: '',
+        role: 'assistant',
+        content: {
+          type: 'text',
+          text: {
+            value: response.data.content,
+          },
+        },
+        metadata: {
+          type: 'text',
+          content: response.data.content,
+        },
+      };
+      setPassages([newMessage]);
+    } catch (err) {
+      console.error('Error loading thread detail:', err);
+    } finally {
+      setLoadingPassage(false);
+    }
+  };
 
   const loadThreadDetail = async () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await getThreadDetail(threadId);
-      setThread(response.data);
+      const response = Promise.all([getThreadDetail(threadId), getThreadMessages(threadId)]);
+      const [threadDetail, threadMessages] = await response;
+      setThread(threadDetail.data);
+      setPassages(threadMessages.data);
     } catch (err) {
       setError('Failed to load thread details');
       console.error('Error loading thread detail:', err);
@@ -52,6 +90,33 @@ export default function ThreadDetail() {
   const handleGoBack = () => {
     navigation.goBack();
   };
+
+  useEffect(() => {
+    loadThreadDetail();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (isCreate) {
+      runThread();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isCreate]);
+
+  const renderItem: ListRenderItem<MessageItem> = ({ item }) => (
+    <View style={styles.messageContainer}>
+      <TextApp>{item.content.text.value}</TextApp>
+    </View>
+  );
+
+  const keyExtractor = (item: MessageItem, index: number) => item.id + index.toString();
+
+  const renderHeader = () => (
+    <View style={styles.threadContainer}>
+      <TextApp style={styles.threadTitle}>{thread?.title}</TextApp>
+      <TextApp style={styles.threadDate}>{thread?.createdDate}</TextApp>
+    </View>
+  );
 
   if (loading) {
     return (
@@ -84,7 +149,10 @@ export default function ThreadDetail() {
         <View style={styles.errorContainer}>
           <Ionicons name="alert-circle-outline" size={48} color="#ef4444" />
           <Text style={styles.errorText}>{error || 'Thread not found'}</Text>
-          <TouchableOpacity style={styles.retryButton} onPress={loadThreadDetail}>
+          <TouchableOpacity
+            style={styles.retryButton}
+            onPress={loadThreadDetail}
+          >
             <Text style={styles.retryButtonText}>Retry</Text>
           </TouchableOpacity>
         </View>
@@ -93,46 +161,25 @@ export default function ThreadDetail() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: colors.background }]}
+    >
       <View style={styles.header}>
         <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
           <Ionicons name="arrow-back" size={24} color="#333" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Thread Detail</Text>
+        <TextApp style={styles.headerTitle}>Thread Detail</TextApp>
         <View style={styles.headerRightPlaceholder} />
       </View>
 
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <View style={styles.threadContainer}>
-          <Text style={styles.threadTitle}>{thread.title}</Text>
-          <Text style={styles.threadDate}>
-            {new Date(thread.createdAt).toLocaleDateString()}
-          </Text>
+      <FlatList
+        data={passages}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+        ListHeaderComponent={renderHeader}
+        showsVerticalScrollIndicator={false}
+      />
 
-          {/* Thread content */}
-          {thread.content && (
-            <View style={styles.contentSection}>
-              <Text style={styles.sectionTitle}>Content</Text>
-              <Text style={styles.contentText}>{thread.content}</Text>
-            </View>
-          )}
-
-          {/* Thread context array */}
-          {thread.context && thread.context.length > 0 && (
-            <View style={styles.contextSection}>
-              <Text style={styles.sectionTitle}>Context</Text>
-              {thread.context.map((contextItem, index) => (
-                <View key={index} style={styles.contextItem}>
-                  <View style={styles.contextItemHeader}>
-                    <Text style={styles.contextItemIndex}>{index + 1}</Text>
-                  </View>
-                  <Text style={styles.contextItemText}>{contextItem}</Text>
-                </View>
-              ))}
-            </View>
-          )}
-        </View>
-      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -262,4 +309,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
     color: '#444',
   },
+  messageContainer: {
+
+  }
 });

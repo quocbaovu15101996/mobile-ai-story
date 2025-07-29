@@ -25,9 +25,8 @@ export const ENDPOINTS = {
     EARN_TOKEN_BY_ADS: '/v1/users/earn-token-by-ads',
   },
   THREAD: {
-    GET_HISTORY: '/v1/threads',
-    GET_DETAIL: '/v1/threads', // Will be used as `/v1/threads/{threadId}`
-    CREATE: '/v1/threads',
+    URL: '/v1/threads',
+    RUN: '/run',
   },
 };
 

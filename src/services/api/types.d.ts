@@ -38,12 +38,27 @@ export interface UserProfile {
 
 export interface Thread {
   id: string;
+  image?: string;
+  userId: string;
+  status: number;
+  totalTokensUsed: number;
+  isCanInteract: number;
+  countToSummary: number;
+  threadId: string;
   title: string;
   content: string;
-  image?: string;
-  createdAt: string;
-  updatedAt: string;
-  context?: string[]; // Array of context items for thread detail
+  storyIdea: string;
+  character: string;
+  narrative: string;
+  genre: string;
+  createdDate: string;
+  modifiedDate: string;
+  storyIdea: string;
+  character: string;
+  narrative: string;
+  genre: string;
+  createdDate: string;
+  modifiedDate: string;
 }
 
 export interface ThreadsResponse {
@@ -68,8 +83,47 @@ export interface CreateThreadPayload {
 
 export interface CreateThreadResponse {
   id: string;
+  userId: string;
+  status: number;
+  totalTokensUsed: number;
+  isCanInteract: number;
+  countToSummary: number;
+  threadId: string;
   title: string;
   content: string;
+  storyIdea: string;
+  character: string;
+  narrative: string;
+  genre: string;
+  createdDate: string;
+  modifiedDate: string;
+}
+
+export interface MessageResponse {
+  id: string;
   createdAt: string;
-  updatedAt: string;
+  totalTokens: number;
+  content: string;
+}
+
+interface Metadata {
+  type: string;
+  content: string;
+}
+interface ContentText {
+  value: string;
+}
+interface Content {
+  type: string;
+  text: ContentText;
+}
+export interface MessageItem {
+  id: string;
+  object: string;
+  created_at: string;
+  thread_id: string;
+  run_id: string;
+  role: string;
+  content: Content;
+  metadata: Metadata
 }

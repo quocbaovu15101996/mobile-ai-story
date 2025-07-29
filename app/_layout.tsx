@@ -16,7 +16,7 @@ if (__DEV__) {
 
 export type RootStackParamList = {
   InAppPurchase: undefined;
-  ThreadDetail: { threadId: string };
+  ThreadDetail: { threadId: string, isCreate: boolean };
 };
 
 const DefaultDarkTheme = {

@@ -75,7 +75,7 @@ const CreateThreadBox: FC<Props> = () => {
 
       // Navigate to ThreadDetail after successful creation
       if (response.data && response.data.id) {
-        navigation.navigate('ThreadDetail', { threadId: response.data.id });
+        navigation.navigate('ThreadDetail', { threadId: response.data.threadId, isCreate: true });
       }
     } catch (error) {
       // Optionally handle error (e.g., show toast)
@@ -88,11 +88,12 @@ const CreateThreadBox: FC<Props> = () => {
   return (
     <KeyboardAvoidingView
       style={styles.flex1}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView
         contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}
         keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
       >
         {/* Header */}
         <View style={styles.headerRow}>
@@ -105,7 +106,7 @@ const CreateThreadBox: FC<Props> = () => {
         <View style={styles.inputBox}>
           <TextInput
             style={[styles.textInput, { color: colors.text }]}
-            placeholder="E.g., Love story with two women and one man."
+            placeholder="E.g., Romantic story about a couple in the city..."
             placeholderTextColor="#888"
             value={storyIdea}
             onChangeText={setStoryIdea}
@@ -120,12 +121,6 @@ const CreateThreadBox: FC<Props> = () => {
               color="#888"
               style={styles.iconSuggestion}
             />
-            {/* <Ionicons
-              name="bulb"
-              size={22}
-              color="#bbb"
-              style={{ marginRight: 8 }}
-            /> */}
             <View style={styles.proBadge}>
               <Text style={styles.proText}>Pro</Text>
             </View>
@@ -222,10 +217,11 @@ const CreateThreadBox: FC<Props> = () => {
             <TextInput
               style={styles.textInput}
               placeholder="E.g., A rebellious princess and a humble village boy."
-              placeholderTextColor={colors.text}
-              value={characters}
+              placeholderTextColor="#888" value={characters}
               onChangeText={setCharacters}
               multiline
+              textAlignVertical="top"
+              numberOfLines={3}
             />
 
             {/* Story's setting */}
