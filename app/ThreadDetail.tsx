@@ -13,9 +13,10 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
+  FlatList,
   Image,
+  ListRenderItem,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   TouchableOpacity,
   View
@@ -99,6 +100,36 @@ export default function ThreadDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCreate]);
 
+  const renderItem: ListRenderItem<MessageItem> = ({ item }) => (
+    <ThemedView style={styles.messageContainer}>
+      <TextApp style={styles.storyText}>
+        {item.content.text.value}
+      </TextApp>
+    </ThemedView>
+  );
+
+  const keyExtractor = (item: MessageItem, index: number) => `${item.id}-${index}`;
+
+  const renderHeader = () => (
+    <ThemedView>
+      {/* Hero Image */}
+      {thread?.image && (
+        <View style={styles.heroImageContainer}>
+          <Image
+            source={{ uri: thread.image }}
+            style={styles.heroImage}
+            resizeMode="cover"
+          />
+        </View>
+      )}
+
+      {/* Story Title */}
+      <ThemedView style={styles.titleContainer}>
+        <TextApp style={styles.storyTitle}>{thread?.title}</TextApp>
+      </ThemedView>
+    </ThemedView>
+  );
+
 
 
   if (loading) {
@@ -178,31 +209,15 @@ export default function ThreadDetail() {
         </View>
 
         {/* Content */}
-        <ScrollView 
-          style={styles.scrollContainer}
+        <FlatList
+          data={passages}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
+          ListHeaderComponent={renderHeader}
+          style={styles.flatListContainer}
           showsVerticalScrollIndicator={false}
-        >
-          {/* Hero Image */}
-          {thread?.image && (
-            <View style={styles.heroImageContainer}>
-              <Image
-                source={{ uri: thread.image }}
-                style={styles.heroImage}
-                resizeMode="cover"
-              />
-            </View>
-          )}
-
-          {/* Story Content */}
-          <ThemedView style={styles.contentContainer}>
-            <TextApp style={styles.storyTitle}>{thread?.title}</TextApp>
-            {passages.map((passage, index) => (
-              <TextApp key={`${passage.id}-${index}`} style={styles.storyText}>
-                {passage.content.text.value}
-              </TextApp>
-            ))}
-          </ThemedView>
-        </ScrollView>
+          contentContainerStyle={styles.flatListContent}
+        />
 
         {/* Bottom Actions */}
         <ThemedView style={styles.bottomActions}>
@@ -250,6 +265,12 @@ const styles = StyleSheet.create({
   scrollContainer: {
     flex: 1,
   },
+  flatListContainer: {
+    flex: 1,
+  },
+  flatListContent: {
+    flexGrow: 1,
+  },
   heroImageContainer: {
     width: '100%',
     height: 400,
@@ -258,6 +279,15 @@ const styles = StyleSheet.create({
   heroImage: {
     width: '100%',
     height: '100%',
+  },
+  titleContainer: {
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 16,
+  },
+  messageContainer: {
+    paddingHorizontal: 24,
+    paddingBottom: 16,
   },
   contentContainer: {
     padding: 24,
