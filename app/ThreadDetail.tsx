@@ -116,13 +116,27 @@ export default function ThreadDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCreate]);
 
-  const renderItem: ListRenderItem<MessageItem> = ({ item }) => (
-    <ThemedView style={styles.messageContainer}>
-      <TextApp style={styles.storyText}>
-        {item.content.text.value}
-      </TextApp>
-    </ThemedView>
-  );
+  const renderItem: ListRenderItem<MessageItem> = ({ item }) => {
+    if (item.role === 'assistant') {
+      return (
+        <ThemedView style={styles.messageContainer}>
+          <TextApp style={styles.storyText}>
+            {item.content.text.value}
+          </TextApp>
+        </ThemedView>
+      )
+    }
+    if (item.role === 'user' && ['continue', 'expand'].includes(item?.metadata?.type)) {
+      return (
+        <ThemedView style={styles.messageContainer}>
+          <TextApp style={styles.storyText}>
+            {item?.metadata?.type}
+          </TextApp>
+        </ThemedView>
+      )
+    }
+    return null;
+  };
 
   const keyExtractor = (item: MessageItem, index: number) => `${item.id}-${index}`;
 
