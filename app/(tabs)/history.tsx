@@ -9,6 +9,7 @@ import {
   FlatList,
   ListRenderItem,
   RefreshControl,
+  StatusBar,
   StyleSheet,
   View
 } from 'react-native';
@@ -122,6 +123,7 @@ export default function HistoryScreen() {
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <View style={{ height: StatusBar.currentHeight }} />
       <FlatList
         data={threads}
         renderItem={renderItem}

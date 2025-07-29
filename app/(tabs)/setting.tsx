@@ -12,12 +12,12 @@ import React from 'react';
 import {
   Alert,
   Linking,
+  Pressable,
   ScrollView,
   Share,
   StatusBar,
   StyleProp,
   StyleSheet,
-  Pressable,
   View,
   ViewStyle,
 } from 'react-native';
@@ -127,39 +127,9 @@ export default function SettingScreen() {
         showsVerticalScrollIndicator={false}
       >
         {/* Upgrade Premium */}
-        <View style={styles.premiumCard}>
-          <TextApp style={styles.premiumTitle}>Upgrade Premium</TextApp>
-          <View style={styles.premiumFeatureContainer}>
-            <Ionicons name="checkmark-circle" size={22} color="#fff" />
-            <TextApp style={styles.premiumFeature}> Ad-Free Experience</TextApp>
-          </View>
-          <View style={styles.premiumFeatureContainer}>
-            <Ionicons name="checkmark-circle" size={22} color="#fff" />
-            <TextApp style={styles.premiumFeature}>
-              {' '}
-              Unlimited story generations
-            </TextApp>
-          </View>
-          <View style={styles.premiumFeatureContainer}>
-            <Ionicons name="checkmark-circle" size={22} color="#fff" />
-            <TextApp style={styles.premiumFeature}>
-              {' '}
-              Advanced AI Creativity
-            </TextApp>
-          </View>
-          <Pressable style={styles.subscribeBtn} onPress={handleUpgrade}>
-            <TextApp style={styles.subscribeBtnText}>
-              Subscribe{' '}
-              <Ionicons name="arrow-forward" size={18} color="#232136" />
-            </TextApp>
-          </Pressable>
-          <Pressable
-            style={{ marginTop: 8 }}
-            onPress={handleRestorePurchase}
-          >
-            <TextApp style={styles.restoreText}>Restore purchase</TextApp>
-          </Pressable>
-        </View>
+        <Pressable style={styles.premiumCard} onPress={handleUpgrade}>
+          <TextApp style={styles.premiumTitle}>AuraWrite Pro+</TextApp>
+        </Pressable>
 
         {/* General */}
         <TextApp style={styles.sectionTitle}>General</TextApp>
