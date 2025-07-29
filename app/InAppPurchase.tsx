@@ -20,7 +20,7 @@ import {
   StatusBar,
   StyleSheet,
   Text,
-  TouchableOpacity,
+  Pressable,
   View,
 } from 'react-native';
 
@@ -137,13 +137,13 @@ export default function InAppPurchaseScreen() {
   };
 
   const renderItem: ListRenderItem<any> = ({ item }) => (
-    <TouchableOpacity
-      style={[
+    <Pressable
+      style={({pressed}) => [
         styles.planBox,
         selectedPlan === item.subscriptionId && styles.planBoxSelected,
+        pressed && { opacity: 0.8 }
       ]}
       onPress={() => setSelectedPlan(item.subscriptionId)}
-      activeOpacity={0.8}
     >
       <View style={styles.planRow}>
         <Text style={styles.planRenew}>{item.label}</Text>
@@ -156,7 +156,7 @@ export default function InAppPurchaseScreen() {
       <Text style={styles.planPrice}>
         {item.price} <Text style={styles.planPeriod}>{item.period}</Text>
       </Text>
-    </TouchableOpacity>
+    </Pressable>
   );
 
   // Plan data for FlatList
@@ -203,7 +203,7 @@ export default function InAppPurchaseScreen() {
 
   const renderFooter = () => (
     <View>
-      <TouchableOpacity
+      <Pressable
         style={[
           styles.subscribeBtn,
           (isPurchasing || isSubscribed) && styles.subscribeButtonDisabled,
@@ -233,9 +233,9 @@ export default function InAppPurchaseScreen() {
             />
           </>
         )}
-      </TouchableOpacity>
+      </Pressable>
       
-      <TouchableOpacity
+      <Pressable
         style={[
           styles.restoreBtn,
           isRestoring && styles.restoreButtonDisabled,
@@ -255,15 +255,15 @@ export default function InAppPurchaseScreen() {
         ) : (
           <Text style={styles.restoreText}>Restore Purchases</Text>
         )}
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={onClose}>
+      <Pressable style={styles.backButton} onPress={onClose}>
         <Ionicons name="close" size={28} color="#222" />
-      </TouchableOpacity>
+      </Pressable>
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
