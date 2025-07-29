@@ -12,7 +12,7 @@
     "build:android": "eas build --profile development --platform android",
     "build:android-pro": "eas build --profile production --platform android",
     "prebuild:android": "eas prebuild",
-    "clear-project": ""
+    "clear-project": "npx expo prebuild --clean && watchman watch-del-all"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",

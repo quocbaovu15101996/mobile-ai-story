@@ -7,14 +7,14 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import {
-  SafeAreaView,
-  StyleSheet,
   Pressable,
+  StyleSheet,
   View,
 } from 'react-native';
 import { RootStackParamList } from '../_layout';
 // import { NotificationService } from '../../src/services/notificationService';
 import { useTheme } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
   const { colors } = useTheme();
@@ -129,7 +129,7 @@ export default function HomeScreen() {
         <TextApp style={styles.appName}>AuraWrite AI</TextApp>
         <View style={styles.headerRight}>
           <Pressable
-            style={({pressed}) => [styles.tokenBox, pressed && { opacity: 0.7 }]}
+            style={({ pressed }) => [styles.tokenBox, pressed && { opacity: 0.7 }]}
             onPress={onPressToken}
           >
             <Ionicons name="diamond" size={20} color="#7ee2ff" />
@@ -159,7 +159,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
-    paddingTop: 32,
     paddingBottom: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#333',
@@ -172,7 +171,6 @@ const styles = StyleSheet.create({
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
   },
   tokenBox: {
     flexDirection: 'row',
@@ -180,7 +178,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingVertical: 4,
     paddingHorizontal: 8,
-    marginRight: 8,
+    marginRight: 6,
     gap: 4,
     alignItems: 'center',
     justifyContent: 'center',

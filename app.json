@@ -4,7 +4,7 @@
     "slug": "aura-write-ai",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/adaptive-icon.png",
+    "icon": "./assets/images/icon.png",
     "scheme": "aurawriteai",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -42,7 +42,7 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/images/notification-icon.png",
+          "icon": "./assets/images/adaptive-icon.png",
           "color": "#ffffff",
           "defaultChannel": "default"
         }

@@ -1,6 +1,6 @@
 import {
-  SUBSCRIPTION_IDS,
   inAppPurchaseService,
+  SUBSCRIPTION_IDS,
   SubscriptionProduct,
 } from '@/src/services/inAppPurchase';
 import { showErrorToast, showSuccessToast } from '@/src/utils/toast';
@@ -15,14 +15,14 @@ import {
   ActivityIndicator,
   FlatList,
   ListRenderItem,
-  SafeAreaView,
+  Pressable,
   ScrollView,
   StatusBar,
   StyleSheet,
   Text,
-  Pressable,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function InAppPurchaseScreen() {
   const navigation = useNavigation();
@@ -50,11 +50,11 @@ export default function InAppPurchaseScreen() {
       if (initialized) {
         const availableProducts = await inAppPurchaseService.getAvailableProducts();
         setSubscriptions(availableProducts);
-        
+
         // Check if user is already subscribed
         const subscriptionStatus = inAppPurchaseService.isUserSubscribed();
         setIsSubscribed(subscriptionStatus);
-        
+
         if (subscriptionStatus) {
           showSuccessToast('You already have an active subscription!');
         }
@@ -76,7 +76,7 @@ export default function InAppPurchaseScreen() {
       setIsPurchasing(true);
 
       const result = await inAppPurchaseService.purchaseSubscription(selectedPlan);
-      
+
       if (result.success) {
         showSuccessToast('Subscription activated successfully!');
         // Navigate back or to main screen
@@ -97,11 +97,11 @@ export default function InAppPurchaseScreen() {
     try {
       setIsRestoring(true);
       const result = await inAppPurchaseService.restorePurchases();
-      
+
       if (result.success && result.customerInfo) {
         const hasActiveSubscription = inAppPurchaseService.isUserSubscribed();
         setIsSubscribed(hasActiveSubscription);
-        
+
         if (hasActiveSubscription) {
           showSuccessToast('Purchases restored successfully!');
           navigation.goBack();
@@ -128,7 +128,7 @@ export default function InAppPurchaseScreen() {
         : '125.000 đ';
     }
 
-    return subscription.localizedPrice || 
+    return subscription.localizedPrice ||
       (subscriptionId === SUBSCRIPTION_IDS.ANNUAL ? '999.000 đ' : '125.000 đ');
   };
 
@@ -138,7 +138,7 @@ export default function InAppPurchaseScreen() {
 
   const renderItem: ListRenderItem<any> = ({ item }) => (
     <Pressable
-      style={({pressed}) => [
+      style={({ pressed }) => [
         styles.planBox,
         selectedPlan === item.subscriptionId && styles.planBoxSelected,
         pressed && { opacity: 0.8 }
@@ -234,7 +234,7 @@ export default function InAppPurchaseScreen() {
           </>
         )}
       </Pressable>
-      
+
       <Pressable
         style={[
           styles.restoreBtn,
@@ -269,7 +269,7 @@ export default function InAppPurchaseScreen() {
         showsVerticalScrollIndicator={false}
       >
         <Text style={styles.title}>Get Unlimited{'\n'}Access</Text>
-        
+
         {isSubscribed && (
           <View style={styles.subscribedBanner}>
             <Ionicons name="checkmark-circle" size={24} color="#10b981" />
@@ -345,7 +345,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fafbfc',
-    paddingTop: 16,
   },
   backButton: {
     position: 'absolute',

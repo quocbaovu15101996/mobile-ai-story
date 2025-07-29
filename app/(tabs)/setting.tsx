@@ -15,12 +15,12 @@ import {
   Pressable,
   ScrollView,
   Share,
-  StatusBar,
   StyleProp,
   StyleSheet,
   View,
-  ViewStyle,
+  ViewStyle
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const packageJson = require('../../package.json');
 
@@ -120,8 +120,7 @@ export default function SettingScreen() {
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: colors.background }}>
-      <View style={{ height: StatusBar.currentHeight }} />
+    <SafeAreaView style={{ flex: 1, backgroundColor: colors.background }}>
       <ScrollView
         contentContainerStyle={{ padding: 16, paddingBottom: 32 }}
         showsVerticalScrollIndicator={false}
@@ -221,8 +220,8 @@ export default function SettingScreen() {
         <Pressable style={styles.clearBtn} onPress={handleClearData}>
           <TextApp style={styles.clearBtnText}>Clear data</TextApp>
         </Pressable>
-      </ScrollView >
-    </View >
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 

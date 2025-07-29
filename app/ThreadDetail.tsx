@@ -17,11 +17,10 @@ import {
   Image,
   ListRenderItem,
   Pressable,
-  SafeAreaView,
-  StatusBar,
   StyleSheet,
   View
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootStackParamList } from './_layout';
 
 type ThreadDetailScreenRouteProp = RouteProp<
@@ -193,7 +192,6 @@ export default function ThreadDetail() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <View style={{ height: StatusBar.currentHeight }} />
       {/* Header */}
       <View style={[styles.header, { backgroundColor: colors.background }]}>
         <Pressable style={styles.backButton} onPress={handleGoBack}>
