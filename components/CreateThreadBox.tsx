@@ -10,7 +10,6 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { RootStackParamList } from '../app/_layout';
@@ -131,7 +130,7 @@ const CreateThreadBox: FC<Props> = () => {
         <TextApp style={styles.label}>Story size</TextApp>
         <View style={styles.storySizeRow}>
           {STORY_TYPE.map((s) => (
-            <TouchableOpacity
+            <Pressable
               key={s.key}
               style={[
                 styles.sizeButton,
@@ -149,12 +148,12 @@ const CreateThreadBox: FC<Props> = () => {
                   style={styles.checkIcon}
                 />
               )}
-            </TouchableOpacity>
+            </Pressable>
           ))}
         </View>
         {storyType === 'story' && <View style={styles.storySizeRow}>
           {STORY_LENGTH.map((s) => (
-            <TouchableOpacity
+            <Pressable
               key={s}
               style={[
                 styles.sizeButton,
@@ -171,7 +170,7 @@ const CreateThreadBox: FC<Props> = () => {
                   style={styles.checkIcon}
                 />
               )}
-            </TouchableOpacity>
+            </Pressable>
           ))}
         </View>
         }
@@ -198,7 +197,7 @@ const CreateThreadBox: FC<Props> = () => {
               style={styles.genreRow}
             >
               {GENRES.map((g) => (
-                <TouchableOpacity
+                <Pressable
                   key={g.key}
                   style={[
                     styles.genreItem,
@@ -208,7 +207,7 @@ const CreateThreadBox: FC<Props> = () => {
                 >
                   <View style={styles.genreImagePlaceholder} />
                   <TextApp style={styles.genreText}>{g.label}</TextApp>
-                </TouchableOpacity>
+                </Pressable>
               ))}
             </ScrollView>
 
@@ -238,7 +237,7 @@ const CreateThreadBox: FC<Props> = () => {
             <TextApp style={styles.subLabel}>Narrative</TextApp>
             <View style={styles.genreRow}>
               {NARRATIVE.map((n) => (
-                <TouchableOpacity
+                <Pressable
                   key={n.value}
                   style={[
                     styles.genreItem,
@@ -248,14 +247,14 @@ const CreateThreadBox: FC<Props> = () => {
                 >
                   <View style={styles.genreImagePlaceholder} />
                   <TextApp style={styles.genreText}>{n.label}</TextApp>
-                </TouchableOpacity>
+                </Pressable>
               ))}
             </View>
           </View>
         )}
 
         {/* Start generate button */}
-        <TouchableOpacity
+        <Pressable
           style={[
             styles.generateButton,
             isButtonDisabled && styles.generateButtonDisabled,
@@ -266,7 +265,7 @@ const CreateThreadBox: FC<Props> = () => {
           <TextApp style={styles.generateButtonText}>
             {loading ? 'Generating...' : 'Start generate'}
           </TextApp>
-        </TouchableOpacity>
+        </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>
   );

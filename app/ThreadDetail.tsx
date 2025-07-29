@@ -18,7 +18,7 @@ import {
   ListRenderItem,
   SafeAreaView,
   StyleSheet,
-  TouchableOpacity,
+  Pressable,
   View
 } from 'react-native';
 import { RootStackParamList } from './_layout';
@@ -137,16 +137,16 @@ export default function ThreadDetail() {
       <ThemedView style={styles.container}>
         <SafeAreaView style={styles.safeArea}>
           <View style={[styles.header, { backgroundColor: colors.background }]}>
-            <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
+            <Pressable style={styles.backButton} onPress={handleGoBack}>
               <Ionicons name="close" size={24} color={colors.text} />
-            </TouchableOpacity>
+            </Pressable>
             <View style={styles.headerRight}>
-              <TouchableOpacity style={styles.actionButton}>
+              <Pressable style={styles.actionButton}>
                 <Ionicons name="refresh" size={24} color={colors.text} />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.actionButton}>
+              </Pressable>
+              <Pressable style={styles.actionButton}>
                 <Ionicons name="ellipsis-horizontal" size={24} color={colors.text} />
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
           <ThemedView style={styles.loadingContainer}>
@@ -163,27 +163,27 @@ export default function ThreadDetail() {
       <ThemedView style={styles.container}>
         <SafeAreaView style={styles.safeArea}>
           <View style={[styles.header, { backgroundColor: colors.background }]}>
-            <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
+            <Pressable style={styles.backButton} onPress={handleGoBack}>
               <Ionicons name="close" size={24} color={colors.text} />
-            </TouchableOpacity>
+            </Pressable>
             <View style={styles.headerRight}>
-              <TouchableOpacity style={styles.actionButton}>
+              <Pressable style={styles.actionButton}>
                 <Ionicons name="refresh" size={24} color={colors.text} />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.actionButton}>
+              </Pressable>
+              <Pressable style={styles.actionButton}>
                 <Ionicons name="ellipsis-horizontal" size={24} color={colors.text} />
-              </TouchableOpacity>
+              </Pressable>
             </View>
           </View>
           <ThemedView style={styles.errorContainer}>
             <Ionicons name="alert-circle-outline" size={48} color="#ef4444" />
             <TextApp style={styles.errorText}>{error || 'Thread not found'}</TextApp>
-            <TouchableOpacity
+            <Pressable
               style={styles.retryButton}
               onPress={loadThreadDetail}
             >
               <TextApp style={styles.retryButtonText}>Retry</TextApp>
-            </TouchableOpacity>
+            </Pressable>
           </ThemedView>
         </SafeAreaView>
       </ThemedView>
@@ -195,16 +195,16 @@ export default function ThreadDetail() {
       <SafeAreaView style={styles.safeArea}>
         {/* Header */}
         <View style={[styles.header, { backgroundColor: colors.background }]}>
-          <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
+          <Pressable style={styles.backButton} onPress={handleGoBack}>
             <Ionicons name="close" size={24} color={colors.text} />
-          </TouchableOpacity>
+          </Pressable>
           <View style={styles.headerRight}>
-            <TouchableOpacity style={styles.actionButton}>
+            <Pressable style={styles.actionButton}>
               <Ionicons name="refresh" size={24} color={colors.text} />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.actionButton}>
+            </Pressable>
+            <Pressable style={styles.actionButton}>
               <Ionicons name="ellipsis-horizontal" size={24} color={colors.text} />
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
 
@@ -221,14 +221,14 @@ export default function ThreadDetail() {
 
         {/* Bottom Actions */}
         <ThemedView style={styles.bottomActions}>
-          <TouchableOpacity style={[styles.actionButtonLarge, styles.continueButton]}>
+          <Pressable style={[styles.actionButtonLarge, styles.continueButton]}>
             <Ionicons name="play" size={20} color="#fff" />
             <TextApp style={styles.actionButtonText}>Continue</TextApp>
-          </TouchableOpacity>
-          <TouchableOpacity style={[styles.actionButtonLarge, styles.expandButton]}>
+          </Pressable>
+          <Pressable style={[styles.actionButtonLarge, styles.expandButton]}>
             <Ionicons name="expand" size={20} color="#fff" />
             <TextApp style={styles.actionButtonText}>Expand</TextApp>
-          </TouchableOpacity>
+          </Pressable>
         </ThemedView>
       </SafeAreaView>
     </ThemedView>

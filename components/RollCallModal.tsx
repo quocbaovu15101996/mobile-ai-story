@@ -8,7 +8,6 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -102,7 +101,7 @@ export default function RollCallModal({ visible, onClose }: Props) {
                 </View>
               ))}
             </View>
-            <TouchableOpacity
+            <Pressable
               style={[
                 styles.modalCheckinBtn,
                 isCheckingIn && styles.modalCheckinBtnDisabled,
@@ -113,8 +112,8 @@ export default function RollCallModal({ visible, onClose }: Props) {
               <Text style={styles.modalCheckinBtnText}>
                 {isCheckingIn ? 'Checking In...' : 'Check-In'}
               </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
+            </Pressable>
+            <Pressable
               style={[
                 styles.modalAds,
                 disabledWatchAds && styles.btnDisabled,
@@ -134,7 +133,7 @@ export default function RollCallModal({ visible, onClose }: Props) {
                 <Ionicons name="diamond" size={18} color="#7ee2ff" />
                 <Text style={styles.modalAdsGem}>+10</Text>
               </View>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </Pressable>
       </Modal>

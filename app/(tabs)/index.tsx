@@ -9,7 +9,7 @@ import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
-  TouchableOpacity,
+  Pressable,
   View,
 } from 'react-native';
 import { RootStackParamList } from '../_layout';
@@ -128,20 +128,19 @@ export default function HomeScreen() {
       <View style={[styles.header, { backgroundColor: colors.background }]}>
         <TextApp style={styles.appName}>AuraWrite AI</TextApp>
         <View style={styles.headerRight}>
-          <TouchableOpacity
-            style={styles.tokenBox}
+          <Pressable
+            style={({pressed}) => [styles.tokenBox, pressed && { opacity: 0.7 }]}
             onPress={onPressToken}
-            activeOpacity={0.7}
           >
             <Ionicons name="diamond" size={20} color="#7ee2ff" />
             <TextApp style={styles.tokenValue}>{userProfile?.diamond}</TextApp>
-          </TouchableOpacity>
-          <TouchableOpacity
+          </Pressable>
+          <Pressable
             style={styles.calendarIcon}
             onPress={onPressCalendar}
           >
             <Ionicons name="calendar-outline" size={24} color={colors.text} />
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </View>
 
