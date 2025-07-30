@@ -201,7 +201,7 @@ export default function ThreadDetail() {
 
   const renderThreadHeader = () => {
     return (
-      <View style={[styles.header, { backgroundColor: colors.background }]}>
+      <View style={styles.header}>
         <Pressable style={styles.backButton} onPress={handleGoBack}>
           <Ionicons name="close" size={24} color={colors.text} />
         </Pressable>
