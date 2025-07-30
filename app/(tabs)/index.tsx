@@ -1,5 +1,4 @@
 import CreateThreadBox from '@/components/CreateThreadBox';
-import RollCallModal from '@/components/RollCallModal';
 import { useUserProfile } from '@/src/store/useAuthStore';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -10,6 +9,7 @@ import {
 import { RootStackParamList } from '../_layout';
 // import { NotificationService } from '../../src/services/notificationService';
 import { HeaderBox } from '@/components/HeaderBox';
+import RollCallModal from '@/components/RollCallModal';
 import { useTheme } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 

@@ -1,6 +1,7 @@
 import TextApp from '@/components/TextApp';
 import { ThemedView } from '@/components/ThemedView';
 import { MessageItem } from '@/components/thread/MessageItem';
+import { MESSAGE_TYPE, ROLE } from '@/constants';
 import {
   continueThread,
   createARunThread,
@@ -167,16 +168,16 @@ export default function ThreadDetail() {
 
   const onContinue = async () => {
     setLoadingPassage(true);
-    const continueMessage = createTempMessage('', '', 'continue', 'user');
-    setPassages([...passages, continueMessage]);
+    const continueMessage = createTempMessage('', '', MESSAGE_TYPE.CONTINUE, ROLE.USER);
+    setPassages((prevPassages) => [...prevPassages, continueMessage]);
     const response = await continueThread(threadId);
     const newMessage = createTempMessage(
       response.data.id,
       response.data.content,
-      'text',
-      'assistant'
+      MESSAGE_TYPE.TEXT,
+      ROLE.ASSISTANT
     );
-    setPassages([...passages, newMessage]);
+    setPassages((prevPassages) => [...prevPassages, newMessage]);
     setLoadingPassage(false);
   };
 
@@ -186,14 +187,14 @@ export default function ThreadDetail() {
       content: 'we have some conflict',
       tone: TONE_TYPE.DEFAULT,
     };
-    const expandMessage = createTempMessage('', '', 'expand', 'user');
+    const expandMessage = createTempMessage('', '', MESSAGE_TYPE.EXPAND, ROLE.USER);
     setPassages([...passages, expandMessage]);
     const response = await expandThread(threadId, payload);
     const newMessage = createTempMessage(
       response.data.id,
       response.data.content,
-      'text',
-      'assistant'
+      MESSAGE_TYPE.TEXT,
+      ROLE.ASSISTANT
     );
     setPassages([...passages, newMessage]);
     setLoadingPassage(false);

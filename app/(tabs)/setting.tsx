@@ -146,7 +146,7 @@ export default function SettingScreen() {
               <Ionicons name="arrow-forward" size={22} color={themeColors.text} />
             }
             onPress={handleShare}
-            title="Share AI Story"
+            title="Share AuraWrite AI"
             style={{ backgroundColor: themeColors.backgroundGray }}
           />
           <SettingItem
@@ -157,7 +157,7 @@ export default function SettingScreen() {
               <Ionicons name="arrow-forward" size={22} color={themeColors.text} />
             }
             onPress={handleRate}
-            title="Give AI Story 5 stars"
+            title="Give AuraWrite AI 5 stars"
             style={{ backgroundColor: themeColors.backgroundGray }}
           />
           <SettingItem

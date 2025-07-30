@@ -1,3 +1,4 @@
+import { MESSAGE_TYPE, ROLE } from '@/constants';
 import { MessageItemInterface } from '@/src/services/api/types';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
@@ -9,7 +10,7 @@ type Props = {
   item: MessageItemInterface
 }
 const MessageItem: React.FC<Props> = ({ item }) => {
-  if (item.role === 'assistant') {
+  if (item.role === ROLE.ASSISTANT) {
     return (
       <ThemedView style={styles.container}>
         <TextApp style={styles.storyText}>
@@ -18,10 +19,10 @@ const MessageItem: React.FC<Props> = ({ item }) => {
       </ThemedView>
     )
   }
-  if (item.role === 'user' && ['continue', 'expand'].includes(item?.metadata?.type)) {
+  if (item.role === ROLE.USER && [MESSAGE_TYPE.CONTINUE, MESSAGE_TYPE.EXPAND].includes(item?.metadata?.type)) {
     return (
       <ThemedView style={styles.messageAction}>
-        <Ionicons name={item?.metadata?.type === 'continue' ? 'play' : 'expand'} size={14} color="#fff" />
+        <Ionicons name={item?.metadata?.type === MESSAGE_TYPE.CONTINUE ? 'play' : 'expand'} size={14} color="#fff" />
         <TextApp>
           {item?.metadata?.type}
         </TextApp>
