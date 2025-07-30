@@ -117,7 +117,7 @@ interface Content {
   type: string;
   text: ContentText;
 }
-export interface MessageItem {
+export interface MessageItemInterface {
   id: string;
   object: string;
   created_at: string;

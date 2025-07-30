@@ -1,7 +1,14 @@
 import TextApp from '@/components/TextApp';
 import { ThemedView } from '@/components/ThemedView';
-import { continueThread, createARunThread, expandThread, getThreadDetail, getThreadMessages } from '@/src/services/api/thread';
-import { MessageItem, Thread } from '@/src/services/api/types';
+import { MessageItem } from '@/components/thread/MessageItem';
+import {
+  continueThread,
+  createARunThread,
+  expandThread,
+  getThreadDetail,
+  getThreadMessages,
+} from '@/src/services/api/thread';
+import { MessageItemInterface, Thread } from '@/src/services/api/types';
 import { Ionicons } from '@expo/vector-icons';
 import {
   RouteProp,
@@ -18,7 +25,7 @@ import {
   ListRenderItem,
   Pressable,
   StyleSheet,
-  View
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootStackParamList } from './_layout';
@@ -35,8 +42,8 @@ const TONE_TYPE = {
   EMOTION: 'EMOTION',
   DARK: 'DARK',
   COMEDY: 'COMEDY',
-  CLASH: 'CLASH'
-}
+  CLASH: 'CLASH',
+};
 
 export default function ThreadDetail() {
   const { colors } = useTheme();
@@ -44,7 +51,7 @@ export default function ThreadDetail() {
   const [thread, setThread] = useState<Thread | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadingPassage, setLoadingPassage] = useState(false);
-  const [passages, setPassages] = useState<MessageItem[]>([]);
+  const [passages, setPassages] = useState<MessageItemInterface[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   const navigation =
@@ -52,8 +59,13 @@ export default function ThreadDetail() {
   const route = useRoute<ThreadDetailScreenRouteProp>();
   const { threadId, isCreate } = route.params;
 
-  const createTempMessage = (messageId: string, content: string, type: string, role: string) => {
-    const newMessage: MessageItem = {
+  const createTempMessage = (
+    messageId: string,
+    content: string,
+    type: string,
+    role: string
+  ) => {
+    const newMessage: MessageItemInterface = {
       id: messageId,
       object: '',
       created_at: '',
@@ -77,7 +89,12 @@ export default function ThreadDetail() {
   const runThread = async () => {
     try {
       const response = await createARunThread(threadId);
-      const newMessage = createTempMessage(response.data.id, response.data.content, 'text', 'assistant');
+      const newMessage = createTempMessage(
+        response.data.id,
+        response.data.content,
+        'text',
+        'assistant'
+      );
       setPassages([newMessage]);
     } catch (err) {
       console.error('Error loading thread detail:', err);
@@ -88,7 +105,10 @@ export default function ThreadDetail() {
     try {
       setLoading(true);
       setError(null);
-      const response = Promise.all([getThreadDetail(threadId), getThreadMessages(threadId)]);
+      const response = Promise.all([
+        getThreadDetail(threadId),
+        getThreadMessages(threadId),
+      ]);
       const [threadDetail, threadMessages] = await response;
       setThread(threadDetail.data);
       setPassages(threadMessages.data);
@@ -116,30 +136,12 @@ export default function ThreadDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCreate]);
 
-  const renderItem: ListRenderItem<MessageItem> = ({ item }) => {
-    if (item.role === 'assistant') {
-      return (
-        <ThemedView style={styles.messageContainer}>
-          <TextApp style={styles.storyText}>
-            {item.content.text.value}
-          </TextApp>
-        </ThemedView>
-      )
-    }
-    if (item.role === 'user' && ['continue', 'expand'].includes(item?.metadata?.type)) {
-      return (
-        <ThemedView style={styles.messageAction}>
-          <Ionicons name={item?.metadata?.type === 'continue' ? 'play' : 'expand'} size={14} color="#fff" />
-          <TextApp>
-            {item?.metadata?.type}
-          </TextApp>
-        </ThemedView>
-      )
-    }
-    return null;
-  };
+  const renderItem: ListRenderItem<MessageItemInterface> = ({ item }) => (
+    <MessageItem item={item} />
+  );
 
-  const keyExtractor = (item: MessageItem, index: number) => `${item.id}-${index}`;
+  const keyExtractor = (item: MessageItemInterface, index: number) =>
+    `${item.id}-${index}`;
 
   const renderHeader = () => (
     <ThemedView>
@@ -161,14 +163,20 @@ export default function ThreadDetail() {
     </ThemedView>
   );
 
-  const renderFooter = () => loadingPassage ? <ActivityIndicator size="small" color="#007AFF" /> : null;
+  const renderFooter = () =>
+    loadingPassage ? <ActivityIndicator size="small" color="#007AFF" /> : null;
 
   const onContinue = async () => {
     setLoadingPassage(true);
     const continueMessage = createTempMessage('', '', 'continue', 'user');
     setPassages([...passages, continueMessage]);
     const response = await continueThread(threadId);
-    const newMessage = createTempMessage(response.data.id, response.data.content, 'text', 'assistant');
+    const newMessage = createTempMessage(
+      response.data.id,
+      response.data.content,
+      'text',
+      'assistant'
+    );
     setPassages([...passages, newMessage]);
     setLoadingPassage(false);
   };
@@ -177,12 +185,17 @@ export default function ThreadDetail() {
     setLoadingPassage(true);
     const payload = {
       content: 'we have some conflict',
-      tone: TONE_TYPE.DEFAULT
-    }
+      tone: TONE_TYPE.DEFAULT,
+    };
     const expandMessage = createTempMessage('', '', 'expand', 'user');
     setPassages([...passages, expandMessage]);
     const response = await expandThread(threadId, payload);
-    const newMessage = createTempMessage(response.data.id, response.data.content, 'text', 'assistant');
+    const newMessage = createTempMessage(
+      response.data.id,
+      response.data.content,
+      'text',
+      'assistant'
+    );
     setPassages([...passages, newMessage]);
     setLoadingPassage(false);
   };
@@ -202,7 +215,7 @@ export default function ThreadDetail() {
           </Pressable>
         </View>
       </View>
-    )
+    );
   };
 
   if (loading) {
@@ -212,7 +225,9 @@ export default function ThreadDetail() {
           {renderThreadHeader()}
           <ThemedView style={styles.loadingContainer}>
             <ActivityIndicator size="large" color="#6366f1" />
-            <TextApp style={styles.loadingText}>Loading thread details...</TextApp>
+            <TextApp style={styles.loadingText}>
+              Loading thread details...
+            </TextApp>
           </ThemedView>
         </SafeAreaView>
       </ThemedView>
@@ -226,11 +241,10 @@ export default function ThreadDetail() {
           {renderThreadHeader()}
           <ThemedView style={styles.errorContainer}>
             <Ionicons name="alert-circle-outline" size={48} color="#ef4444" />
-            <TextApp style={styles.errorText}>{error || 'Thread not found'}</TextApp>
-            <Pressable
-              style={styles.retryButton}
-              onPress={loadThreadDetail}
-            >
+            <TextApp style={styles.errorText}>
+              {error || 'Thread not found'}
+            </TextApp>
+            <Pressable style={styles.retryButton} onPress={loadThreadDetail}>
               <TextApp style={styles.retryButtonText}>Retry</TextApp>
             </Pressable>
           </ThemedView>
@@ -258,11 +272,17 @@ export default function ThreadDetail() {
 
       {/* Bottom Actions */}
       <ThemedView style={styles.bottomActions}>
-        <Pressable style={[styles.actionButtonLarge, styles.continueButton]} onPress={onContinue}>
+        <Pressable
+          style={[styles.actionButtonLarge, styles.continueButton]}
+          onPress={onContinue}
+        >
           <Ionicons name="play" size={20} color="#fff" />
           <TextApp style={styles.actionButtonText}>Continue</TextApp>
         </Pressable>
-        <Pressable style={[styles.actionButtonLarge, styles.expandButton]} onPress={onExpand}>
+        <Pressable
+          style={[styles.actionButtonLarge, styles.expandButton]}
+          onPress={onExpand}
+        >
           <Ionicons name="expand" size={20} color="#fff" />
           <TextApp style={styles.actionButtonText}>Expand</TextApp>
         </Pressable>
@@ -321,10 +341,6 @@ const styles = StyleSheet.create({
     paddingTop: 24,
     paddingBottom: 16,
   },
-  messageContainer: {
-    paddingHorizontal: 24,
-    paddingBottom: 16,
-  },
   contentContainer: {
     padding: 24,
     flex: 1,
@@ -334,11 +350,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 16,
     lineHeight: 34,
-  },
-  storyText: {
-    fontSize: 16,
-    lineHeight: 24,
-    marginBottom: 16,
   },
   bottomActions: {
     flexDirection: 'row',
@@ -400,13 +411,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-  messageAction: {
-    borderRadius: 24,
-    backgroundColor: 'gray',
-    flexDirection: 'row',
-    gap: 8,
-    alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 16
-  }
+
 });
