@@ -128,8 +128,9 @@ export default function ThreadDetail() {
     }
     if (item.role === 'user' && ['continue', 'expand'].includes(item?.metadata?.type)) {
       return (
-        <ThemedView style={styles.messageContainer}>
-          <TextApp style={styles.storyText}>
+        <ThemedView style={styles.messageAction}>
+          <Ionicons name={item?.metadata?.type === 'continue' ? 'play' : 'expand'} size={14} color="#fff" />
+          <TextApp>
             {item?.metadata?.type}
           </TextApp>
         </ThemedView>
@@ -399,4 +400,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  messageAction: {
+    borderRadius: 24,
+    backgroundColor: 'gray',
+    flexDirection: 'row',
+    gap: 8,
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 16
+  }
 });
