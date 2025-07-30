@@ -24,6 +24,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 const appJson = require('../../app.json');
 
+console.log('appJson ', appJson);
 interface ItemProps {
   icon: any;
   iconRight?: any;
@@ -210,7 +211,7 @@ export default function SettingScreen() {
               />
             }
             iconRight={
-              <TextApp style={styles.versionText}>{appJson.version}</TextApp>
+              <TextApp style={styles.versionText}>{appJson?.expo?.version}</TextApp>
             }
             onPress={handlePrivacy}
             title="App version"
@@ -303,7 +304,6 @@ const styles = StyleSheet.create({
   },
   versionText: {
     fontSize: 15,
-    color: '#bdbdc7',
     fontWeight: '500',
   },
   clearBtn: {

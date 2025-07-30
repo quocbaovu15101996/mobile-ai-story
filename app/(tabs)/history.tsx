@@ -1,23 +1,29 @@
+import { HeaderBox } from '@/components/HeaderBox';
+import RollCallModal from '@/components/RollCallModal';
 import TextApp from '@/components/TextApp';
 import { ThreadItem } from '@/components/ThreadItem';
 import { getHistory } from '@/src/services/api/thread';
 import { Thread } from '@/src/services/api/types';
-import { useTheme } from '@react-navigation/native';
+import { useUserProfile } from '@/src/store';
+import { useNavigation, useTheme } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
   ListRenderItem,
   RefreshControl,
-  StatusBar,
   StyleSheet,
   View
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { RootStackParamList } from '../_layout';
 
 const PAGE_SIZE = 10;
 
 export default function HistoryScreen() {
   const { colors } = useTheme();
+  const userProfile = useUserProfile();
 
   const [threads, setThreads] = useState<Thread[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,6 +32,9 @@ export default function HistoryScreen() {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [hasNext, setHasNext] = useState(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const fetchHistory = async (isRefresh = false, page = 0) => {
     try {
@@ -66,6 +75,10 @@ export default function HistoryScreen() {
     fetchHistory();
   }, []);
 
+  const onCloseModal = () => {
+    setModalVisible(false);
+  };
+
   const onRefresh = () => {
     fetchHistory(true, 0);
   };
@@ -74,6 +87,14 @@ export default function HistoryScreen() {
     if (!loadingMore && hasNext) {
       fetchHistory(false, currentPage + 1);
     }
+  };
+
+  const onPressToken = () => {
+    navigation.navigate('InAppPurchase');
+  };
+
+  const onPressCalendar = () => {
+
   };
 
   const renderItem: ListRenderItem<Thread> = ({ item }) => (
@@ -122,8 +143,13 @@ export default function HistoryScreen() {
   }
 
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={{ height: StatusBar.currentHeight }} />
+    <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
+      <HeaderBox
+        title='Stories'
+        diamond={userProfile?.diamond}
+        onPressToken={onPressToken}
+        onPressCalendar={onPressCalendar}
+      />
       <FlatList
         data={threads}
         renderItem={renderItem}
@@ -138,7 +164,8 @@ export default function HistoryScreen() {
         onEndReachedThreshold={0.1}
         showsVerticalScrollIndicator={false}
       />
-    </View>
+      <RollCallModal visible={modalVisible} onClose={onCloseModal} />
+    </SafeAreaView>
   );
 }
 

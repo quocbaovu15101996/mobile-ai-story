@@ -144,8 +144,7 @@ export default function ThreadDetail() {
     `${item.id}-${index}`;
 
   const renderHeader = () => (
-    <ThemedView>
-      {/* Hero Image */}
+    <View>
       {thread?.image && (
         <View style={styles.heroImageContainer}>
           <Image
@@ -160,7 +159,7 @@ export default function ThreadDetail() {
       <ThemedView style={styles.titleContainer}>
         <TextApp style={styles.storyTitle}>{thread?.title}</TextApp>
       </ThemedView>
-    </ThemedView>
+    </View>
   );
 
   const renderFooter = () =>

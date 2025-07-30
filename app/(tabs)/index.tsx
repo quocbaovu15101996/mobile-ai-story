@@ -1,18 +1,15 @@
 import CreateThreadBox from '@/components/CreateThreadBox';
 import RollCallModal from '@/components/RollCallModal';
-import TextApp from '@/components/TextApp';
 import { useUserProfile } from '@/src/store/useAuthStore';
-import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import {
-  Pressable,
-  StyleSheet,
-  View,
+  StyleSheet
 } from 'react-native';
 import { RootStackParamList } from '../_layout';
 // import { NotificationService } from '../../src/services/notificationService';
+import { HeaderBox } from '@/components/HeaderBox';
 import { useTheme } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -125,27 +122,13 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={[styles.header, { backgroundColor: colors.background }]}>
-        <TextApp style={styles.appName}>AuraWrite AI</TextApp>
-        <View style={styles.headerRight}>
-          <Pressable
-            style={({ pressed }) => [styles.tokenBox, pressed && { opacity: 0.7 }]}
-            onPress={onPressToken}
-          >
-            <Ionicons name="diamond" size={20} color="#7ee2ff" />
-            <TextApp style={styles.tokenValue}>{userProfile?.diamond}</TextApp>
-          </Pressable>
-          <Pressable
-            style={styles.calendarIcon}
-            onPress={onPressCalendar}
-          >
-            <Ionicons name="calendar-outline" size={24} color={colors.text} />
-          </Pressable>
-        </View>
-      </View>
-
+      <HeaderBox
+        title='AuraWrite AI'
+        diamond={userProfile?.diamond}
+        onPressToken={onPressToken}
+        onPressCalendar={onPressCalendar}
+      />
       <CreateThreadBox />
-
       <RollCallModal visible={modalVisible} onClose={onCloseModal} />
     </SafeAreaView>
   );
