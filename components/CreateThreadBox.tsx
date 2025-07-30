@@ -62,6 +62,7 @@ const CreateThreadBox: FC<Props> = () => {
     setLoading(true);
     try {
       const payload = {
+        title: storyIdea,
         storyIdea,
         isCanInteract: STORY_TYPE.find((s) => s.key === storyType)?.value || 1,
         storyLength: storyLength.toLocaleUpperCase(),

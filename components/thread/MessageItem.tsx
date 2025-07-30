@@ -11,7 +11,7 @@ type Props = {
 const MessageItem: React.FC<Props> = ({ item }) => {
   if (item.role === 'assistant') {
     return (
-      <ThemedView style={styles.messageContainer}>
+      <ThemedView style={styles.container}>
         <TextApp style={styles.storyText}>
           {item.content.text.value}
         </TextApp>
@@ -34,9 +34,9 @@ const MessageItem: React.FC<Props> = ({ item }) => {
 export { MessageItem };
 
 const styles = StyleSheet.create({
-  messageContainer: {
-    paddingHorizontal: 24,
-    paddingBottom: 16,
+  container: {
+    padding: 16,
+    marginHorizontal: 12,
   },
   storyText: {
     fontSize: 16,
@@ -52,6 +52,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 12,
     paddingHorizontal: 16,
-    marginHorizontal: 24,
+    marginHorizontal: 12,
   },
 })

@@ -326,6 +326,7 @@ const styles = StyleSheet.create({
   },
   flatListContent: {
     flexGrow: 1,
+    gap: 12,
   },
   heroImageContainer: {
     width: '100%',
