@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
   container: {
     padding: 16,
     marginHorizontal: 12,
+    borderRadius: 12,
   },
   storyText: {
     fontSize: 16,

@@ -1,189 +1,33 @@
+import { Ionicons } from '@expo/vector-icons';
+import { useTheme } from '@react-navigation/native';
+import React from 'react';
+import { ActivityIndicator, FlatList, Image, ListRenderItem, Pressable, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 import TextApp from '@/components/TextApp';
 import { ThemedView } from '@/components/ThemedView';
 import { MessageItem } from '@/components/thread/MessageItem';
-import { MESSAGE_TYPE, ROLE } from '@/constants';
-import {
-  continueThread,
-  createARunThread,
-  expandThread,
-  getThreadDetail,
-  getThreadMessages,
-} from '@/src/services/api/thread';
-import { MessageItemInterface, Thread } from '@/src/services/api/types';
-import { Ionicons } from '@expo/vector-icons';
-import {
-  RouteProp,
-  useNavigation,
-  useRoute,
-  useTheme,
-} from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
-import {
-  ActivityIndicator,
-  FlatList,
-  Image,
-  ListRenderItem,
-  Pressable,
-  StyleSheet,
-  View,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { RootStackParamList } from './_layout';
+import { useThreadDetail } from '@/hooks/useThreadDetail';
 
-type ThreadDetailScreenRouteProp = RouteProp<
-  RootStackParamList,
-  'ThreadDetail'
->;
-
-const TONE_TYPE = {
-  DEFAULT: 'DEFAULT',
-  CHARACTER: 'CHARACTER',
-  SPICY: 'SPICY',
-  EMOTION: 'EMOTION',
-  DARK: 'DARK',
-  COMEDY: 'COMEDY',
-  CLASH: 'CLASH',
-};
+import type { MessageItemInterface } from '@/src/services/api/types';
+import { SCREEN_HEIGHT } from '@/src/utils';
 
 export default function ThreadDetail() {
   const { colors } = useTheme();
 
-  const [thread, setThread] = useState<Thread | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [loadingPassage, setLoadingPassage] = useState(false);
-  const [passages, setPassages] = useState<MessageItemInterface[]>([]);
-  const [error, setError] = useState<string | null>(null);
-
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const route = useRoute<ThreadDetailScreenRouteProp>();
-  const { threadId, isCreate } = route.params;
-
-  const createTempMessage = (
-    messageId: string,
-    content: string,
-    type: string,
-    role: string
-  ) => {
-    const newMessage: MessageItemInterface = {
-      id: messageId,
-      object: '',
-      created_at: '',
-      thread_id: '',
-      run_id: '',
-      role: role,
-      content: {
-        type: type,
-        text: {
-          value: content,
-        },
-      },
-      metadata: {
-        type: type,
-        content: content,
-      },
-    };
-    return newMessage;
-  };
-
-  const runThread = async () => {
-    try {
-      const response = await createARunThread(threadId);
-      const newMessage = createTempMessage(
-        response.data.id,
-        response.data.content,
-        'text',
-        'assistant'
-      );
-      setPassages([newMessage]);
-    } catch (err) {
-      console.error('Error loading thread detail:', err);
-    }
-  };
-
-  const loadThreadDetail = async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      const response = Promise.all([
-        getThreadDetail(threadId),
-        getThreadMessages(threadId),
-      ]);
-      const [threadDetail, threadMessages] = await response;
-      setThread(threadDetail.data);
-      setPassages(threadMessages.data);
-    } catch (err) {
-      setError('Failed to load thread details');
-      console.error('Error loading thread detail:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGoBack = () => {
-    navigation.goBack();
-  };
-
-  const onDeleteMessage = () => { };
-
-  const onRewriteMessage = () => { };
-
-  const onContinue = async () => {
-    setLoadingPassage(true);
-    const continueMessage = createTempMessage(
-      '',
-      '',
-      MESSAGE_TYPE.CONTINUE,
-      ROLE.USER
-    );
-    setPassages((prevPassages) => [...prevPassages, continueMessage]);
-    const response = await continueThread(threadId);
-    const newMessage = createTempMessage(
-      response.data.id,
-      response.data.content,
-      MESSAGE_TYPE.TEXT,
-      ROLE.ASSISTANT
-    );
-    setPassages((prevPassages) => [...prevPassages, newMessage]);
-    setLoadingPassage(false);
-  };
-
-  const onExpand = async () => {
-    setLoadingPassage(true);
-    const payload = {
-      content: 'we have some conflict',
-      tone: TONE_TYPE.DEFAULT,
-    };
-    const expandMessage = createTempMessage(
-      '',
-      '',
-      MESSAGE_TYPE.EXPAND,
-      ROLE.USER
-    );
-    setPassages([...passages, expandMessage]);
-    const response = await expandThread(threadId, payload);
-    const newMessage = createTempMessage(
-      response.data.id,
-      response.data.content,
-      MESSAGE_TYPE.TEXT,
-      ROLE.ASSISTANT
-    );
-    setPassages([...passages, newMessage]);
-    setLoadingPassage(false);
-  };
-
-  useEffect(() => {
-    loadThreadDetail();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  useEffect(() => {
-    if (isCreate) {
-      runThread();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isCreate]);
+  const {
+    thread,
+    loading,
+    loadingPassage,
+    passages,
+    error,
+    handleGoBack,
+    onDeleteMessage,
+    onRewriteMessage,
+    onContinue,
+    onExpand,
+    loadThreadDetail,
+  } = useThreadDetail();
 
   const renderThreadHeader = () => {
     return (
@@ -203,12 +47,12 @@ export default function ThreadDetail() {
     );
   };
 
-  const renderItem: ListRenderItem<MessageItemInterface> = ({ item }) => (
+  const renderItem: ListRenderItem<MessageItemInterface> = React.useCallback(({ item }) => (
     <MessageItem item={item} />
-  );
+  ), []);
 
-  const keyExtractor = (item: MessageItemInterface, index: number) =>
-    `${item.id}-${index}`;
+  const keyExtractor = React.useCallback((item: MessageItemInterface, index: number) =>
+    `${item.id}-${index}`, []);
 
   const renderHeader = () => (
     <View>
@@ -230,24 +74,26 @@ export default function ThreadDetail() {
   );
 
   const renderActions = () => (
-    <ThemedView>
-      <Pressable style={styles.actionButtonLarge} onPress={onDeleteMessage}>
+    <ThemedView style={{ flexDirection: 'row', gap: 8 }}>
+      <Pressable style={styles.actionButtonSmall} onPress={onDeleteMessage}>
         <Ionicons name="play" size={20} color="#fff" />
         <TextApp style={styles.actionButtonText}>Delete</TextApp>
       </Pressable>
-      <Pressable style={styles.actionButtonLarge} onPress={onRewriteMessage}>
+      <Pressable style={styles.actionButtonSmall} onPress={onRewriteMessage}>
         <Ionicons name="expand" size={20} color="#fff" />
         <TextApp style={styles.actionButtonText}>Re-Write</TextApp>
       </Pressable>
     </ThemedView>
   );
 
-  const renderFooter = () =>
-    loadingPassage ? (
-      <ActivityIndicator size="small" color="#007AFF" />
-    ) : (
-      thread?.isCanInteract === 1 && renderActions()
-    );
+  const renderFooter = () => {
+    if (loadingPassage) {
+      return (
+        <ActivityIndicator size="small" color="#007AFF" />
+      )
+    }
+    return thread?.isCanInteract === 1 && renderActions()
+  }
 
   if (loading) {
     return (
@@ -358,6 +204,7 @@ const styles = StyleSheet.create({
   flatListContent: {
     flexGrow: 1,
     gap: 12,
+    paddingBottom: SCREEN_HEIGHT / 3
   },
   heroImageContainer: {
     width: '100%',
@@ -443,4 +290,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  actionButtonSmall: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 8,
+    borderRadius: 50,
+    gap: 8,
+  }
 });
