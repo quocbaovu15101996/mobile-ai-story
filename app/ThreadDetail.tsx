@@ -74,16 +74,16 @@ export default function ThreadDetail() {
   );
 
   const renderActions = () => (
-    <ThemedView style={{ flexDirection: 'row', gap: 8 }}>
+    <View style={{ flexDirection: 'row', gap: 8, justifyContent: 'flex-end', marginRight: 12 }}>
       <Pressable style={styles.actionButtonSmall} onPress={onDeleteMessage}>
-        <Ionicons name="play" size={20} color="#fff" />
+        <Ionicons name="trash" size={14} color="#fff" />
         <TextApp style={styles.actionButtonText}>Delete</TextApp>
       </Pressable>
       <Pressable style={styles.actionButtonSmall} onPress={onRewriteMessage}>
-        <Ionicons name="expand" size={20} color="#fff" />
+        <Ionicons name="refresh-sharp" size={14} color="#fff" />
         <TextApp style={styles.actionButtonText}>Re-Write</TextApp>
       </Pressable>
-    </ThemedView>
+    </View>
   );
 
   const renderFooter = () => {
@@ -153,14 +153,14 @@ export default function ThreadDetail() {
           style={[styles.actionButtonLarge, styles.continueButton]}
           onPress={onContinue}
         >
-          <Ionicons name="play" size={20} color="#fff" />
+          <Ionicons name="play" size={24} color="#fff" />
           <TextApp style={styles.actionButtonText}>Continue</TextApp>
         </Pressable>
         <Pressable
           style={[styles.actionButtonLarge, styles.expandButton]}
           onPress={onExpand}
         >
-          <Ionicons name="expand" size={20} color="#fff" />
+          <Ionicons name="expand" size={24} color="#fff" />
           <TextApp style={styles.actionButtonText}>Expand</TextApp>
         </Pressable>
       </ThemedView>
@@ -294,6 +294,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'gray',
     padding: 8,
     borderRadius: 50,
     gap: 8,
