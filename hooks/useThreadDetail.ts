@@ -1,16 +1,18 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
-import { useState, useEffect, useCallback } from 'react';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { useCallback, useEffect, useState } from 'react';
 import { RootStackParamList } from '../app/_layout';
 import { MESSAGE_TYPE, ROLE } from '../constants';
-import { Thread, MessageItemInterface } from '../src/services/api/types';
 import {
   continueThread,
   createARunThread,
+  eraseLastMessage,
   expandThread,
   getThreadDetail,
   getThreadMessages,
+  rewriteLastMessage,
 } from '../src/services/api/thread';
+import { MessageItemInterface, Thread } from '../src/services/api/types';
 
 type ThreadDetailScreenRouteProp = {
   key: string;
@@ -35,6 +37,7 @@ export const useThreadDetail = () => {
   const [thread, setThread] = useState<Thread | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadingPassage, setLoadingPassage] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [passages, setPassages] = useState<MessageItemInterface[]>([]);
   const [error, setError] = useState<string | null>(null);
 
@@ -106,13 +109,36 @@ export const useThreadDetail = () => {
     navigation.goBack();
   }, [navigation]);
 
-  const onDeleteMessage = useCallback(() => {
-    // Implementation for delete message
-  }, []);
+  const onDeleteMessage = useCallback(async () => {
+    if (passages.length < 2 || deleting) return;
 
-  const onRewriteMessage = useCallback(() => {
-    // Implementation for rewrite message
-  }, []);
+    try {
+      setDeleting(true);
+      const response = await eraseLastMessage(threadId);
+      if (response.status === 200 && response.data === true) {
+        setPassages(prevPassages => prevPassages.slice(0, -2));
+      }
+    } catch (err) {
+      console.error('Error deleting messages:', err);
+      setError('Failed to delete messages');
+    } finally {
+      setDeleting(false);
+    }
+  }, [threadId, passages.length, deleting]);
+
+  const onRewriteMessage = useCallback(async () => {
+    setLoadingPassage(true);
+    setPassages(prevPassages => prevPassages.slice(0, -1));
+    const response = await rewriteLastMessage(threadId);
+    const newMessage = createTempMessage(
+      response.data.id,
+      response.data.content,
+      MESSAGE_TYPE.TEXT,
+      ROLE.ASSISTANT
+    );
+    setPassages((prevPassages) => [...prevPassages, newMessage]);
+    setLoadingPassage(false);
+  }, [threadId, createTempMessage]);
 
   const onContinue = useCallback(async () => {
     setLoadingPassage(true);
@@ -158,6 +184,8 @@ export const useThreadDetail = () => {
     setLoadingPassage(false);
   }, [threadId, createTempMessage]);
 
+
+
   useEffect(() => {
     loadThreadDetail();
   }, [loadThreadDetail]);
@@ -172,6 +200,7 @@ export const useThreadDetail = () => {
     thread,
     loading,
     loadingPassage,
+    deleting,
     passages,
     error,
     handleGoBack,

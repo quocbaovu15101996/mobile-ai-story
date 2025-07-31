@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
   storyText: {
     fontSize: 16,
     lineHeight: 24,
-    marginBottom: 16,
     textAlign: 'justify',
   },
   messageAction: {
