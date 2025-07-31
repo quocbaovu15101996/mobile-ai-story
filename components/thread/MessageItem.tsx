@@ -23,7 +23,7 @@ const MessageItem: React.FC<Props> = ({ item }) => {
     return (
       <ThemedView style={styles.messageAction}>
         <Ionicons name={item?.metadata?.type === MESSAGE_TYPE.CONTINUE ? 'play' : 'expand'} size={14} color="#fff" />
-        <TextApp>
+        <TextApp style={styles.txtAction}>
           {item?.metadata?.type}
         </TextApp>
       </ThemedView>
@@ -54,5 +54,9 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     marginHorizontal: 12,
+  },
+  txtAction: {
+    fontSize: 14,
+    fontWeight: 'bold',
   },
 })

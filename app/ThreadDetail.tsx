@@ -125,6 +125,54 @@ export default function ThreadDetail() {
     navigation.goBack();
   };
 
+  const onDeleteMessage = () => { };
+
+  const onRewriteMessage = () => { };
+
+  const onContinue = async () => {
+    setLoadingPassage(true);
+    const continueMessage = createTempMessage(
+      '',
+      '',
+      MESSAGE_TYPE.CONTINUE,
+      ROLE.USER
+    );
+    setPassages((prevPassages) => [...prevPassages, continueMessage]);
+    const response = await continueThread(threadId);
+    const newMessage = createTempMessage(
+      response.data.id,
+      response.data.content,
+      MESSAGE_TYPE.TEXT,
+      ROLE.ASSISTANT
+    );
+    setPassages((prevPassages) => [...prevPassages, newMessage]);
+    setLoadingPassage(false);
+  };
+
+  const onExpand = async () => {
+    setLoadingPassage(true);
+    const payload = {
+      content: 'we have some conflict',
+      tone: TONE_TYPE.DEFAULT,
+    };
+    const expandMessage = createTempMessage(
+      '',
+      '',
+      MESSAGE_TYPE.EXPAND,
+      ROLE.USER
+    );
+    setPassages([...passages, expandMessage]);
+    const response = await expandThread(threadId, payload);
+    const newMessage = createTempMessage(
+      response.data.id,
+      response.data.content,
+      MESSAGE_TYPE.TEXT,
+      ROLE.ASSISTANT
+    );
+    setPassages([...passages, newMessage]);
+    setLoadingPassage(false);
+  };
+
   useEffect(() => {
     loadThreadDetail();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -136,6 +184,24 @@ export default function ThreadDetail() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCreate]);
+
+  const renderThreadHeader = () => {
+    return (
+      <View style={styles.header}>
+        <Pressable style={styles.backButton} onPress={handleGoBack}>
+          <Ionicons name="close" size={24} color={colors.text} />
+        </Pressable>
+        <View style={styles.headerRight}>
+          <Pressable style={styles.actionButton}>
+            <Ionicons name="refresh" size={24} color={colors.text} />
+          </Pressable>
+          <Pressable style={styles.actionButton}>
+            <Ionicons name="ellipsis-vertical" size={24} color={colors.text} />
+          </Pressable>
+        </View>
+      </View>
+    );
+  };
 
   const renderItem: ListRenderItem<MessageItemInterface> = ({ item }) => (
     <MessageItem item={item} />
@@ -163,60 +229,25 @@ export default function ThreadDetail() {
     </View>
   );
 
+  const renderActions = () => (
+    <ThemedView>
+      <Pressable style={styles.actionButtonLarge} onPress={onDeleteMessage}>
+        <Ionicons name="play" size={20} color="#fff" />
+        <TextApp style={styles.actionButtonText}>Delete</TextApp>
+      </Pressable>
+      <Pressable style={styles.actionButtonLarge} onPress={onRewriteMessage}>
+        <Ionicons name="expand" size={20} color="#fff" />
+        <TextApp style={styles.actionButtonText}>Re-Write</TextApp>
+      </Pressable>
+    </ThemedView>
+  );
+
   const renderFooter = () =>
-    loadingPassage ? <ActivityIndicator size="small" color="#007AFF" /> : null;
-
-  const onContinue = async () => {
-    setLoadingPassage(true);
-    const continueMessage = createTempMessage('', '', MESSAGE_TYPE.CONTINUE, ROLE.USER);
-    setPassages((prevPassages) => [...prevPassages, continueMessage]);
-    const response = await continueThread(threadId);
-    const newMessage = createTempMessage(
-      response.data.id,
-      response.data.content,
-      MESSAGE_TYPE.TEXT,
-      ROLE.ASSISTANT
+    loadingPassage ? (
+      <ActivityIndicator size="small" color="#007AFF" />
+    ) : (
+      thread?.isCanInteract === 1 && renderActions()
     );
-    setPassages((prevPassages) => [...prevPassages, newMessage]);
-    setLoadingPassage(false);
-  };
-
-  const onExpand = async () => {
-    setLoadingPassage(true);
-    const payload = {
-      content: 'we have some conflict',
-      tone: TONE_TYPE.DEFAULT,
-    };
-    const expandMessage = createTempMessage('', '', MESSAGE_TYPE.EXPAND, ROLE.USER);
-    setPassages([...passages, expandMessage]);
-    const response = await expandThread(threadId, payload);
-    const newMessage = createTempMessage(
-      response.data.id,
-      response.data.content,
-      MESSAGE_TYPE.TEXT,
-      ROLE.ASSISTANT
-    );
-    setPassages([...passages, newMessage]);
-    setLoadingPassage(false);
-  };
-
-  const renderThreadHeader = () => {
-    return (
-      <View style={styles.header}>
-        <Pressable style={styles.backButton} onPress={handleGoBack}>
-          <Ionicons name="close" size={24} color={colors.text} />
-        </Pressable>
-        <View style={styles.headerRight}>
-          <Pressable style={styles.actionButton}>
-            <Ionicons name="refresh" size={24} color={colors.text} />
-          </Pressable>
-          <Pressable style={styles.actionButton}>
-            <Ionicons name="ellipsis-vertical" size={24} color={colors.text} />
-          </Pressable>
-        </View>
-      </View>
-    );
-  };
 
   if (loading) {
     return (
@@ -412,5 +443,4 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
-
 });
