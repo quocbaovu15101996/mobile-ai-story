@@ -34,16 +34,16 @@ const TONE_TYPE = {
 };
 
 export const useThreadDetail = () => {
+  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const route = useRoute<ThreadDetailScreenRouteProp>();
+  const { threadId, isCreate } = route.params;
   const [thread, setThread] = useState<Thread | null>(null);
   const [loading, setLoading] = useState(true);
-  const [loadingPassage, setLoadingPassage] = useState(false);
+  const [loadingPassage, setLoadingPassage] = useState(isCreate);
   const [deleting, setDeleting] = useState(false);
   const [passages, setPassages] = useState<MessageItemInterface[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const route = useRoute<ThreadDetailScreenRouteProp>();
-  const { threadId, isCreate } = route.params;
 
   const createTempMessage = useCallback((
     messageId: string,
@@ -83,6 +83,8 @@ export const useThreadDetail = () => {
       setPassages([newMessage]);
     } catch (err) {
       console.error('Error loading thread detail:', err);
+    } finally {
+      setLoadingPassage(false);
     }
   }, [threadId, createTempMessage]);
 
@@ -127,61 +129,77 @@ export const useThreadDetail = () => {
   }, [threadId, passages.length, deleting]);
 
   const onRewriteMessage = useCallback(async () => {
-    setLoadingPassage(true);
-    setPassages(prevPassages => prevPassages.slice(0, -1));
-    const response = await rewriteLastMessage(threadId);
-    const newMessage = createTempMessage(
-      response.data.id,
-      response.data.content,
-      MESSAGE_TYPE.TEXT,
-      ROLE.ASSISTANT
-    );
-    setPassages((prevPassages) => [...prevPassages, newMessage]);
-    setLoadingPassage(false);
+    try {
+      setLoadingPassage(true);
+      setPassages(prevPassages => prevPassages.slice(0, -1));
+      const response = await rewriteLastMessage(threadId);
+      const newMessage = createTempMessage(
+        response.data.id,
+        response.data.content,
+        MESSAGE_TYPE.TEXT,
+        ROLE.ASSISTANT
+      );
+      setPassages((prevPassages) => [...prevPassages, newMessage]);
+    } catch (err) {
+      console.error('Error rewriting messages:', err);
+      setError('Failed to rewrite messages');
+    } finally {
+      setLoadingPassage(false);
+    }
   }, [threadId, createTempMessage]);
 
   const onContinue = useCallback(async () => {
-    setLoadingPassage(true);
-    const continueMessage = createTempMessage(
-      '',
-      '',
-      MESSAGE_TYPE.CONTINUE,
-      ROLE.USER
-    );
-    setPassages((prevPassages) => [...prevPassages, continueMessage]);
-    const response = await continueThread(threadId);
-    const newMessage = createTempMessage(
-      response.data.id,
-      response.data.content,
-      MESSAGE_TYPE.TEXT,
-      ROLE.ASSISTANT
-    );
-    setPassages((prevPassages) => [...prevPassages, newMessage]);
-    setLoadingPassage(false);
+    try {
+      setLoadingPassage(true);
+      const continueMessage = createTempMessage(
+        '',
+        '',
+        MESSAGE_TYPE.CONTINUE,
+        ROLE.USER
+      );
+      setPassages((prevPassages) => [...prevPassages, continueMessage]);
+      const response = await continueThread(threadId);
+      const newMessage = createTempMessage(
+        response.data.id,
+        response.data.content,
+        MESSAGE_TYPE.TEXT,
+        ROLE.ASSISTANT
+      );
+      setPassages((prevPassages) => [...prevPassages, newMessage]);
+    } catch (err) {
+      console.error('Error continuing messages:', err);
+    } finally {
+      setLoadingPassage(false);
+    }
   }, [threadId, createTempMessage]);
 
   const onExpand = useCallback(async () => {
-    setLoadingPassage(true);
-    const payload = {
-      content: 'we have some conflict',
-      tone: TONE_TYPE.DEFAULT,
-    };
-    const expandMessage = createTempMessage(
-      '',
-      '',
-      MESSAGE_TYPE.EXPAND,
-      ROLE.USER
-    );
-    setPassages(prev => [...prev, expandMessage]);
-    const response = await expandThread(threadId, payload);
-    const newMessage = createTempMessage(
-      response.data.id,
-      response.data.content,
-      MESSAGE_TYPE.TEXT,
-      ROLE.ASSISTANT
-    );
-    setPassages(prev => [...prev, newMessage]);
-    setLoadingPassage(false);
+    try {
+      setLoadingPassage(true);
+      const payload = {
+        content: 'we have some conflict',
+        tone: TONE_TYPE.DEFAULT,
+      };
+      const expandMessage = createTempMessage(
+        '',
+        '',
+        MESSAGE_TYPE.EXPAND,
+        ROLE.USER
+      );
+      setPassages(prev => [...prev, expandMessage]);
+      const response = await expandThread(threadId, payload);
+      const newMessage = createTempMessage(
+        response.data.id,
+        response.data.content,
+        MESSAGE_TYPE.TEXT,
+        ROLE.ASSISTANT
+      );
+      setPassages(prev => [...prev, newMessage]);
+    } catch (err) {
+      console.error('Error expanding messages:', err);
+    } finally {
+      setLoadingPassage(false);
+    }
   }, [threadId, createTempMessage]);
 
 

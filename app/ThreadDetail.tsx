@@ -148,22 +148,23 @@ export default function ThreadDetail() {
       />
 
       {/* Bottom Actions */}
-      <ThemedView style={styles.bottomActions}>
-        <Pressable
-          style={[styles.actionButtonLarge, styles.continueButton]}
-          onPress={onContinue}
-        >
-          <Ionicons name="play" size={24} color="#fff" />
-          <TextApp style={styles.actionButtonText}>Continue</TextApp>
-        </Pressable>
-        <Pressable
-          style={[styles.actionButtonLarge, styles.expandButton]}
-          onPress={onExpand}
-        >
-          <Ionicons name="expand" size={24} color="#fff" />
-          <TextApp style={styles.actionButtonText}>Expand</TextApp>
-        </Pressable>
-      </ThemedView>
+      {!loadingPassage &&
+        <ThemedView style={styles.bottomActions}>
+          <Pressable
+            style={[styles.actionButtonLarge, styles.continueButton]}
+            onPress={onContinue}
+          >
+            <Ionicons name="play" size={24} color="#fff" />
+            <TextApp style={styles.actionButtonText}>Continue</TextApp>
+          </Pressable>
+          <Pressable
+            style={[styles.actionButtonLarge, styles.expandButton]}
+            onPress={onExpand}
+          >
+            <Ionicons name="expand" size={24} color="#fff" />
+            <TextApp style={styles.actionButtonText}>Expand</TextApp>
+          </Pressable>
+        </ThemedView>}
     </SafeAreaView>
   );
 }

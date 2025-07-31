@@ -24,7 +24,6 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 const appJson = require('../../app.json');
 
-console.log('appJson ', appJson);
 interface ItemProps {
   icon: any;
   iconRight?: any;
