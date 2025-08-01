@@ -1,3 +1,6 @@
+// Define globals that are expected in React Native environment
+global.__DEV__ = process.env.NODE_ENV === 'development';
+
 // Mock expo modules
 jest.mock('expo-application', () => ({
   getIosIdForVendorAsync: jest.fn(() => Promise.resolve('mock-ios-id')),
