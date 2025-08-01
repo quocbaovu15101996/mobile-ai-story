@@ -66,10 +66,7 @@ export default function ThreadDetail() {
         </View>
       )}
 
-      {/* Story Title */}
-      <ThemedView style={styles.titleContainer}>
-        <TextApp style={styles.storyTitle}>{thread?.title}</TextApp>
-      </ThemedView>
+      <TextApp style={styles.storyTitle}>{thread?.title}</TextApp>
     </View>
   );
 
@@ -196,9 +193,6 @@ const styles = StyleSheet.create({
     padding: 8,
     marginLeft: 8,
   },
-  scrollContainer: {
-    flex: 1,
-  },
   flatListContainer: {
     flex: 1,
   },
@@ -215,15 +209,6 @@ const styles = StyleSheet.create({
   heroImage: {
     width: '100%',
     height: '100%',
-  },
-  titleContainer: {
-    paddingHorizontal: 24,
-    paddingTop: 24,
-    paddingBottom: 16,
-  },
-  contentContainer: {
-    padding: 24,
-    flex: 1,
   },
   storyTitle: {
     fontSize: 28,
