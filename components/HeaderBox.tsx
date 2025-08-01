@@ -2,6 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
 import React from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import { DiamondBox } from './DiamondBox';
 import TextApp from './TextApp';
 
 type Props = {
@@ -22,16 +23,7 @@ const HeaderBox: React.FC<Props> = ({
     <View style={styles.header}>
       <TextApp style={styles.appName}>{title}</TextApp>
       <View style={styles.headerRight}>
-        <Pressable
-          style={({ pressed }) => [
-            styles.tokenBox,
-            pressed && { opacity: 0.7 },
-          ]}
-          onPress={onPressToken}
-        >
-          <Ionicons name="diamond" size={20} color="#7ee2ff" />
-          <TextApp style={styles.tokenValue}>{diamond || 0}</TextApp>
-        </Pressable>
+        <DiamondBox onPress={onPressToken} diamond={diamond} />
         <Pressable style={styles.calendarIcon} onPress={onPressCalendar}>
           <Ionicons name="calendar-outline" size={24} color={colors.text} />
         </Pressable>
@@ -43,9 +35,6 @@ const HeaderBox: React.FC<Props> = ({
 export { HeaderBox };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -64,50 +53,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  tokenBox: {
-    flexDirection: 'row',
-    backgroundColor: '#1a1a1a',
-    borderRadius: 8,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
-    marginRight: 6,
-    gap: 4,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tokenLabel: {
-    fontSize: 12,
-  },
-  tokenValue: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#7ee2ff',
-  },
   calendarIcon: {
     padding: 6,
     borderRadius: 6,
     backgroundColor: '#1a1a1a',
-  },
-  notificationIcon: {
-    padding: 6,
-    borderRadius: 6,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  testButtonsContainer: {
-    padding: 20,
-    gap: 10,
-  },
-  testButton: {
-    backgroundColor: '#3b82f6',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  testButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
   },
 });

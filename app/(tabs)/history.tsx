@@ -94,7 +94,7 @@ export default function HistoryScreen() {
   };
 
   const onPressCalendar = () => {
-
+    setModalVisible(true);
   };
 
   const renderItem: ListRenderItem<Thread> = ({ item }) => (
