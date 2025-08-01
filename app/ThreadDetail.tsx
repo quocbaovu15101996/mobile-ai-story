@@ -7,8 +7,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import TextApp from '@/components/TextApp';
 import { ThemedView } from '@/components/ThemedView';
 import { MessageItem } from '@/components/thread/MessageItem';
+import { ThreadBottomAction } from '@/components/thread/ThreadBottomAction';
 import { useThreadDetail } from '@/hooks/useThreadDetail';
 
+import { DiamondBox } from '@/components/DiamondBox';
 import type { MessageItemInterface } from '@/src/services/api/types';
 import { SCREEN_HEIGHT } from '@/src/utils';
 
@@ -21,12 +23,14 @@ export default function ThreadDetail() {
     loadingPassage,
     passages,
     error,
+    diamond,
     handleGoBack,
     onDeleteMessage,
     onRewriteMessage,
     onContinue,
     onExpand,
     loadThreadDetail,
+    onPressDiamond,
   } = useThreadDetail();
 
   const renderThreadHeader = () => {
@@ -36,9 +40,7 @@ export default function ThreadDetail() {
           <Ionicons name="close" size={24} color={colors.text} />
         </Pressable>
         <View style={styles.headerRight}>
-          <Pressable style={styles.actionButton}>
-            <Ionicons name="refresh" size={24} color={colors.text} />
-          </Pressable>
+          <DiamondBox onPress={onPressDiamond} diamond={diamond} />
           <Pressable style={styles.actionButton}>
             <Ionicons name="ellipsis-vertical" size={24} color={colors.text} />
           </Pressable>
@@ -142,26 +144,18 @@ export default function ThreadDetail() {
         style={styles.flatListContainer}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.flatListContent}
+        removeClippedSubviews
+        maxToRenderPerBatch={10}
+        initialNumToRender={10}
+        updateCellsBatchingPeriod={50}
       />
 
       {/* Bottom Actions */}
-      {!loadingPassage &&
-        <ThemedView style={styles.bottomActions}>
-          <Pressable
-            style={[styles.actionButtonLarge, styles.continueButton]}
-            onPress={onContinue}
-          >
-            <Ionicons name="play" size={24} color="#fff" />
-            <TextApp style={styles.actionButtonText}>Continue</TextApp>
-          </Pressable>
-          <Pressable
-            style={[styles.actionButtonLarge, styles.expandButton]}
-            onPress={onExpand}
-          >
-            <Ionicons name="expand" size={24} color="#fff" />
-            <TextApp style={styles.actionButtonText}>Expand</TextApp>
-          </Pressable>
-        </ThemedView>}
+      <ThreadBottomAction
+        visible={!loadingPassage}
+        onContinue={onContinue}
+        onExpand={onExpand}
+      />
     </SafeAreaView>
   );
 }

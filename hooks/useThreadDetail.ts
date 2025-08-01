@@ -14,7 +14,7 @@ import {
 } from '../src/services/api/thread';
 import { MessageItemInterface, Thread } from '../src/services/api/types';
 import { getUserProfile } from '../src/services/api/users';
-import { useAuthActions } from '../src/store/useAuthStore';
+import { useAuthStore } from '../src/store/useAuthStore';
 
 type ThreadDetailScreenRouteProp = {
   key: string;
@@ -45,7 +45,7 @@ export const useThreadDetail = () => {
   const [deleting, setDeleting] = useState(false);
   const [passages, setPassages] = useState<MessageItemInterface[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const { setUserProfile } = useAuthActions();
+  const { setUserProfile, userProfile } = useAuthStore();
 
   const updateUserProfile = useCallback(async () => {
     try {
@@ -102,6 +102,12 @@ export const useThreadDetail = () => {
     }
   }, [threadId, createTempMessage]);
 
+  const checkEnoughDiamond = useCallback(() => {
+    if ((userProfile?.diamond || 0) < 3) {
+      navigation.navigate('InAppPurchase');
+    }
+  }, [navigation, userProfile?.diamond]);
+
   const loadThreadDetail = useCallback(async () => {
     try {
       setLoading(true);
@@ -143,6 +149,7 @@ export const useThreadDetail = () => {
   }, [threadId, passages.length, deleting]);
 
   const onRewriteMessage = useCallback(async () => {
+    checkEnoughDiamond();
     try {
       setLoadingPassage(true);
       setPassages(prevPassages => prevPassages.slice(0, -1));
@@ -162,9 +169,10 @@ export const useThreadDetail = () => {
     } finally {
       setLoadingPassage(false);
     }
-  }, [threadId, createTempMessage, updateUserProfile]);
+  }, [checkEnoughDiamond, threadId, createTempMessage, updateUserProfile]);
 
   const onContinue = useCallback(async () => {
+    checkEnoughDiamond();
     try {
       setLoadingPassage(true);
       const continueMessage = createTempMessage(
@@ -190,9 +198,10 @@ export const useThreadDetail = () => {
     } finally {
       setLoadingPassage(false);
     }
-  }, [threadId, createTempMessage, updateUserProfile]);
+  }, [checkEnoughDiamond, createTempMessage, threadId, updateUserProfile]);
 
   const onExpand = useCallback(async () => {
+    checkEnoughDiamond();
     try {
       setLoadingPassage(true);
       const payload = {
@@ -222,9 +231,11 @@ export const useThreadDetail = () => {
     } finally {
       setLoadingPassage(false);
     }
-  }, [threadId, createTempMessage, updateUserProfile]);
+  }, [checkEnoughDiamond, threadId, createTempMessage, updateUserProfile]);
 
-
+  const onPressDiamond = useCallback(() => {
+    navigation.navigate('InAppPurchase');
+  }, [navigation]);
 
   useEffect(() => {
     loadThreadDetail();
@@ -243,11 +254,13 @@ export const useThreadDetail = () => {
     deleting,
     passages,
     error,
+    diamond: userProfile?.diamond,
     handleGoBack,
     onDeleteMessage,
     onRewriteMessage,
     onContinue,
     onExpand,
     loadThreadDetail,
+    onPressDiamond
   };
 };
