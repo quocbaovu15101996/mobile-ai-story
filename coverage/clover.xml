@@ -1,0 +1,751 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1754064986649" clover="3.2.0">
+  <project timestamp="1754064986649" name="All files">
+    <metrics statements="571" coveredstatements="88" conditionals="211" coveredconditionals="16" methods="172" coveredmethods="16" elements="954" coveredelements="120" complexity="0" loc="571" ncloc="571" packages="13" files="45" classes="45"/>
+    <package name="components">
+      <metrics statements="123" coveredstatements="0" conditionals="89" coveredconditionals="0" methods="41" coveredmethods="0"/>
+      <file name="Collapsible.tsx" path="/home/runner/work/mobile-ai-story/mobile-ai-story/components/Collapsible.tsx">
+        <metrics statements="6" coveredstatements="0" conditionals="6" coveredconditionals="0" methods="4" coveredmethods="0"/>
+        <line num="10" count="0" type="stmt"/>
+        <line num="11" count="0" type="stmt"/>
+        <line num="13" count="0" type="stmt"/>
+        <line num="16" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="17" count="0" type="stmt"/>
+        <line num="33" count="0" type="stmt"/>
+      </file>
+      <file name="CreateThreadBox.tsx" path="/home/runner/work/mobile-ai-story/mobile-ai-story/components/CreateThreadBox.tsx">
+        <metrics statements="39" coveredstatements="0" conditionals="32" coveredconditionals="0" methods="13" coveredmethods="0"/>
+        <line num="21" count="0" type="stmt"/>
+        <line num="26" count="0" type="stmt"/>
+        <line num="28" count="0" type="stmt"/>
+        <line num="36" count="0" type="stmt"/>
+        <line num="44" count="0" type="stmt"/>
+        <line num="45" count="0" type="stmt"/>
+        <line num="47" count="0" type="stmt"/>
+        <line num="48" count="0" type="stmt"/>
+        <line num="49" count="0" type="stmt"/>
+        <line num="50" count="0" type="stmt"/>
+        <line num="51" count="0" type="stmt"/>
+        <line num="52" count="0" type="stmt"/>
+        <line num="53" count="0" type="stmt"/>
+        <line num="54" count="0" type="stmt"/>
+        <line num="55" count="0" type="stmt"/>
+        <line num="57" count="0" type="stmt"/>
+        <line num="59" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="61" count="0" type="stmt"/>
+        <line num="62" count="0" type="stmt"/>
+        <line num="63" count="0" type="stmt"/>
+        <line num="64" count="0" type="stmt"/>
+        <line num="67" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="72" count="0" type="stmt"/>
+        <line num="74" count="0" type="stmt"/>
+        <line num="77" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="78" count="0" type="stmt"/>
+        <line num="82" count="0" type="stmt"/>
+        <line num="84" count="0" type="stmt"/>
+        <line num="88" count="0" type="stmt"/>
+        <line num="134" count="0" type="stmt"/>
+        <line num="140" count="0" type="stmt"/>
+        <line num="157" count="0" type="stmt"/>
+        <line num="163" count="0" type="stmt"/>
+        <line num="181" count="0" type="stmt"/>
+        <line num="201" count="0" type="stmt"/>
+        <line num="207" count="0" type="stmt"/>
+        <line num="241" count="0" type="stmt"/>
+        <line num="247" count="0" type="stmt"/>
+        <line num="277" count="0" type="stmt"/>
+      </file>
+      <file name="DiamondBox.tsx" path="/home/runner/work/mobile-ai-story/mobile-ai-story/components/DiamondBox.tsx">
+        <metrics statements="4" coveredstatements="0" conditionals="4" coveredconditionals="0" methods="2" coveredmethods="0"/>
+        <line num="11" count="0" type="stmt"/>
+        <line num="12" count="0" type="stmt"/>
+        <line num="14" count="0" type="stmt"/>
+        <line num="28" count="0" type="stmt"/>
+      </file>
+      <file name="ExternalLink.tsx" path="/home/runner/work/mobile-ai-story/mobile-ai-story/components/ExternalLink.tsx">
+        <metrics statements="4" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="2" coveredmethods="0"/>
+        <line num="9" count="0" type="stmt"/>
+        <line num="15" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="17" count="0" type="stmt"/>
+        <line num="19" count="0" type="stmt"/>
+      </file>
+      <file name="HapticTab.tsx" path="/home/runner/work/mobile-ai-story/mobile-ai-story/components/HapticTab.tsx">
+        <metrics statements="4" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="2" coveredmethods="0"/>
+        <line num="6" count="0" type="stmt"/>
+        <line num="10" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="12" count="0" type="stmt"/>
+        <line num="14" count="0" type="stmt"/>
+      </file>
+      <file name="HeaderBox.tsx" path="/home/runner/work/mobile-ai-story/mobile-ai-story/components/HeaderBox.tsx">
+        <metrics statements="4" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="15" count="0" type="stmt"/>
+        <line num="21" count="0" type="stmt"/>
+        <line num="22" count="0" type="stmt"/>
+        <line num="37" count="0" type="stmt"/>
+      </file>
+      <file name="HelloWave.tsx" path="/home/runner/work/mobile-ai-story/mobile-ai-story/components/HelloWave.tsx">
+        <metrics statements="6" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="0"/>
+        <line num="14" count="0" type="stmt"/>
+        <line num="16" count="0" type="stmt"/>
+        <line num="17" count="0" type="stmt"/>
+        <line num="23" count="0" type="stmt"/>
+        <line num="27" count="0" type="stmt"/>
+        <line num="34" count="0" type="stmt"/>
+      </file>
+      <file name="ParallaxScrollView.tsx" path="/home/runner/work/mobile-ai-story/mobile-ai-story/components/ParallaxScrollView.tsx">
+        <metrics statements="9" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="2" coveredmethods="0"/>
+        <line num="14" count="0" type="stmt"/>
+        <line num="26" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="27" count="0" type="stmt"/>
+        <line num="28" count="0" type="stmt"/>
+        <line num="29" count="0" type="stmt"/>
+        <line num="30" count="0" type="stmt"/>
+        <line num="31" count="0" type="stmt"/>
+        <line num="47" count="0" type="stmt"/>
+        <line num="68" count="0" type="stmt"/>
+      </file>
+      <file name="RollCallModal.tsx" path="/home/runner/work/mobile-ai-story/mobile-ai-story/components/RollCallModal.tsx">
+        <metrics statements="30" coveredstatements="0" conditionals="26" coveredconditionals="0" methods="5" coveredmethods="0"/>
+        <line num="19" count="0" type="stmt"/>
+        <line num="22" count="0" type="stmt"/>
+        <line num="23" count="0" type="stmt"/>
+        <line num="24" count="0" type="stmt"/>
+        <line num="27" count="0" type="stmt"/>
+        <line num="28" count="0" type="stmt"/>
+        <line num="29" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="30" count="0" type="stmt"/>
+        <line num="34" count="0" type="stmt"/>
+        <line num="35" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="37" count="0" type="stmt"/>
+        <line num="38" count="0" type="stmt"/>
+        <line num="39" count="0" type="stmt"/>
+        <line num="40" count="0" type="stmt"/>
+        <line num="42" count="0" type="stmt"/>
+        <line num="43" count="0" type="stmt"/>
+        <line num="45" count="0" type="stmt"/>
+        <line num="49" count="0" type="stmt"/>
+        <line num="50" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="51" count="0" type="stmt"/>
+        <line num="52" count="0" type="stmt"/>
+        <line num="53" count="0" type="stmt"/>
+        <line num="54" count="0" type="stmt"/>
+        <line num="56" count="0" type="stmt"/>
+        <line num="57" count="0" type="stmt"/>
+        <line num="59" count="0" type="stmt"/>
+        <line num="63" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="65" count="0" type="stmt"/>
+        <line num="81" count="0" type="stmt"/>
+        <line num="144" count="0" type="stmt"/>
+      </file>
+      <file name="SplashScreen.tsx" path="/home/runner/work/mobile-ai-story/mobile-ai-story/components/SplashScreen.tsx">
+        <metrics statements="3" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="4" count="0" type="stmt"/>
+        <line num="7" count="0" type="stmt"/>
+        <line num="18" count="0" type="stmt"/>
+      </file>
+      <file name="TextApp.tsx" path="/home/runner/work/mobile-ai-story/mobile-ai-story/components/TextApp.tsx">
+        <metrics statements="2" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="8" count="0" type="stmt"/>
+        <line num="10" count="0" type="stmt"/>
+      </file>
+      <file name="ThemedText.tsx" path="/home/runner/work/mobile-ai-story/mobile-ai-story/components/ThemedText.tsx">
+        <metrics statements="3" coveredstatements="0" conditionals="11" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="18" count="0" type="stmt"/>
+        <line num="20" count="0" type="stmt"/>
+        <line num="36" count="0" type="stmt"/>
+      </file>
+      <file name="ThemedView.tsx" path="/home/runner/work/mobile-ai-story/mobile-ai-story/components/ThemedView.tsx">
+        <metrics statements="2" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="11" count="0" type="stmt"/>
+        <line num="13" count="0" type="stmt"/>
+      </file>
+      <file name="ThreadItem.tsx" path="/home/runner/work/mobile-ai-story/mobile-ai-story/components/ThreadItem.tsx">
+        <metrics statements="7" coveredstatements="0" conditionals="4" coveredconditionals="0" methods="3" coveredmethods="0"/>
+        <line num="14" count="0" type="stmt"/>
+        <line num="15" count="0" type="stmt"/>
+        <line num="17" count="0" type="stmt"/>
+        <line num="18" count="0" type="stmt"/>
+        <line num="21" count="0" type="stmt"/>
+        <line num="23" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="47" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="components.thread">
+      <metrics statements="13" coveredstatements="0" conditionals="10" coveredconditionals="0" methods="3" coveredmethods="0"/>
+      <file name="MessageItem.tsx" path="/home/runner/work/mobile-ai-story/mobile-ai-story/components/thread/MessageItem.tsx">
+        <metrics statements="7" coveredstatements="0" conditionals="8" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="12" count="0" type="stmt"/>
+        <line num="13" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="14" count="0" type="stmt"/>
+        <line num="22" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="23" count="0" type="stmt"/>
+        <line num="32" count="0" type="stmt"/>
+        <line num="37" count="0" type="stmt"/>
+      </file>
+      <file name="ThreadBottomAction.tsx" path="/home/runner/work/mobile-ai-story/mobile-ai-story/components/thread/ThreadBottomAction.tsx">
+        <metrics statements="6" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="2" coveredmethods="0"/>
+        <line num="14" count="0" type="stmt"/>
+        <line num="20" count="0" type="stmt"/>
+        <line num="22" count="0" type="stmt"/>
+        <line num="23" count="0" type="stmt"/>
+        <line num="31" count="0" type="stmt"/>
+        <line num="67" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="components.ui">
+      <metrics statements="6" coveredstatements="0" conditionals="3" coveredconditionals="0" methods="5" coveredmethods="0"/>
+      <file name="IconSymbol.ios.tsx" path="/home/runner/work/mobile-ai-story/mobile-ai-story/components/ui/IconSymbol.ios.tsx">
+        <metrics statements="1" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="17" count="0" type="stmt"/>
+      </file>
+      <file name="IconSymbol.tsx" path="/home/runner/work/mobile-ai-story/mobile-ai-story/components/ui/IconSymbol.tsx">
+        <metrics statements="2" coveredstatements="0" conditionals="1" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="16" count="0" type="stmt"/>
+        <line num="42" count="0" type="stmt"/>
+      </file>
+      <file name="TabBarBackground.ios.tsx" path="/home/runner/work/mobile-ai-story/mobile-ai-story/components/ui/TabBarBackground.ios.tsx">
+        <metrics statements="2" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="0"/>
+        <line num="6" count="0" type="stmt"/>
+        <line num="18" count="0" type="stmt"/>
+      </file>
+      <file name="TabBarBackground.tsx" path="/home/runner/work/mobile-ai-story/mobile-ai-story/components/ui/TabBarBackground.tsx">
+        <metrics statements="1" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="5" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="hooks">
+      <metrics statements="111" coveredstatements="6" conditionals="20" coveredconditionals="2" methods="25" coveredmethods="2"/>
+      <file name="useColorScheme.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/hooks/useColorScheme.ts">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="useColorScheme.web.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/hooks/useColorScheme.web.ts">
+        <metrics statements="7" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="2" coveredmethods="0"/>
+        <line num="8" count="0" type="stmt"/>
+        <line num="10" count="0" type="stmt"/>
+        <line num="11" count="0" type="stmt"/>
+        <line num="14" count="0" type="stmt"/>
+        <line num="16" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="17" count="0" type="stmt"/>
+        <line num="20" count="0" type="stmt"/>
+      </file>
+      <file name="useThemeColor.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/hooks/useThemeColor.ts">
+        <metrics statements="6" coveredstatements="6" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
+        <line num="14" count="2" type="stmt"/>
+        <line num="15" count="2" type="stmt"/>
+        <line num="17" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="18" count="1" type="stmt"/>
+        <line num="20" count="1" type="stmt"/>
+        <line num="25" count="2" type="stmt"/>
+      </file>
+      <file name="useThreadDetail.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/hooks/useThreadDetail.ts">
+        <metrics statements="98" coveredstatements="0" conditionals="16" coveredconditionals="0" methods="21" coveredmethods="0"/>
+        <line num="28" count="0" type="stmt"/>
+        <line num="38" count="0" type="stmt"/>
+        <line num="39" count="0" type="stmt"/>
+        <line num="40" count="0" type="stmt"/>
+        <line num="41" count="0" type="stmt"/>
+        <line num="42" count="0" type="stmt"/>
+        <line num="43" count="0" type="stmt"/>
+        <line num="44" count="0" type="stmt"/>
+        <line num="45" count="0" type="stmt"/>
+        <line num="46" count="0" type="stmt"/>
+        <line num="47" count="0" type="stmt"/>
+        <line num="48" count="0" type="stmt"/>
+        <line num="50" count="0" type="stmt"/>
+        <line num="51" count="0" type="stmt"/>
+        <line num="52" count="0" type="stmt"/>
+        <line num="53" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="54" count="0" type="stmt"/>
+        <line num="57" count="0" type="stmt"/>
+        <line num="62" count="0" type="stmt"/>
+        <line num="68" count="0" type="stmt"/>
+        <line num="88" count="0" type="stmt"/>
+        <line num="89" count="0" type="stmt"/>
+        <line num="90" count="0" type="stmt"/>
+        <line num="91" count="0" type="stmt"/>
+        <line num="97" count="0" type="stmt"/>
+        <line num="99" count="0" type="stmt"/>
+        <line num="101" count="0" type="stmt"/>
+        <line num="105" count="0" type="stmt"/>
+        <line num="106" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="107" count="0" type="stmt"/>
+        <line num="111" count="0" type="stmt"/>
+        <line num="112" count="0" type="stmt"/>
+        <line num="113" count="0" type="stmt"/>
+        <line num="114" count="0" type="stmt"/>
+        <line num="115" count="0" type="stmt"/>
+        <line num="119" count="0" type="stmt"/>
+        <line num="120" count="0" type="stmt"/>
+        <line num="121" count="0" type="stmt"/>
+        <line num="123" count="0" type="stmt"/>
+        <line num="124" count="0" type="stmt"/>
+        <line num="126" count="0" type="stmt"/>
+        <line num="130" count="0" type="stmt"/>
+        <line num="131" count="0" type="stmt"/>
+        <line num="134" count="0" type="stmt"/>
+        <line num="135" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="137" count="0" type="stmt"/>
+        <line num="138" count="0" type="stmt"/>
+        <line num="139" count="0" type="stmt"/>
+        <line num="140" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="141" count="0" type="stmt"/>
+        <line num="144" count="0" type="stmt"/>
+        <line num="145" count="0" type="stmt"/>
+        <line num="147" count="0" type="stmt"/>
+        <line num="151" count="0" type="stmt"/>
+        <line num="152" count="0" type="stmt"/>
+        <line num="153" count="0" type="stmt"/>
+        <line num="154" count="0" type="stmt"/>
+        <line num="155" count="0" type="stmt"/>
+        <line num="156" count="0" type="stmt"/>
+        <line num="157" count="0" type="stmt"/>
+        <line num="163" count="0" type="stmt"/>
+        <line num="165" count="0" type="stmt"/>
+        <line num="167" count="0" type="stmt"/>
+        <line num="168" count="0" type="stmt"/>
+        <line num="170" count="0" type="stmt"/>
+        <line num="174" count="0" type="stmt"/>
+        <line num="175" count="0" type="stmt"/>
+        <line num="176" count="0" type="stmt"/>
+        <line num="177" count="0" type="stmt"/>
+        <line num="178" count="0" type="stmt"/>
+        <line num="184" count="0" type="stmt"/>
+        <line num="185" count="0" type="stmt"/>
+        <line num="186" count="0" type="stmt"/>
+        <line num="192" count="0" type="stmt"/>
+        <line num="195" count="0" type="stmt"/>
+        <line num="197" count="0" type="stmt"/>
+        <line num="199" count="0" type="stmt"/>
+        <line num="203" count="0" type="stmt"/>
+        <line num="204" count="0" type="stmt"/>
+        <line num="205" count="0" type="stmt"/>
+        <line num="206" count="0" type="stmt"/>
+        <line num="207" count="0" type="stmt"/>
+        <line num="211" count="0" type="stmt"/>
+        <line num="217" count="0" type="stmt"/>
+        <line num="218" count="0" type="stmt"/>
+        <line num="219" count="0" type="stmt"/>
+        <line num="225" count="0" type="stmt"/>
+        <line num="228" count="0" type="stmt"/>
+        <line num="230" count="0" type="stmt"/>
+        <line num="232" count="0" type="stmt"/>
+        <line num="236" count="0" type="stmt"/>
+        <line num="237" count="0" type="stmt"/>
+        <line num="240" count="0" type="stmt"/>
+        <line num="241" count="0" type="stmt"/>
+        <line num="244" count="0" type="stmt"/>
+        <line num="245" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="246" count="0" type="stmt"/>
+        <line num="250" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.config">
+      <metrics statements="4" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <file name="ReactotronConfig.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/src/config/ReactotronConfig.ts">
+        <metrics statements="2" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="4" count="0" type="stmt"/>
+        <line num="15" count="0" type="stmt"/>
+      </file>
+      <file name="purchases.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/src/config/purchases.ts">
+        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="2" count="1" type="stmt"/>
+        <line num="15" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.hooks">
+      <metrics statements="20" coveredstatements="17" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="3"/>
+      <file name="useSubscription.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/src/hooks/useSubscription.ts">
+        <metrics statements="20" coveredstatements="17" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="3"/>
+        <line num="7" count="3" type="stmt"/>
+        <line num="8" count="2" type="stmt"/>
+        <line num="9" count="2" type="stmt"/>
+        <line num="10" count="2" type="stmt"/>
+        <line num="12" count="2" type="stmt"/>
+        <line num="13" count="2" type="stmt"/>
+        <line num="14" count="2" type="stmt"/>
+        <line num="17" count="2" type="stmt"/>
+        <line num="20" count="2" type="stmt"/>
+        <line num="21" count="2" type="stmt"/>
+        <line num="24" count="2" type="stmt"/>
+        <line num="25" count="2" type="stmt"/>
+        <line num="28" count="0" type="stmt"/>
+        <line num="29" count="0" type="stmt"/>
+        <line num="31" count="2" type="stmt"/>
+        <line num="35" count="2" type="stmt"/>
+        <line num="36" count="2" type="stmt"/>
+        <line num="39" count="2" type="stmt"/>
+        <line num="40" count="0" type="stmt"/>
+        <line num="43" count="2" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.services">
+      <metrics statements="86" coveredstatements="0" conditionals="38" coveredconditionals="0" methods="10" coveredmethods="0"/>
+      <file name="inAppPurchase.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/src/services/inAppPurchase.ts">
+        <metrics statements="86" coveredstatements="0" conditionals="38" coveredconditionals="0" methods="10" coveredmethods="0"/>
+        <line num="12" count="0" type="stmt"/>
+        <line num="34" count="0" type="stmt"/>
+        <line num="35" count="0" type="stmt"/>
+        <line num="38" count="0" type="stmt"/>
+        <line num="39" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="40" count="0" type="stmt"/>
+        <line num="44" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="45" count="0" type="stmt"/>
+        <line num="49" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="50" count="0" type="stmt"/>
+        <line num="51" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="52" count="0" type="stmt"/>
+        <line num="56" count="0" type="stmt"/>
+        <line num="57" count="0" type="stmt"/>
+        <line num="59" count="0" type="stmt"/>
+        <line num="60" count="0" type="stmt"/>
+        <line num="62" count="0" type="stmt"/>
+        <line num="63" count="0" type="stmt"/>
+        <line num="68" count="0" type="stmt"/>
+        <line num="69" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="70" count="0" type="stmt"/>
+        <line num="71" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="72" count="0" type="stmt"/>
+        <line num="77" count="0" type="stmt"/>
+        <line num="78" count="0" type="stmt"/>
+        <line num="80" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="81" count="0" type="stmt"/>
+        <line num="82" count="0" type="stmt"/>
+        <line num="85" count="0" type="stmt"/>
+        <line num="88" count="0" type="stmt"/>
+        <line num="89" count="0" type="stmt"/>
+        <line num="90" count="0" type="stmt"/>
+        <line num="102" count="0" type="stmt"/>
+        <line num="104" count="0" type="stmt"/>
+        <line num="105" count="0" type="stmt"/>
+        <line num="110" count="0" type="stmt"/>
+        <line num="111" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="112" count="0" type="stmt"/>
+        <line num="113" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="114" count="0" type="stmt"/>
+        <line num="119" count="0" type="stmt"/>
+        <line num="120" count="0" type="stmt"/>
+        <line num="122" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="123" count="0" type="stmt"/>
+        <line num="127" count="0" type="stmt"/>
+        <line num="128" count="0" type="stmt"/>
+        <line num="131" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="132" count="0" type="stmt"/>
+        <line num="136" count="0" type="stmt"/>
+        <line num="137" count="0" type="stmt"/>
+        <line num="140" count="0" type="stmt"/>
+        <line num="145" count="0" type="stmt"/>
+        <line num="147" count="0" type="stmt"/>
+        <line num="152" count="0" type="stmt"/>
+        <line num="153" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="158" count="0" type="stmt"/>
+        <line num="159" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="160" count="0" type="stmt"/>
+        <line num="161" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="162" count="0" type="stmt"/>
+        <line num="166" count="0" type="stmt"/>
+        <line num="167" count="0" type="stmt"/>
+        <line num="169" count="0" type="stmt"/>
+        <line num="174" count="0" type="stmt"/>
+        <line num="175" count="0" type="stmt"/>
+        <line num="180" count="0" type="stmt"/>
+        <line num="181" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="182" count="0" type="stmt"/>
+        <line num="183" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="184" count="0" type="stmt"/>
+        <line num="188" count="0" type="stmt"/>
+        <line num="189" count="0" type="stmt"/>
+        <line num="190" count="0" type="stmt"/>
+        <line num="192" count="0" type="stmt"/>
+        <line num="193" count="0" type="stmt"/>
+        <line num="198" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="199" count="0" type="stmt"/>
+        <line num="203" count="0" type="stmt"/>
+        <line num="207" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="208" count="0" type="stmt"/>
+        <line num="211" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="213" count="0" type="stmt"/>
+        <line num="217" count="0" type="stmt"/>
+        <line num="221" count="0" type="stmt"/>
+        <line num="222" count="0" type="stmt"/>
+        <line num="227" count="0" type="stmt"/>
+      </file>
+      <file name="notificationService.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/src/services/notificationService.ts">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+    </package>
+    <package name="src.services.api">
+      <metrics statements="65" coveredstatements="4" conditionals="25" coveredconditionals="0" methods="19" coveredmethods="0"/>
+      <file name="client.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/src/services/api/client.ts">
+        <metrics statements="2" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="6" count="0" type="stmt"/>
+        <line num="13" count="0" type="stmt"/>
+      </file>
+      <file name="config.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/src/services/api/config.ts">
+        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="6" count="2" type="stmt"/>
+        <line num="9" count="2" type="stmt"/>
+        <line num="23" count="2" type="stmt"/>
+      </file>
+      <file name="inAppPurchase.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/src/services/api/inAppPurchase.ts">
+        <metrics statements="6" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="10" count="0" type="stmt"/>
+        <line num="13" count="0" type="stmt"/>
+        <line num="14" count="0" type="stmt"/>
+        <line num="15" count="0" type="stmt"/>
+        <line num="17" count="0" type="stmt"/>
+        <line num="18" count="0" type="stmt"/>
+      </file>
+      <file name="index.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/src/services/api/index.ts">
+        <metrics statements="11" coveredstatements="0" conditionals="10" coveredconditionals="0" methods="8" coveredmethods="0"/>
+        <line num="28" count="0" type="stmt"/>
+        <line num="31" count="0" type="stmt"/>
+        <line num="35" count="0" type="stmt"/>
+        <line num="39" count="0" type="stmt"/>
+        <line num="43" count="0" type="stmt"/>
+        <line num="47" count="0" type="stmt"/>
+        <line num="51" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="52" count="0" type="stmt"/>
+        <line num="54" count="0" type="stmt"/>
+        <line num="60" count="0" type="stmt"/>
+        <line num="64" count="0" type="stmt"/>
+      </file>
+      <file name="interceptors.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/src/services/api/interceptors.ts">
+        <metrics statements="42" coveredstatements="0" conditionals="15" coveredconditionals="0" methods="10" coveredmethods="0"/>
+        <line num="15" count="0" type="stmt"/>
+        <line num="16" count="0" type="stmt"/>
+        <line num="18" count="0" type="cond" truecount="0" falsecount="1"/>
+        <line num="19" count="0" type="stmt"/>
+        <line num="20" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="21" count="0" type="stmt"/>
+        <line num="22" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="23" count="0" type="stmt"/>
+        <line num="26" count="0" type="stmt"/>
+        <line num="29" count="0" type="stmt"/>
+        <line num="31" count="0" type="stmt"/>
+        <line num="33" count="0" type="stmt"/>
+        <line num="35" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="36" count="0" type="stmt"/>
+        <line num="39" count="0" type="stmt"/>
+        <line num="42" count="0" type="stmt"/>
+        <line num="47" count="0" type="stmt"/>
+        <line num="48" count="0" type="stmt"/>
+        <line num="50" count="0" type="stmt"/>
+        <line num="53" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="57" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="58" count="0" type="stmt"/>
+        <line num="59" count="0" type="stmt"/>
+        <line num="62" count="0" type="stmt"/>
+        <line num="63" count="0" type="stmt"/>
+        <line num="66" count="0" type="stmt"/>
+        <line num="70" count="0" type="stmt"/>
+        <line num="71" count="0" type="stmt"/>
+        <line num="73" count="0" type="stmt"/>
+        <line num="74" count="0" type="stmt"/>
+        <line num="75" count="0" type="stmt"/>
+        <line num="77" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="78" count="0" type="stmt"/>
+        <line num="79" count="0" type="stmt"/>
+        <line num="80" count="0" type="stmt"/>
+        <line num="83" count="0" type="stmt"/>
+        <line num="85" count="0" type="stmt"/>
+        <line num="86" count="0" type="stmt"/>
+        <line num="87" count="0" type="stmt"/>
+        <line num="89" count="0" type="stmt"/>
+        <line num="93" count="0" type="stmt"/>
+        <line num="97" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.services.api.auth">
+      <metrics statements="3" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+      <file name="index.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/src/services/api/auth/index.ts">
+        <metrics statements="3" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="0"/>
+        <line num="5" count="0" type="stmt"/>
+        <line num="6" count="0" type="stmt"/>
+        <line num="10" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.services.api.thread">
+      <metrics statements="18" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="9" coveredmethods="0"/>
+      <file name="index.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/src/services/api/thread/index.ts">
+        <metrics statements="18" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="9" coveredmethods="0"/>
+        <line num="5" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="6" count="0" type="stmt"/>
+        <line num="9" count="0" type="stmt"/>
+        <line num="10" count="0" type="stmt"/>
+        <line num="13" count="0" type="stmt"/>
+        <line num="14" count="0" type="stmt"/>
+        <line num="16" count="0" type="stmt"/>
+        <line num="17" count="0" type="stmt"/>
+        <line num="20" count="0" type="stmt"/>
+        <line num="21" count="0" type="stmt"/>
+        <line num="24" count="0" type="stmt"/>
+        <line num="25" count="0" type="stmt"/>
+        <line num="28" count="0" type="stmt"/>
+        <line num="29" count="0" type="stmt"/>
+        <line num="32" count="0" type="stmt"/>
+        <line num="33" count="0" type="stmt"/>
+        <line num="36" count="0" type="stmt"/>
+        <line num="37" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.services.api.users">
+      <metrics statements="6" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="0"/>
+      <file name="index.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/src/services/api/users/index.ts">
+        <metrics statements="6" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="0"/>
+        <line num="5" count="0" type="stmt"/>
+        <line num="6" count="0" type="stmt"/>
+        <line num="11" count="0" type="stmt"/>
+        <line num="12" count="0" type="stmt"/>
+        <line num="17" count="0" type="stmt"/>
+        <line num="18" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.store">
+      <metrics statements="55" coveredstatements="0" conditionals="10" coveredconditionals="0" methods="39" coveredmethods="0"/>
+      <file name="index.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/src/store/index.ts">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="store.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/src/store/store.ts">
+        <metrics statements="16" coveredstatements="0" conditionals="2" coveredconditionals="0" methods="17" coveredmethods="0"/>
+        <line num="6" count="0" type="stmt"/>
+        <line num="8" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="11" count="0" type="stmt"/>
+        <line num="14" count="0" type="stmt"/>
+        <line num="28" count="0" type="stmt"/>
+        <line num="30" count="0" type="stmt"/>
+        <line num="35" count="0" type="stmt"/>
+        <line num="36" count="0" type="stmt"/>
+        <line num="37" count="0" type="stmt"/>
+        <line num="41" count="0" type="stmt"/>
+        <line num="42" count="0" type="stmt"/>
+        <line num="51" count="0" type="stmt"/>
+        <line num="54" count="0" type="stmt"/>
+        <line num="55" count="0" type="stmt"/>
+        <line num="56" count="0" type="stmt"/>
+        <line num="57" count="0" type="stmt"/>
+      </file>
+      <file name="types.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/src/store/types.ts">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="useAuthStore.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/src/store/useAuthStore.ts">
+        <metrics statements="39" coveredstatements="0" conditionals="8" coveredconditionals="0" methods="22" coveredmethods="0"/>
+        <line num="12" count="0" type="stmt"/>
+        <line num="14" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="17" count="0" type="stmt"/>
+        <line num="20" count="0" type="stmt"/>
+        <line num="34" count="0" type="stmt"/>
+        <line num="40" count="0" type="stmt"/>
+        <line num="42" count="0" type="stmt"/>
+        <line num="45" count="0" type="stmt"/>
+        <line num="47" count="0" type="stmt"/>
+        <line num="49" count="0" type="stmt"/>
+        <line num="51" count="0" type="stmt"/>
+        <line num="53" count="0" type="stmt"/>
+        <line num="55" count="0" type="stmt"/>
+        <line num="56" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="57" count="0" type="stmt"/>
+        <line num="59" count="0" type="stmt"/>
+        <line num="60" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="61" count="0" type="stmt"/>
+        <line num="62" count="0" type="stmt"/>
+        <line num="65" count="0" type="stmt"/>
+        <line num="66" count="0" type="stmt"/>
+        <line num="67" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="68" count="0" type="stmt"/>
+        <line num="71" count="0" type="stmt"/>
+        <line num="75" count="0" type="stmt"/>
+        <line num="78" count="0" type="stmt"/>
+        <line num="80" count="0" type="stmt"/>
+        <line num="81" count="0" type="stmt"/>
+        <line num="82" count="0" type="stmt"/>
+        <line num="88" count="0" type="stmt"/>
+        <line num="89" count="0" type="stmt"/>
+        <line num="99" count="0" type="stmt"/>
+        <line num="100" count="0" type="stmt"/>
+        <line num="101" count="0" type="stmt"/>
+        <line num="102" count="0" type="stmt"/>
+        <line num="103" count="0" type="stmt"/>
+        <line num="104" count="0" type="stmt"/>
+        <line num="105" count="0" type="stmt"/>
+        <line num="106" count="0" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.utils">
+      <metrics statements="61" coveredstatements="59" conditionals="14" coveredconditionals="14" methods="12" coveredmethods="11"/>
+      <file name="devices.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/src/utils/devices.ts">
+        <metrics statements="1" coveredstatements="1" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
+        <line num="5" count="2" type="cond" truecount="2" falsecount="0"/>
+      </file>
+      <file name="index.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/src/utils/index.ts">
+        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="4" count="2" type="stmt"/>
+      </file>
+      <file name="purchaseTestHelper.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/src/utils/purchaseTestHelper.ts">
+        <metrics statements="52" coveredstatements="50" conditionals="10" coveredconditionals="10" methods="8" coveredmethods="7"/>
+        <line num="13" count="5" type="stmt"/>
+        <line num="15" count="5" type="stmt"/>
+        <line num="16" count="5" type="stmt"/>
+        <line num="17" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="18" count="2" type="stmt"/>
+        <line num="19" count="2" type="stmt"/>
+        <line num="21" count="2" type="stmt"/>
+        <line num="22" count="2" type="stmt"/>
+        <line num="25" count="1" type="stmt"/>
+        <line num="26" count="1" type="stmt"/>
+        <line num="34" count="3" type="stmt"/>
+        <line num="36" count="3" type="stmt"/>
+        <line num="37" count="3" type="stmt"/>
+        <line num="38" count="2" type="stmt"/>
+        <line num="40" count="2" type="stmt"/>
+        <line num="41" count="2" type="stmt"/>
+        <line num="49" count="2" type="stmt"/>
+        <line num="50" count="2" type="stmt"/>
+        <line num="52" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="53" count="1" type="stmt"/>
+        <line num="55" count="1" type="stmt"/>
+        <line num="58" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="59" count="1" type="stmt"/>
+        <line num="61" count="1" type="stmt"/>
+        <line num="65" count="1" type="stmt"/>
+        <line num="73" count="3" type="stmt"/>
+        <line num="75" count="3" type="stmt"/>
+        <line num="76" count="3" type="stmt"/>
+        <line num="77" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="78" count="1" type="stmt"/>
+        <line num="79" count="1" type="stmt"/>
+        <line num="80" count="1" type="stmt"/>
+        <line num="81" count="1" type="stmt"/>
+        <line num="82" count="1" type="stmt"/>
+        <line num="84" count="1" type="stmt"/>
+        <line num="85" count="1" type="stmt"/>
+        <line num="87" count="2" type="stmt"/>
+        <line num="90" count="0" type="stmt"/>
+        <line num="98" count="2" type="stmt"/>
+        <line num="100" count="2" type="stmt"/>
+        <line num="101" count="2" type="stmt"/>
+        <line num="103" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="104" count="1" type="stmt"/>
+        <line num="105" count="1" type="stmt"/>
+        <line num="107" count="1" type="stmt"/>
+        <line num="108" count="1" type="stmt"/>
+        <line num="110" count="1" type="stmt"/>
+        <line num="111" count="1" type="stmt"/>
+        <line num="113" count="1" type="stmt"/>
+        <line num="114" count="1" type="stmt"/>
+        <line num="128" count="9" type="stmt"/>
+        <line num="129" count="0" type="stmt"/>
+      </file>
+      <file name="toast.ts" path="/home/runner/work/mobile-ai-story/mobile-ai-story/src/utils/toast.ts">
+        <metrics statements="6" coveredstatements="6" conditionals="2" coveredconditionals="2" methods="3" coveredmethods="3"/>
+        <line num="3" count="1" type="cond" truecount="2" falsecount="0"/>
+        <line num="4" count="4" type="stmt"/>
+        <line num="11" count="1" type="stmt"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="15" count="1" type="stmt"/>
+        <line num="16" count="1" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>
