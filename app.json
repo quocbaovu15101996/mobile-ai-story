@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "AuraWrite AI",
-    "slug": "aura-write-ai",
+    "slug": "ai-story-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
