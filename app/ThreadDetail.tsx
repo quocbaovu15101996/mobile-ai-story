@@ -152,7 +152,7 @@ export default function ThreadDetail() {
 
       {/* Bottom Actions */}
       <ThreadBottomAction
-        visible={!loadingPassage}
+        visible={!loadingPassage && thread?.isCanInteract === 1}
         onContinue={onContinue}
         onExpand={onExpand}
       />
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     padding: 8,
-    marginLeft: 8,
+    marginLeft: 4,
   },
   flatListContainer: {
     flex: 1,
@@ -208,6 +208,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 16,
+    paddingHorizontal: 16,
     lineHeight: 34,
   },
   bottomActions: {
