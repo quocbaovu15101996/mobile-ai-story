@@ -55,7 +55,6 @@ export const useThreadDetail = () => {
       }
     } catch (profileError) {
       console.error('Failed to fetch user profile:', profileError);
-      // Don't throw error as this shouldn't break the main flow
     }
   }, [setUserProfile]);
 
@@ -155,13 +154,15 @@ export const useThreadDetail = () => {
         ROLE.ASSISTANT
       );
       setPassages((prevPassages) => [...prevPassages, newMessage]);
+      // Update user profile after successful API call
+      await updateUserProfile();
     } catch (err) {
       console.error('Error rewriting messages:', err);
       setError('Failed to rewrite messages');
     } finally {
       setLoadingPassage(false);
     }
-  }, [threadId, createTempMessage]);
+  }, [threadId, createTempMessage, updateUserProfile]);
 
   const onContinue = useCallback(async () => {
     try {
@@ -181,7 +182,7 @@ export const useThreadDetail = () => {
         ROLE.ASSISTANT
       );
       setPassages((prevPassages) => [...prevPassages, newMessage]);
-      
+
       // Update user profile after successful API call
       await updateUserProfile();
     } catch (err) {
@@ -213,7 +214,7 @@ export const useThreadDetail = () => {
         ROLE.ASSISTANT
       );
       setPassages(prev => [...prev, newMessage]);
-      
+
       // Update user profile after successful API call
       await updateUserProfile();
     } catch (err) {
