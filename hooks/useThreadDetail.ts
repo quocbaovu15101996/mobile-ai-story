@@ -155,16 +155,13 @@ export const useThreadDetail = () => {
         ROLE.ASSISTANT
       );
       setPassages((prevPassages) => [...prevPassages, newMessage]);
-      
-      // Update user profile after successful API call
-      await updateUserProfile();
     } catch (err) {
       console.error('Error rewriting messages:', err);
       setError('Failed to rewrite messages');
     } finally {
       setLoadingPassage(false);
     }
-  }, [threadId, createTempMessage, updateUserProfile]);
+  }, [threadId, createTempMessage]);
 
   const onContinue = useCallback(async () => {
     try {
