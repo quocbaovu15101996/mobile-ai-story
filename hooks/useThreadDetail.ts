@@ -13,6 +13,8 @@ import {
   rewriteLastMessage,
 } from '../src/services/api/thread';
 import { MessageItemInterface, Thread } from '../src/services/api/types';
+import { getUserProfile } from '../src/services/api/users';
+import { useAuthActions } from '../src/store/useAuthStore';
 
 type ThreadDetailScreenRouteProp = {
   key: string;
@@ -43,6 +45,19 @@ export const useThreadDetail = () => {
   const [deleting, setDeleting] = useState(false);
   const [passages, setPassages] = useState<MessageItemInterface[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const { setUserProfile } = useAuthActions();
+
+  const updateUserProfile = useCallback(async () => {
+    try {
+      const profileResponse = await getUserProfile();
+      if (profileResponse.data) {
+        setUserProfile(profileResponse.data);
+      }
+    } catch (profileError) {
+      console.error('Failed to fetch user profile:', profileError);
+      // Don't throw error as this shouldn't break the main flow
+    }
+  }, [setUserProfile]);
 
 
   const createTempMessage = useCallback((
@@ -140,13 +155,16 @@ export const useThreadDetail = () => {
         ROLE.ASSISTANT
       );
       setPassages((prevPassages) => [...prevPassages, newMessage]);
+      
+      // Update user profile after successful API call
+      await updateUserProfile();
     } catch (err) {
       console.error('Error rewriting messages:', err);
       setError('Failed to rewrite messages');
     } finally {
       setLoadingPassage(false);
     }
-  }, [threadId, createTempMessage]);
+  }, [threadId, createTempMessage, updateUserProfile]);
 
   const onContinue = useCallback(async () => {
     try {
@@ -166,12 +184,15 @@ export const useThreadDetail = () => {
         ROLE.ASSISTANT
       );
       setPassages((prevPassages) => [...prevPassages, newMessage]);
+      
+      // Update user profile after successful API call
+      await updateUserProfile();
     } catch (err) {
       console.error('Error continuing messages:', err);
     } finally {
       setLoadingPassage(false);
     }
-  }, [threadId, createTempMessage]);
+  }, [threadId, createTempMessage, updateUserProfile]);
 
   const onExpand = useCallback(async () => {
     try {
@@ -195,12 +216,15 @@ export const useThreadDetail = () => {
         ROLE.ASSISTANT
       );
       setPassages(prev => [...prev, newMessage]);
+      
+      // Update user profile after successful API call
+      await updateUserProfile();
     } catch (err) {
       console.error('Error expanding messages:', err);
     } finally {
       setLoadingPassage(false);
     }
-  }, [threadId, createTempMessage]);
+  }, [threadId, createTempMessage, updateUserProfile]);
 
 
 
