@@ -64,7 +64,7 @@ const CreateThreadBox: FC<Props> = () => {
       const payload = {
         title: storyIdea,
         storyIdea,
-        isCanInteract: STORY_TYPE.find((s) => s.key === storyType)?.value || 1,
+        isCanInteract: STORY_TYPE.find((s) => s.key === storyType)?.value as number,
         storyLength: storyLength.toLocaleUpperCase(),
         genreType: genre,
         characterPrompt: characters,
