@@ -1,16 +1,17 @@
+
+import BenefitBox from '@/components/inappPurchase/BenefitBox';
+import { ModalLoading } from '@/components/ModalLoading';
+import { useInAppPurchase } from '@/src/hooks/useInAppPurchase';
+import { inAppPurchaseApi } from '@/src/services/api/inAppPurchase';
+import { getUserProfile } from '@/src/services/api/users';
+import { useAuthStore } from '@/src/store';
+import { isNullOrEmpty, SUBSCRIPTION_IDS } from '@/src/utils';
 import {
-  inAppPurchaseService,
-  SUBSCRIPTION_IDS,
-  SubscriptionProduct,
-} from '@/src/services/inAppPurchase';
-import { showErrorToast, showSuccessToast } from '@/src/utils/toast';
-import {
-  FontAwesome5,
-  Ionicons,
-  MaterialCommunityIcons,
+  Ionicons
 } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import { useNavigation, useTheme } from '@react-navigation/native';
+import { ProductPurchase, PurchaseError, requestSubscription } from 'expo-iap';
+import React, { useEffect } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -26,110 +27,89 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function InAppPurchaseScreen() {
   const navigation = useNavigation();
-  const [selectedPlan, setSelectedPlan] = useState(SUBSCRIPTION_IDS.ANNUAL);
-  const [subscriptions, setSubscriptions] = useState<SubscriptionProduct[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isPurchasing, setIsPurchasing] = useState(false);
-  const [isRestoring, setIsRestoring] = useState(false);
-  const [isSubscribed, setIsSubscribed] = useState(false);
+  const { colors } = useTheme();
 
-  useEffect(() => {
-    initializeIAP();
+  const clickedRef = React.useRef<boolean>(false);
+  const [stateScreen, setStateScreen] = React.useState<{
+    selectedPlanId: string;
+    offerToken: string;
+    loading: boolean;
+  }>({
+    selectedPlanId: SUBSCRIPTION_IDS[0],
+    offerToken: '',
+    loading: false,
+  });
+  const { setUserProfile, userProfile } = useAuthStore();
 
-    // Cleanup on unmount
-    return () => {
-      inAppPurchaseService.cleanup();
-    };
-  }, []);
+  const handleUpdateProfile = async () => {
+    const response = await getUserProfile();
+    if (response && response.data) {
+      setUserProfile(response.data);
+    }
+  };
 
-  const initializeIAP = async () => {
+  const onPurchaseSuccess = async (purchase: ProductPurchase | undefined) => {
+    console.log('Purchase success', purchase);
+    setStateScreen(prevState => ({
+      ...prevState,
+      loading: true,
+    }));
+    const response = await inAppPurchaseApi.submitPurchase({
+      platform: 'android',
+      subscriptionId: stateScreen.selectedPlanId,
+      offerToken: '',
+      receipt: purchase?.transactionReceipt || '',
+    });
+
+    if (response?.data?.success) {
+      await handleUpdateProfile();
+      navigation.goBack();
+    }
+    setStateScreen(prevState => ({
+      ...prevState,
+      loading: false,
+    }));
+  };
+
+  const onPurchaseError = (error?: PurchaseError) => {
+    console.log('Purchase error', error);
+  };
+
+  const { subscriptions, loadingSubs } = useInAppPurchase(
+    onPurchaseSuccess,
+    onPurchaseError,
+    clickedRef.current,
+  );
+
+  const onPressSubscribe = async () => {
+    clickedRef.current = true;
+    setStateScreen(prevState => ({
+      ...prevState,
+      loading: true,
+    }));
     try {
-      setIsLoading(true);
-      const initialized = await inAppPurchaseService.initialize();
-
-      if (initialized) {
-        const availableProducts = await inAppPurchaseService.getAvailableProducts();
-        setSubscriptions(availableProducts);
-
-        // Check if user is already subscribed
-        const subscriptionStatus = inAppPurchaseService.isUserSubscribed();
-        setIsSubscribed(subscriptionStatus);
-
-        if (subscriptionStatus) {
-          showSuccessToast('You already have an active subscription!');
-        }
-      } else {
-        showErrorToast('Failed to initialize purchase system');
-      }
+      await requestSubscription({
+        sku: stateScreen.selectedPlanId,
+        ...(stateScreen.offerToken && {
+          subscriptionOffers: [
+            {
+              sku: stateScreen.selectedPlanId,
+              offerToken: stateScreen.offerToken,
+            },
+          ],
+        }),
+      });
     } catch (error) {
-      console.error('IAP initialization error:', error);
-      showErrorToast('Failed to load subscription options');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handlePurchase = async () => {
-    if (isPurchasing) return;
-
-    try {
-      setIsPurchasing(true);
-
-      const result = await inAppPurchaseService.purchaseSubscription(selectedPlan);
-
-      if (result.success) {
-        showSuccessToast('Subscription activated successfully!');
-        // Navigate back or to main screen
-        navigation.goBack();
+      if (error instanceof PurchaseError) {
+        console.error({ message: `[${error.code}]: ${error.message}`, error });
+      } else {
+        console.error({ message: 'handleBuySubscription', error });
       }
-    } catch (error: any) {
-      console.error('Purchase initiation error:', error);
-      const errorMessage = error.message || 'Failed to start purchase';
-      showErrorToast(errorMessage);
-    } finally {
-      setIsPurchasing(false);
+      setStateScreen(prevState => ({
+        ...prevState,
+        loading: false,
+      }));
     }
-  };
-
-  const handleRestorePurchases = async () => {
-    if (isRestoring) return;
-
-    try {
-      setIsRestoring(true);
-      const result = await inAppPurchaseService.restorePurchases();
-
-      if (result.success && result.customerInfo) {
-        const hasActiveSubscription = inAppPurchaseService.isUserSubscribed();
-        setIsSubscribed(hasActiveSubscription);
-
-        if (hasActiveSubscription) {
-          showSuccessToast('Purchases restored successfully!');
-          navigation.goBack();
-        } else {
-          showErrorToast('No active subscriptions found');
-        }
-      }
-    } catch (error: any) {
-      console.error('Restore purchases error:', error);
-      const errorMessage = error.message || 'Failed to restore purchases';
-      showErrorToast(errorMessage);
-    } finally {
-      setIsRestoring(false);
-    }
-  };
-
-  const getProductPrice = (subscriptionId: string): string => {
-    const subscription = subscriptions.find(
-      (s) => s.productId === subscriptionId
-    );
-    if (!subscription) {
-      return subscriptionId === SUBSCRIPTION_IDS.ANNUAL
-        ? '999.000 đ'
-        : '125.000 đ';
-    }
-
-    return subscription.localizedPrice ||
-      (subscriptionId === SUBSCRIPTION_IDS.ANNUAL ? '999.000 đ' : '125.000 đ');
   };
 
   const onClose = () => {
@@ -140,10 +120,13 @@ export default function InAppPurchaseScreen() {
     <Pressable
       style={({ pressed }) => [
         styles.planBox,
-        selectedPlan === item.subscriptionId && styles.planBoxSelected,
+        stateScreen.selectedPlanId === item.subscriptionId && styles.planBoxSelected,
         pressed && { opacity: 0.8 }
       ]}
-      onPress={() => setSelectedPlan(item.subscriptionId)}
+      onPress={() => setStateScreen(prevState => ({
+        ...prevState,
+        selectedPlanId: item.subscriptionId,
+      }))}
     >
       <View style={styles.planRow}>
         <Text style={styles.planRenew}>{item.label}</Text>
@@ -159,30 +142,32 @@ export default function InAppPurchaseScreen() {
     </Pressable>
   );
 
-  // Plan data for FlatList
-  const plans = [
-    {
-      label: 'Renews annually',
-      price: getProductPrice(SUBSCRIPTION_IDS.ANNUAL),
-      period: '/ year',
-      saveTag: 'Save 90%',
-      selected: selectedPlan === 'year',
-      subscriptionId: SUBSCRIPTION_IDS.ANNUAL,
-    },
-    {
-      label: 'Renews weekly',
-      price: getProductPrice(SUBSCRIPTION_IDS.WEEKLY),
-      period: '/ week',
-      saveTag: null,
-      selected: selectedPlan === 'week',
-      subscriptionId: SUBSCRIPTION_IDS.WEEKLY,
-    },
-  ];
+  const handleRestorePurchases = () => {
+
+  };
+
+  useEffect(() => {
+    if (!loadingSubs) {
+      const selectPlan = subscriptions.find(
+        item => item.productId === SUBSCRIPTION_IDS[0],
+      );
+      const subscriptionOfferDetails = selectPlan?.subscriptionOfferDetails;
+
+      setStateScreen(prevState => ({
+        ...prevState,
+        selectedPlanId: selectPlan?.productId,
+        offerToken: !isNullOrEmpty(subscriptionOfferDetails)
+          ? subscriptionOfferDetails?.[subscriptionOfferDetails?.length - 1]
+            ?.offerToken
+          : '',
+      }));
+    }
+  }, [loadingSubs, subscriptions]);
 
   const keyExtractor = (item: any) => item.subscriptionId;
 
   const renderEmpty = () => {
-    if (isLoading) {
+    if (loadingSubs) {
       return (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="#222" />
@@ -206,12 +191,12 @@ export default function InAppPurchaseScreen() {
       <Pressable
         style={[
           styles.subscribeBtn,
-          (isPurchasing || isSubscribed) && styles.subscribeButtonDisabled,
+          (stateScreen.loading || stateScreen.selectedPlanId === '') && styles.subscribeButtonDisabled,
         ]}
-        onPress={handlePurchase}
-        disabled={isPurchasing || isSubscribed}
+        onPress={onPressSubscribe}
+        disabled={stateScreen.loading || stateScreen.selectedPlanId === ''}
       >
-        {isPurchasing ? (
+        {stateScreen.loading ? (
           <>
             <ActivityIndicator
               size="small"
@@ -220,8 +205,6 @@ export default function InAppPurchaseScreen() {
             />
             <Text style={styles.subscribeText}>Processing...</Text>
           </>
-        ) : isSubscribed ? (
-          <Text style={styles.subscribeText}>Already Subscribed</Text>
         ) : (
           <>
             <Text style={styles.subscribeText}>Subscribe</Text>
@@ -238,12 +221,12 @@ export default function InAppPurchaseScreen() {
       <Pressable
         style={[
           styles.restoreBtn,
-          isRestoring && styles.restoreButtonDisabled,
+          stateScreen.loading && styles.restoreButtonDisabled,
         ]}
         onPress={handleRestorePurchases}
-        disabled={isRestoring}
+        disabled={stateScreen.loading}
       >
-        {isRestoring ? (
+        {stateScreen.loading ? (
           <>
             <ActivityIndicator
               size="small"
@@ -259,6 +242,13 @@ export default function InAppPurchaseScreen() {
     </View>
   );
 
+
+  const sortSubscription = subscriptions.sort((a: any, b: any) => {
+    const priceA = Number(a.price);
+    const priceB = Number(b.price);
+    return priceB - priceA;
+  });
+
   return (
     <SafeAreaView style={styles.container}>
       <Pressable style={styles.backButton} onPress={onClose}>
@@ -270,56 +260,10 @@ export default function InAppPurchaseScreen() {
       >
         <Text style={styles.title}>Get Unlimited{'\n'}Access</Text>
 
-        {isSubscribed && (
-          <View style={styles.subscribedBanner}>
-            <Ionicons name="checkmark-circle" size={24} color="#10b981" />
-            <Text style={styles.subscribedText}>You have an active subscription!</Text>
-          </View>
-        )}
-        <View style={styles.featureList}>
-          <View style={styles.featureItem}>
-            <Ionicons
-              name="infinite"
-              size={28}
-              color="#222"
-              style={styles.featureIcon}
-            />
-            <View>
-              <Text style={styles.featureTitle}>Unlimited Access</Text>
-              <Text style={styles.featureDesc}>Endless story creations</Text>
-            </View>
-          </View>
-          <View style={styles.featureItem}>
-            <MaterialCommunityIcons
-              name="crown-outline"
-              size={28}
-              color="#222"
-              style={styles.featureIcon}
-            />
-            <View>
-              <Text style={styles.featureTitle}>Advanced AI</Text>
-              <Text style={styles.featureDesc}>Smarter AI, richer & more</Text>
-            </View>
-          </View>
-          <View style={styles.featureItem}>
-            <FontAwesome5
-              name="wallet"
-              size={24}
-              color="#222"
-              style={styles.featureIcon}
-            />
-            <View>
-              <Text style={styles.featureTitle}>Ad-Free Experience</Text>
-              <Text style={styles.featureDesc}>
-                Focus on stories, not distractions
-              </Text>
-            </View>
-          </View>
-        </View>
-
+        <BenefitBox />
         <View style={styles.planBoxWrapper}>
           <FlatList
-            data={plans}
+            data={sortSubscription}
             keyExtractor={keyExtractor}
             renderItem={renderItem}
             ListEmptyComponent={renderEmpty}
@@ -337,6 +281,10 @@ export default function InAppPurchaseScreen() {
           Google Play store settings.
         </Text>
       </ScrollView>
+      <ModalLoading
+        modalVisible={stateScreen.loading}
+        color={colors.primary}
+      />
     </SafeAreaView>
   );
 }
@@ -373,43 +321,6 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
     lineHeight: 38,
   },
-  subscribedBanner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#dcfce7',
-    borderRadius: 12,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    marginBottom: 24,
-  },
-  subscribedText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#059669',
-    marginLeft: 8,
-  },
-  featureList: {
-    marginBottom: 32,
-  },
-  featureItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 18,
-  },
-  featureIcon: {
-    marginRight: 16,
-  },
-  featureTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#222',
-  },
-  featureDesc: {
-    fontSize: 14,
-    color: '#888',
-    marginTop: 2,
-  },
   planBoxWrapper: {
     marginBottom: 24,
   },
@@ -420,9 +331,6 @@ const styles = StyleSheet.create({
     padding: 18,
     marginBottom: 14,
     backgroundColor: '#fff',
-  },
-  planBoxSecondary: {
-    opacity: 0.6,
   },
   planBoxSelected: {
     borderColor: '#3b82f6',

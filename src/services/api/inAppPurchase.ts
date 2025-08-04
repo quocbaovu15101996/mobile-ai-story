@@ -1,10 +1,16 @@
 import api from './client';
-import { InAppPurchasePayload } from '../inAppPurchase';
 
 export interface InAppPurchaseResponse {
   success: boolean;
   message?: string;
   data?: any;
+}
+
+export interface InAppPurchasePayload {
+  platform: string;
+  subscriptionId: string;
+  offerToken?: string;
+  receipt: string;
 }
 
 export const inAppPurchaseApi = {
