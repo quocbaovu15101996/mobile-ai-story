@@ -20,27 +20,6 @@ jest.mock('expo-constants', () => ({
   },
 }));
 
-// Mock react-native-purchases
-jest.mock('react-native-purchases', () => ({
-  __esModule: true,
-  default: {
-    configure: jest.fn(),
-    setLogLevel: jest.fn(),
-    getCustomerInfo: jest.fn(),
-    getOfferings: jest.fn(),
-    purchasePackage: jest.fn(),
-    restorePurchases: jest.fn(),
-    setAttributes: jest.fn(),
-    logIn: jest.fn(),
-    logOut: jest.fn(),
-  },
-  LOG_LEVEL: {
-    DEBUG: 'DEBUG',
-    INFO: 'INFO',
-    WARN: 'WARN',
-    ERROR: 'ERROR',
-  },
-}));
 
 // Mock react-native-toast-message
 jest.mock('react-native-toast-message', () => ({
