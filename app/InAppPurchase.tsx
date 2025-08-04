@@ -1,5 +1,6 @@
 
 import BenefitBox from '@/components/inappPurchase/BenefitBox';
+import PurchaseItem from '@/components/inappPurchase/PurchaseItem';
 import { ModalLoading } from '@/components/ModalLoading';
 import { useInAppPurchase } from '@/src/hooks/useInAppPurchase';
 import { inAppPurchaseApi } from '@/src/services/api/inAppPurchase';
@@ -10,7 +11,7 @@ import {
   Ionicons
 } from '@expo/vector-icons';
 import { useNavigation, useTheme } from '@react-navigation/native';
-import { ProductPurchase, PurchaseError, requestSubscription } from 'expo-iap';
+import { ProductPurchase, PurchaseError, requestSubscription, SubscriptionProduct } from 'expo-iap';
 import React, { useEffect } from 'react';
 import {
   ActivityIndicator,
@@ -39,7 +40,7 @@ export default function InAppPurchaseScreen() {
     offerToken: '',
     loading: false,
   });
-  const { setUserProfile, userProfile } = useAuthStore();
+  const { setUserProfile } = useAuthStore();
 
   const handleUpdateProfile = async () => {
     const response = await getUserProfile();
@@ -57,7 +58,7 @@ export default function InAppPurchaseScreen() {
     const response = await inAppPurchaseApi.submitPurchase({
       platform: 'android',
       subscriptionId: stateScreen.selectedPlanId,
-      offerToken: '',
+      offerToken: stateScreen.offerToken,
       receipt: purchase?.transactionReceipt || '',
     });
 
@@ -116,30 +117,22 @@ export default function InAppPurchaseScreen() {
     navigation.goBack();
   };
 
+  const onPressItem = (item: SubscriptionProduct & any) => {
+    console.log('onPressItem ', item?.subscriptionOfferDetails);
+    setStateScreen(prevState => ({
+      ...prevState,
+      selectedPlanId: item.id,
+      offerToken: item.subscriptionOfferDetails?.[0]?.offerToken || '',
+    }));
+  };
+
+  console.log('stateScreen ', stateScreen);
   const renderItem: ListRenderItem<any> = ({ item }) => (
-    <Pressable
-      style={({ pressed }) => [
-        styles.planBox,
-        stateScreen.selectedPlanId === item.subscriptionId && styles.planBoxSelected,
-        pressed && { opacity: 0.8 }
-      ]}
-      onPress={() => setStateScreen(prevState => ({
-        ...prevState,
-        selectedPlanId: item.subscriptionId,
-      }))}
-    >
-      <View style={styles.planRow}>
-        <Text style={styles.planRenew}>{item.label}</Text>
-        {item.saveTag && (
-          <View style={styles.saveTag}>
-            <Text style={styles.saveText}>{item.saveTag}</Text>
-          </View>
-        )}
-      </View>
-      <Text style={styles.planPrice}>
-        {item.price} <Text style={styles.planPeriod}>{item.period}</Text>
-      </Text>
-    </Pressable>
+    <PurchaseItem
+      item={item}
+      selectedPlanId={stateScreen.selectedPlanId}
+      onPress={onPressItem}
+    />
   );
 
   const handleRestorePurchases = () => {
@@ -149,13 +142,14 @@ export default function InAppPurchaseScreen() {
   useEffect(() => {
     if (!loadingSubs) {
       const selectPlan = subscriptions.find(
-        item => item.productId === SUBSCRIPTION_IDS[0],
+        item => item.id === SUBSCRIPTION_IDS[0],
       );
+      console.log('selectPlan ', selectPlan);
       const subscriptionOfferDetails = selectPlan?.subscriptionOfferDetails;
 
       setStateScreen(prevState => ({
         ...prevState,
-        selectedPlanId: selectPlan?.productId,
+        selectedPlanId: selectPlan?.id,
         offerToken: !isNullOrEmpty(subscriptionOfferDetails)
           ? subscriptionOfferDetails?.[subscriptionOfferDetails?.length - 1]
             ?.offerToken
@@ -164,7 +158,7 @@ export default function InAppPurchaseScreen() {
     }
   }, [loadingSubs, subscriptions]);
 
-  const keyExtractor = (item: any) => item.subscriptionId;
+  const keyExtractor = (item: any, index: number) => item.id + index;
 
   const renderEmpty = () => {
     if (loadingSubs) {

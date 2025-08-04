@@ -1,12 +1,15 @@
-import { Dimensions } from "react-native";
+import { Dimensions, Platform } from "react-native";
 
 export const SCREEN_WIDTH = Dimensions.get('window').width;
 export const SCREEN_HEIGHT = Dimensions.get('window').height;
 
+export const isIos = Platform.OS === 'ios';
+export const isAndroid = Platform.OS === 'android';
+
 // Subscription IDs
 export const SUBSCRIPTION_IDS = [
-  'com.codezap.ai.story.1w',
   'com.codezap.ai.story.12m',
+  'com.codezap.ai.story.1w',
 ];
 
 /**
