@@ -1,4 +1,5 @@
-import api from './client';
+import api from '.';
+import { ENDPOINTS } from './config';
 
 export interface InAppPurchaseResponse {
   success: boolean;
@@ -17,7 +18,7 @@ export const inAppPurchaseApi = {
   // POST /api/in-app-purchase
   submitPurchase: async (payload: InAppPurchasePayload): Promise<InAppPurchaseResponse> => {
     try {
-      const response = await api.post<InAppPurchaseResponse>('/api/in-app-purchase', payload);
+      const response = await api.post<InAppPurchaseResponse>(ENDPOINTS.USERS.IN_APP_PURCHASE, payload);
       return response.data;
     } catch (error) {
       console.error('In-app purchase API error:', error);

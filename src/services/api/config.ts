@@ -28,6 +28,7 @@ export const ENDPOINTS = {
     PROFILE: '/v1/users/profile',
     ROLL_CALL: '/v1/users/roll-call',
     EARN_TOKEN_BY_ADS: '/v1/users/earn-token-by-ads',
+    IN_APP_PURCHASE: '/v1/in-app-purchase',
   },
   THREAD: {
     URL: '/v1/threads',

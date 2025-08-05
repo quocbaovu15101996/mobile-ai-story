@@ -144,7 +144,6 @@ export default function InAppPurchaseScreen() {
       const selectPlan = subscriptions.find(
         item => item.id === SUBSCRIPTION_IDS[0],
       );
-      console.log('selectPlan ', selectPlan);
       const subscriptionOfferDetails = selectPlan?.subscriptionOfferDetails;
 
       setStateScreen(prevState => ({
