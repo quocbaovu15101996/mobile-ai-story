@@ -1,5 +1,6 @@
 import { earnTokenByAds, getUserProfile, rollCall } from '@/src/services/api/users';
 import { useAuthStore } from '@/src/store/useAuthStore';
+import { SCREEN_WIDTH } from '@/src/utils';
 import { showErrorToast } from '@/src/utils/toast';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
@@ -17,6 +18,8 @@ type Props = {
 };
 
 const MAX_WATCH_ADS_PER_DAY = 5;
+
+const ITEM_WIDTH = (SCREEN_WIDTH - 64) / 4;
 
 export default function RollCallModal({ visible, onClose }: Props) {
   const [isCheckingIn, setIsCheckingIn] = useState(false);
@@ -83,6 +86,7 @@ export default function RollCallModal({ visible, onClose }: Props) {
                   style={[
                     styles.modalCheckinDay,
                     idx === 0 && styles.modalCheckinDayActive,
+                    idx === 6 && { width: ITEM_WIDTH * 2 }
                   ]}
                 >
                   <Text style={styles.modalCheckinDayText}>Day {idx + 1}</Text>
@@ -158,7 +162,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#232136',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    padding: 24,
+    padding: 20,
     minHeight: 420,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -2 },
@@ -194,7 +198,7 @@ const styles = StyleSheet.create({
   modalCheckinRow: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
-    gap: 4,
+    gap: 8,
     flexWrap: 'wrap',
   },
   modalCheckinDay: {
@@ -203,7 +207,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    marginHorizontal: 4,
+    width: ITEM_WIDTH
   },
   modalCheckinDayActive: {
     borderWidth: 2,
