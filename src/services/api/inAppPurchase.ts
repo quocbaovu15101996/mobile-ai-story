@@ -10,16 +10,16 @@ export interface InAppPurchaseResponse {
 export interface InAppPurchasePayload {
   platform: string;
   subscriptionId: string;
-  offerToken?: string;
+  transactionId: string;
+  purchaseToken: string;
   receipt: string;
 }
 
 export const inAppPurchaseApi = {
   // POST /api/in-app-purchase
-  submitPurchase: async (payload: InAppPurchasePayload): Promise<InAppPurchaseResponse> => {
+  submitPurchase: async (payload: InAppPurchasePayload): Promise<any> => {
     try {
-      const response = await api.post<InAppPurchaseResponse>(ENDPOINTS.USERS.IN_APP_PURCHASE, payload);
-      return response.data;
+      return await api.post<any>(ENDPOINTS.USERS.IN_APP_PURCHASE, payload);
     } catch (error) {
       console.error('In-app purchase API error:', error);
       throw error;

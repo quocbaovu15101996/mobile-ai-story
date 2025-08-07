@@ -1,16 +1,20 @@
 import {
-  getSubscriptions,
   ProductPurchase,
+  ProductPurchaseAndroid,
+  ProductPurchaseIos,
   PurchaseError,
   purchaseErrorListener,
+  requestProducts,
   SubscriptionProduct,
-  useIAP,
+  useIAP
 } from 'expo-iap';
 import { useEffect, useRef, useState } from 'react';
 import { isNullOrEmpty, SUBSCRIPTION_IDS } from '../utils';
 
+export type PurchaseSuccessInterface = ProductPurchase & ProductPurchaseAndroid & ProductPurchaseIos;
+
 export const useInAppPurchase = (
-  onPurchaseSuccess: (purchase: ProductPurchase | undefined) => void,
+  onPurchaseSuccess: (purchase: PurchaseSuccessInterface) => void,
   onPurchaseError: (errMsg?: PurchaseError) => void,
   clicked: boolean,
 ): {
@@ -33,8 +37,12 @@ export const useInAppPurchase = (
         setSubscriptions(subscriptionsIAP);
         setLoadingSubs(false);
       } else if (isMounted.current) {
-        const subs = await getSubscriptions(SUBSCRIPTION_IDS);
-        setSubscriptions(subs);
+        // const subs = await getSubscriptions(SUBSCRIPTION_IDS);
+        const subs = await requestProducts({
+          skus: SUBSCRIPTION_IDS,
+          type: 'subs'
+        });
+        setSubscriptions(subs as SubscriptionProduct[]);
         setLoadingSubs(false);
       }
     } catch (error: any) {

@@ -2,16 +2,17 @@
 import BenefitBox from '@/components/inappPurchase/BenefitBox';
 import PurchaseItem from '@/components/inappPurchase/PurchaseItem';
 import { ModalLoading } from '@/components/ModalLoading';
-import { useInAppPurchase } from '@/src/hooks/useInAppPurchase';
+import { PurchaseSuccessInterface, useInAppPurchase } from '@/src/hooks/useInAppPurchase';
 import { inAppPurchaseApi } from '@/src/services/api/inAppPurchase';
 import { getUserProfile } from '@/src/services/api/users';
 import { useAuthStore } from '@/src/store';
-import { isNullOrEmpty, SUBSCRIPTION_IDS } from '@/src/utils';
+import { isIos, isNullOrEmpty, SUBSCRIPTION_IDS } from '@/src/utils';
+import { showErrorToast } from '@/src/utils/toast';
 import {
   Ionicons
 } from '@expo/vector-icons';
 import { useNavigation, useTheme } from '@react-navigation/native';
-import { ProductPurchase, PurchaseError, requestSubscription, SubscriptionProduct } from 'expo-iap';
+import { PurchaseError, requestPurchase, SubscriptionProduct } from 'expo-iap';
 import React, { useEffect } from 'react';
 import {
   ActivityIndicator,
@@ -49,27 +50,33 @@ export default function InAppPurchaseScreen() {
     }
   };
 
-  const onPurchaseSuccess = async (purchase: ProductPurchase | undefined) => {
+  const onPurchaseSuccess = async (purchase: PurchaseSuccessInterface) => {
     console.log('Purchase success', purchase);
     setStateScreen(prevState => ({
       ...prevState,
       loading: true,
     }));
-    const response = await inAppPurchaseApi.submitPurchase({
-      platform: 'android',
-      subscriptionId: stateScreen.selectedPlanId,
-      offerToken: stateScreen.offerToken,
-      receipt: purchase?.transactionReceipt || '',
-    });
-
-    if (response?.data?.success) {
-      await handleUpdateProfile();
-      navigation.goBack();
+    try {
+      const response = await inAppPurchaseApi.submitPurchase({
+        platform: isIos ? 'ios' : 'android',
+        subscriptionId: stateScreen.selectedPlanId,
+        transactionId: purchase?.transactionId || '',
+        purchaseToken: purchase?.purchaseTokenAndroid || '',
+        receipt: purchase?.transactionReceipt || '',
+      });
+      if (response?.status === 200) {
+        await handleUpdateProfile();
+        navigation.goBack();
+      }
+    } catch (error) {
+      console.error('Purchase error', error);
+      showErrorToast('Failed to purchase. Please try again.');
+    } finally {
+      setStateScreen(prevState => ({
+        ...prevState,
+        loading: false,
+      }));
     }
-    setStateScreen(prevState => ({
-      ...prevState,
-      loading: false,
-    }));
   };
 
   const onPurchaseError = (error?: PurchaseError) => {
@@ -89,16 +96,15 @@ export default function InAppPurchaseScreen() {
       loading: true,
     }));
     try {
-      await requestSubscription({
-        sku: stateScreen.selectedPlanId,
-        ...(stateScreen.offerToken && {
-          subscriptionOffers: [
-            {
-              sku: stateScreen.selectedPlanId,
-              offerToken: stateScreen.offerToken,
-            },
-          ],
-        }),
+      await requestPurchase({
+        request: {
+          ios: { sku: stateScreen.selectedPlanId },
+          android: {
+            skus: [stateScreen.selectedPlanId],
+            subscriptionOffers: [{ sku: stateScreen.selectedPlanId, offerToken: stateScreen.offerToken }]
+          }
+        },
+        type: 'subs'
       });
     } catch (error) {
       if (error instanceof PurchaseError) {
@@ -126,7 +132,6 @@ export default function InAppPurchaseScreen() {
     }));
   };
 
-  console.log('stateScreen ', stateScreen);
   const renderItem: ListRenderItem<any> = ({ item }) => (
     <PurchaseItem
       item={item}
