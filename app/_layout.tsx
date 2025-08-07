@@ -8,11 +8,12 @@ import Toast from 'react-native-toast-message';
 
 import SplashScreen from '@/components/SplashScreen';
 // import { useColorScheme } from '@/hooks/useColorScheme';
+import { initializeFirebase } from '@/config/firebase-config';
 import { useAuthStore } from '@/src/store/useAuthStore';
 
 if (__DEV__) {
   require("../src/config/ReactotronConfig");
-}
+};
 
 export type RootStackParamList = {
   InAppPurchase: undefined;
@@ -44,6 +45,7 @@ export default function RootLayout() {
   const { loginByDevice } = useAuthStore();
 
   useEffect(() => {
+    initializeFirebase();
     const initializeAuth = async () => {
       try {
         // Attempt auto-login using device credentials

@@ -21,7 +21,8 @@
       "package": "com.codezap.ai.story",
       "notificationIcon": "./assets/images/adaptive-icon.png",
       "notificationColor": "#ffffff",
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "googleServicesFile": "./google-services.json"
     },
     "web": {
       "bundler": "metro",
@@ -56,7 +57,21 @@
           }
         }
       ],
-      "expo-iap"
+      "expo-iap",
+      [
+        "@react-native-firebase/app",
+        {
+          "android_package": "com.codezap.ai.story",
+          "ios_package": "com.codezap.ai.story"
+        }
+      ],
+      [
+        "@react-native-firebase/crashlytics",
+        {
+          "android_package": "com.codezap.ai.story",
+          "ios_package": "com.codezap.ai.story"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
