@@ -1,7 +1,8 @@
+import { ADMOB_ADS } from '@/config/admob-config';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -12,8 +13,8 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { AdEventType, InterstitialAd } from 'react-native-google-mobile-ads';
 import { RootStackParamList } from '../app/_layout';
-import { createThread } from '../src/services/api/thread';
 import TextApp from './TextApp';
 
 type Props = {};
@@ -53,37 +54,70 @@ const CreateThreadBox: FC<Props> = () => {
   const [setting, setSetting] = useState('');
   const [loading, setLoading] = useState(false);
   const [narrative, setNarrative] = useState('FIRST_PERSON');
+  const [loadingAds, setLoadingAds] = useState<boolean>(false);
 
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const isButtonDisabled = !storyIdea || loading;
 
-  const onPressGenerate = async () => {
-    setLoading(true);
-    try {
-      const payload = {
-        title: storyIdea,
-        storyIdea,
-        isCanInteract: STORY_TYPE.find((s) => s.key === storyType)?.value as number,
-        storyLength: storyLength.toLocaleUpperCase(),
-        genreType: genre,
-        characterPrompt: characters,
-        settingPrompt: setting,
-        narrative: NARRATIVE.find((n) => n.value === narrative)?.value,
-      }
-      const response = await createThread(payload);
+  const interstitial = InterstitialAd.createForAdRequest(ADMOB_ADS.CREATE_STORY_INTERSTITIAL, {
+    requestNonPersonalizedAdsOnly: true,
+  });
 
-      // Navigate to ThreadDetail after successful creation
-      if (response.data && response.data.id) {
-        navigation.navigate('ThreadDetail', { threadId: response.data.threadId, isCreate: true });
-      }
-    } catch (error) {
-      // Optionally handle error (e.g., show toast)
-      console.error(error);
-    } finally {
-      setLoading(false);
+  const onPressGenerate = async () => {
+    if (loadingAds) {
+      return;
     }
+
+    // Start loading the interstitial ad straight away
+    interstitial.load();
+    setLoadingAds(true);
+
+    // setLoading(true);
+    // try {
+    //   const payload = {
+    //     title: storyIdea,
+    //     storyIdea,
+    //     isCanInteract: STORY_TYPE.find((s) => s.key === storyType)?.value as number,
+    //     storyLength: storyLength.toLocaleUpperCase(),
+    //     genreType: genre,
+    //     characterPrompt: characters,
+    //     settingPrompt: setting,
+    //     narrative: NARRATIVE.find((n) => n.value === narrative)?.value,
+    //   }
+    //   const response = await createThread(payload);
+
+    //   // Navigate to ThreadDetail after successful creation
+    //   if (response.data && response.data.id) {
+    //     navigation.navigate('ThreadDetail', { threadId: response.data.threadId, isCreate: true });
+    //   }
+    // } catch (error) {
+    //   // Optionally handle error (e.g., show toast)
+    //   console.error(error);
+    // } finally {
+    //   setLoading(false);
+    // }
   };
+
+  useEffect(() => {
+    // Event listener for when the ad is loaded
+    const unsubscribeLoaded = interstitial.addAdEventListener(AdEventType.LOADED, () => {
+      interstitial.show();
+    });
+
+    // Event listener for when the ad is closed
+    const unsubscribeClosed = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
+      setLoadingAds(false);
+    });
+
+
+
+    // Unsubscribe from events on unmount
+    return () => {
+      unsubscribeLoaded();
+      unsubscribeClosed();
+    };
+  }, []);
 
   return (
     <KeyboardAvoidingView

@@ -1,9 +1,10 @@
+import { ADMOB_ADS } from '@/config/admob-config';
 import { earnTokenByAds, getUserProfile, rollCall } from '@/src/services/api/users';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import { SCREEN_WIDTH } from '@/src/utils';
 import { showErrorToast } from '@/src/utils/toast';
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Modal,
   Pressable,
@@ -11,6 +12,7 @@ import {
   Text,
   View,
 } from 'react-native';
+import { AdEventType, RewardedInterstitialAd } from 'react-native-google-mobile-ads';
 
 type Props = {
   visible: boolean;
@@ -23,9 +25,12 @@ const ITEM_WIDTH = (SCREEN_WIDTH - 64) / 4;
 
 export default function RollCallModal({ visible, onClose }: Props) {
   const [isCheckingIn, setIsCheckingIn] = useState(false);
-  const [isWatchingAds, setIsWatchingAds] = useState(false);
   const { setUserProfile, userProfile } = useAuthStore();
+  const [loadingAds, setLoadingAds] = useState<boolean>(false);
 
+  const rewardInterstitial = RewardedInterstitialAd.createForAdRequest(ADMOB_ADS.CREATE_STORY_REWARD_INTERSTITIAL, {
+    requestNonPersonalizedAdsOnly: true,
+  });
 
   const handleUpdateProfile = async () => {
     const response = await getUserProfile();
@@ -49,21 +54,46 @@ export default function RollCallModal({ visible, onClose }: Props) {
     }
   };
 
-  const handleWatchAds = async () => {
-    if (isWatchingAds) return;
-    setIsWatchingAds(true);
+  const handleEarnDiamond = async () => {
     try {
       await earnTokenByAds();
       await handleUpdateProfile();
     } catch (error) {
       console.error('Watch ads failed:', error);
       showErrorToast('Failed to earn tokens. Please try again.');
-    } finally {
-      setIsWatchingAds(false);
     }
   };
 
-  const disabledWatchAds = isWatchingAds || userProfile?.totalAmountWatchAds === 0;
+  const handleWatchAds = async () => {
+    if (loadingAds) {
+      return;
+    }
+    rewardInterstitial.load();
+    setLoadingAds(true);
+  };
+
+  useEffect(() => {
+    // Event listener for when the ad is loaded
+    const unsubscribeLoaded = rewardInterstitial.addAdEventListener(AdEventType.LOADED, () => {
+      rewardInterstitial.show();
+    });
+
+    // Event listener for when the ad is closed
+    const unsubscribeClosed = rewardInterstitial.addAdEventListener(AdEventType.CLOSED, () => {
+      setLoadingAds(false);
+      handleEarnDiamond();
+      // Load a new ad when the current ad is closed
+      rewardInterstitial.load();
+    });
+
+    // Unsubscribe from events on unmount
+    return () => {
+      unsubscribeLoaded();
+      unsubscribeClosed();
+    };
+  }, []);
+
+  const disabledWatchAds = loadingAds || userProfile?.totalAmountWatchAds === 0;
 
   return (
     <>
@@ -126,7 +156,7 @@ export default function RollCallModal({ visible, onClose }: Props) {
               disabled={disabledWatchAds}
             >
               <Text style={styles.modalAdsText}>
-                {isWatchingAds ? 'Watching Ads...' : `Watch Ads (${MAX_WATCH_ADS_PER_DAY - (userProfile?.totalAmountWatchAds || 0)}/${MAX_WATCH_ADS_PER_DAY})`}
+                {loadingAds ? 'Watching Ads...' : `Watch Ads (${MAX_WATCH_ADS_PER_DAY - (userProfile?.totalAmountWatchAds || 0)}/${MAX_WATCH_ADS_PER_DAY})`}
                 <Text style={{ color: '#7ee2ff' }}>
                   {'  '}Watch ads to earn{' '}
                 </Text>

@@ -19,6 +19,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.codezap.ai.story",
+      "permissions": ["com.google.android.gms.permission.AD_ID"],
       "notificationIcon": "./assets/images/adaptive-icon.png",
       "notificationColor": "#ffffff",
       "edgeToEdgeEnabled": true,
@@ -70,6 +71,13 @@
         {
           "android_package": "com.codezap.ai.story",
           "ios_package": "com.codezap.ai.story"
+        }
+      ],
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-4455918819499290~1099428208",
+          "iosAppId": "ca-app-pub-12345678910~123456459"
         }
       ]
     ],

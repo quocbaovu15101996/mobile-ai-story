@@ -10,6 +10,7 @@ import SplashScreen from '@/components/SplashScreen';
 // import { useColorScheme } from '@/hooks/useColorScheme';
 import { initializeFirebase } from '@/config/firebase-config';
 import { useAuthStore } from '@/src/store/useAuthStore';
+import { MobileAds } from 'react-native-google-mobile-ads';
 
 if (__DEV__) {
   require("../src/config/ReactotronConfig");
@@ -60,9 +61,15 @@ export default function RootLayout() {
       }
     };
 
+    const initializeAds = async () => {
+      await MobileAds().initialize();
+    };
+
+    initializeAds();
     if (loaded) {
       initializeAuth();
     }
+
   }, [loaded, loginByDevice]);
 
   if (!loaded || isLoading) {
