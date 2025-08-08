@@ -1,6 +1,6 @@
 import CreateThreadBox from '@/components/CreateThreadBox';
 import { useUserProfile } from '@/src/store/useAuthStore';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useTheme } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useEffect, useState } from 'react';
 import {
@@ -10,7 +10,6 @@ import { RootStackParamList } from '../_layout';
 // import { NotificationService } from '../../src/services/notificationService';
 import { HeaderBox } from '@/components/HeaderBox';
 import RollCallModal from '@/components/RollCallModal';
-import { useTheme } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
