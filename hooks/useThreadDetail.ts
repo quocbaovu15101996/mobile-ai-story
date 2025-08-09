@@ -233,6 +233,39 @@ export const useThreadDetail = () => {
     }
   }, [checkEnoughDiamond, threadId, createTempMessage, updateUserProfile]);
 
+  const onExtendWithContent = useCallback(async (content: string, tone: string) => {
+    checkEnoughDiamond();
+    try {
+      setLoadingPassage(true);
+      const payload = {
+        content: content,
+        tone: tone,
+      };
+      const expandMessage = createTempMessage(
+        '',
+        '',
+        MESSAGE_TYPE.EXPAND,
+        ROLE.USER
+      );
+      setPassages(prev => [...prev, expandMessage]);
+      const response = await expandThread(threadId, payload);
+      const newMessage = createTempMessage(
+        response.data.id,
+        response.data.content,
+        MESSAGE_TYPE.TEXT,
+        ROLE.ASSISTANT
+      );
+      setPassages(prev => [...prev, newMessage]);
+
+      // Update user profile after successful API call
+      await updateUserProfile();
+    } catch (err) {
+      console.error('Error expanding messages:', err);
+    } finally {
+      setLoadingPassage(false);
+    }
+  }, [checkEnoughDiamond, threadId, createTempMessage, updateUserProfile]);
+
   const onPressDiamond = useCallback(() => {
     navigation.navigate('InAppPurchase');
   }, [navigation]);
@@ -261,6 +294,7 @@ export const useThreadDetail = () => {
     onContinue,
     onExpand,
     loadThreadDetail,
-    onPressDiamond
+    onPressDiamond,
+    onExtendWithContent
   };
 };
