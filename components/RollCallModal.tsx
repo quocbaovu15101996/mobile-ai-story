@@ -4,7 +4,7 @@ import { useAuthStore } from '@/src/store/useAuthStore';
 import { SCREEN_WIDTH } from '@/src/utils';
 import { showErrorToast } from '@/src/utils/toast';
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   Modal,
   Pressable,
@@ -28,9 +28,7 @@ export default function RollCallModal({ visible, onClose }: Props) {
   const { setUserProfile, userProfile } = useAuthStore();
   const [loadingAds, setLoadingAds] = useState<boolean>(false);
 
-  const rewardInterstitial = RewardedInterstitialAd.createForAdRequest(ADMOB_ADS.CREATE_STORY_REWARD_INTERSTITIAL, {
-    requestNonPersonalizedAdsOnly: true,
-  });
+  const rewardInterstitial = useRef<RewardedInterstitialAd | null>(null);
 
   const handleUpdateProfile = async () => {
     const response = await getUserProfile();
@@ -68,29 +66,37 @@ export default function RollCallModal({ visible, onClose }: Props) {
     if (loadingAds) {
       return;
     }
-    rewardInterstitial.load();
+    rewardInterstitial.current?.load();
     setLoadingAds(true);
   };
 
   useEffect(() => {
+    rewardInterstitial.current = RewardedInterstitialAd.createForAdRequest(ADMOB_ADS.CREATE_STORY_REWARD_INTERSTITIAL, {
+      requestNonPersonalizedAdsOnly: true,
+    });
+    if (!rewardInterstitial.current) return;
     // Event listener for when the ad is loaded
-    const unsubscribeLoaded = rewardInterstitial.addAdEventListener(RewardedAdEventType.LOADED, () => {
-      rewardInterstitial.show();
+    const unsubscribeLoaded = rewardInterstitial.current.addAdEventListener(RewardedAdEventType.LOADED, () => {
+      rewardInterstitial.current?.show();
+      setLoadingAds(false);
     });
 
     // Event listener for when the ad is closed
-    const unsubscribeClosed = rewardInterstitial.addAdEventListener(AdEventType.CLOSED, () => {
-      setLoadingAds(false);
+    const unsubscribeEarnedReward = rewardInterstitial.current.addAdEventListener(RewardedAdEventType.EARNED_REWARD, (event) => {
+      console.log('AdEventType.EARNED_REWARD', event);
       handleEarnDiamond();
-      // Load a new ad when the current ad is closed
-      rewardInterstitial.load();
     });
 
+    const unsubscribeClosed = rewardInterstitial.current.addAdEventListener(AdEventType.CLOSED, () => {
+      console.log('AdEventType.CLOSED');
+    });
     // Unsubscribe from events on unmount
     return () => {
       unsubscribeLoaded();
+      unsubscribeEarnedReward();
       unsubscribeClosed();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const disabledWatchAds = loadingAds || userProfile?.totalAmountWatchAds === 0;
