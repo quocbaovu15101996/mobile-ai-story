@@ -12,7 +12,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import { AdEventType, RewardedInterstitialAd } from 'react-native-google-mobile-ads';
+import { AdEventType, RewardedAdEventType, RewardedInterstitialAd } from 'react-native-google-mobile-ads';
 
 type Props = {
   visible: boolean;
@@ -74,7 +74,7 @@ export default function RollCallModal({ visible, onClose }: Props) {
 
   useEffect(() => {
     // Event listener for when the ad is loaded
-    const unsubscribeLoaded = rewardInterstitial.addAdEventListener(AdEventType.LOADED, () => {
+    const unsubscribeLoaded = rewardInterstitial.addAdEventListener(RewardedAdEventType.LOADED, () => {
       rewardInterstitial.show();
     });
 

@@ -1,8 +1,10 @@
 import { ADMOB_ADS } from '@/config/admob-config';
+import { createThread } from '@/src/services/api/thread';
+import { showErrorToast } from '@/src/utils/toast';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
   Platform,
@@ -34,13 +36,16 @@ const GENRES = [
   { key: 'sci-fi', label: 'Sci-Fi', image: null },
 ];
 
-const NARRATIVE = [{
-  value: 'FIRST_PERSON',
-  label: 'First person',
-}, {
-  value: 'THIRD_PERSON',
-  label: 'Third person',
-}];
+const NARRATIVE = [
+  {
+    value: 'FIRST_PERSON',
+    label: 'First person',
+  },
+  {
+    value: 'THIRD_PERSON',
+    label: 'Third person',
+  },
+];
 
 const CreateThreadBox: FC<Props> = () => {
   const { colors } = useTheme();
@@ -56,67 +61,117 @@ const CreateThreadBox: FC<Props> = () => {
   const [narrative, setNarrative] = useState('FIRST_PERSON');
   const [loadingAds, setLoadingAds] = useState<boolean>(false);
 
-  const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const isButtonDisabled = !storyIdea || loading;
+  const interstitial = useRef<InterstitialAd | null>(null);
+  const threadId = useRef<string>('');
 
-  const interstitial = InterstitialAd.createForAdRequest(ADMOB_ADS.CREATE_STORY_INTERSTITIAL, {
-    requestNonPersonalizedAdsOnly: true,
-  });
-
-  const onPressGenerate = async () => {
-    if (loadingAds) {
+  const navigateToThreadDetail = useCallback(() => {
+    if (!threadId.current) {
+      showErrorToast('Something went wrong!!! Please try again.');
       return;
     }
+    navigation.navigate('ThreadDetail', {
+      threadId: threadId.current,
+      isCreate: true,
+    });
+    threadId.current = '';
+  }, [navigation]);
 
-    // Start loading the interstitial ad straight away
-    interstitial.load();
+  const onPressGenerate = useCallback(async () => {
+    // Load the interstitial ad
+    interstitial.current?.load();
     setLoadingAds(true);
+    try {
+      const payload = {
+        title: storyIdea,
+        storyIdea,
+        isCanInteract: STORY_TYPE.find((s) => s.key === storyType)
+          ?.value as number,
+        storyLength: storyLength.toLocaleUpperCase(),
+        genreType: genre,
+        characterPrompt: characters,
+        settingPrompt: setting,
+        narrative: NARRATIVE.find((n) => n.value === narrative)?.value,
+      };
+      const response = await createThread(payload);
 
-    // setLoading(true);
-    // try {
-    //   const payload = {
-    //     title: storyIdea,
-    //     storyIdea,
-    //     isCanInteract: STORY_TYPE.find((s) => s.key === storyType)?.value as number,
-    //     storyLength: storyLength.toLocaleUpperCase(),
-    //     genreType: genre,
-    //     characterPrompt: characters,
-    //     settingPrompt: setting,
-    //     narrative: NARRATIVE.find((n) => n.value === narrative)?.value,
-    //   }
-    //   const response = await createThread(payload);
-
-    //   // Navigate to ThreadDetail after successful creation
-    //   if (response.data && response.data.id) {
-    //     navigation.navigate('ThreadDetail', { threadId: response.data.threadId, isCreate: true });
-    //   }
-    // } catch (error) {
-    //   // Optionally handle error (e.g., show toast)
-    //   console.error(error);
-    // } finally {
-    //   setLoading(false);
-    // }
-  };
+      // Navigate to ThreadDetail after successful creation
+      if (response.data && response.data.id) {
+        threadId.current = response.data.threadId;
+        await Promise.resolve(setTimeout(() => { }, 3000));
+        if (!loadingAds) {
+          interstitial.current?.show();
+        } else {
+          navigateToThreadDetail();
+        }
+      }
+    } catch (error) {
+      // Optionally handle error (e.g., show toast)
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }, [
+    characters,
+    genre,
+    loadingAds,
+    narrative,
+    setting,
+    storyIdea,
+    storyLength,
+    storyType,
+    navigateToThreadDetail,
+  ]);
 
   useEffect(() => {
+    interstitial.current = InterstitialAd.createForAdRequest(
+      ADMOB_ADS.CREATE_STORY_INTERSTITIAL,
+      {
+        requestNonPersonalizedAdsOnly: true,
+      }
+    );
+
+    if (!interstitial.current) return;
     // Event listener for when the ad is loaded
-    const unsubscribeLoaded = interstitial.addAdEventListener(AdEventType.LOADED, () => {
-      interstitial.show();
-    });
+    const unsubscribeLoaded = interstitial.current.addAdEventListener(
+      AdEventType.LOADED,
+      () => {
+        console.log('Interstitial ad loaded');
+        setLoadingAds(false);
+      }
+    );
 
     // Event listener for when the ad is closed
-    const unsubscribeClosed = interstitial.addAdEventListener(AdEventType.CLOSED, () => {
-      setLoadingAds(false);
-    });
+    const unsubscribeClosed = interstitial.current.addAdEventListener(
+      AdEventType.CLOSED,
+      () => {
+        console.log('Interstitial ad closed');
+        navigateToThreadDetail();
+      }
+    );
 
+    // Event listener for when the ad fails to load
+    const unsubscribeError = interstitial.current.addAdEventListener(
+      AdEventType.ERROR,
+      (error) => {
+        console.error('Interstitial ad failed to load:', error);
+        interstitial.current?.load();
+      }
+    );
 
-
-    // Unsubscribe from events on unmount
+    // Clean up event listeners when component unmounts
     return () => {
-      unsubscribeLoaded();
-      unsubscribeClosed();
+      if (interstitial.current) {
+        unsubscribeLoaded();
+        unsubscribeError();
+        unsubscribeClosed();
+        interstitial.current.removeAllListeners();
+      }
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -125,7 +180,10 @@ const CreateThreadBox: FC<Props> = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView
-        contentContainerStyle={[styles.container, { backgroundColor: colors.background }]}
+        contentContainerStyle={[
+          styles.container,
+          { backgroundColor: colors.background },
+        ]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
@@ -136,7 +194,9 @@ const CreateThreadBox: FC<Props> = () => {
         </View>
 
         {/* Story prompt */}
-        <TextApp style={styles.label}>What do you want to write story about?</TextApp>
+        <TextApp style={styles.label}>
+          What do you want to write story about?
+        </TextApp>
         <View style={styles.inputBox}>
           <TextInput
             style={[styles.textInput, { color: colors.text }]}
@@ -186,29 +246,30 @@ const CreateThreadBox: FC<Props> = () => {
             </Pressable>
           ))}
         </View>
-        {storyType === 'story' && <View style={styles.storySizeRow}>
-          {STORY_LENGTH.map((s) => (
-            <Pressable
-              key={s}
-              style={[
-                styles.sizeButton,
-                storyLength === s && styles.sizeButtonActive,
-              ]}
-              onPress={() => setStoryLength(s)}
-            >
-              <TextApp style={styles.sizeButtonText}>{s}</TextApp>
-              {storyLength === s && (
-                <Ionicons
-                  name="checkmark"
-                  size={18}
-                  color={colors.text}
-                  style={styles.checkIcon}
-                />
-              )}
-            </Pressable>
-          ))}
-        </View>
-        }
+        {storyType === 'story' && (
+          <View style={styles.storySizeRow}>
+            {STORY_LENGTH.map((s) => (
+              <Pressable
+                key={s}
+                style={[
+                  styles.sizeButton,
+                  storyLength === s && styles.sizeButtonActive,
+                ]}
+                onPress={() => setStoryLength(s)}
+              >
+                <TextApp style={styles.sizeButtonText}>{s}</TextApp>
+                {storyLength === s && (
+                  <Ionicons
+                    name="checkmark"
+                    size={18}
+                    color={colors.text}
+                    style={styles.checkIcon}
+                  />
+                )}
+              </Pressable>
+            ))}
+          </View>
+        )}
 
         {/* More details (optional) */}
         <Pressable
@@ -251,7 +312,8 @@ const CreateThreadBox: FC<Props> = () => {
             <TextInput
               style={styles.textInput}
               placeholder="E.g., A rebellious princess and a humble village boy."
-              placeholderTextColor="#888" value={characters}
+              placeholderTextColor="#888"
+              value={characters}
               onChangeText={setCharacters}
               multiline
               textAlignVertical="top"
@@ -310,7 +372,7 @@ export default CreateThreadBox;
 
 const styles = StyleSheet.create({
   flex1: {
-    flex: 1
+    flex: 1,
   },
   container: {
     padding: 20,
@@ -457,5 +519,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
   },
-  iconSuggestion: { marginRight: 8 }
+  iconSuggestion: { marginRight: 8 },
 });
