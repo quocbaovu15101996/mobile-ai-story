@@ -45,6 +45,7 @@ export const useThreadDetail = () => {
   const [deleting, setDeleting] = useState(false);
   const [passages, setPassages] = useState<MessageItemInterface[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [isExtendModalVisible, setIsExtendModalVisible] = useState(false);
   const { setUserProfile, userProfile } = useAuthStore();
 
   const updateUserProfile = useCallback(async () => {
@@ -202,36 +203,8 @@ export const useThreadDetail = () => {
 
   const onExpand = useCallback(async () => {
     checkEnoughDiamond();
-    try {
-      setLoadingPassage(true);
-      const payload = {
-        content: 'we have some conflict',
-        tone: TONE_TYPE.DEFAULT,
-      };
-      const expandMessage = createTempMessage(
-        '',
-        '',
-        MESSAGE_TYPE.EXPAND,
-        ROLE.USER
-      );
-      setPassages(prev => [...prev, expandMessage]);
-      const response = await expandThread(threadId, payload);
-      const newMessage = createTempMessage(
-        response.data.id,
-        response.data.content,
-        MESSAGE_TYPE.TEXT,
-        ROLE.ASSISTANT
-      );
-      setPassages(prev => [...prev, newMessage]);
-
-      // Update user profile after successful API call
-      await updateUserProfile();
-    } catch (err) {
-      console.error('Error expanding messages:', err);
-    } finally {
-      setLoadingPassage(false);
-    }
-  }, [checkEnoughDiamond, threadId, createTempMessage, updateUserProfile]);
+    setIsExtendModalVisible(true);
+  }, [checkEnoughDiamond]);
 
   const onExtendWithContent = useCallback(async (content: string, tone: string) => {
     checkEnoughDiamond();
@@ -243,7 +216,7 @@ export const useThreadDetail = () => {
       };
       const expandMessage = createTempMessage(
         '',
-        '',
+        content,
         MESSAGE_TYPE.EXPAND,
         ROLE.USER
       );
@@ -270,6 +243,10 @@ export const useThreadDetail = () => {
     navigation.navigate('InAppPurchase');
   }, [navigation]);
 
+  const onCloseExtendModal = useCallback(() => {
+    setIsExtendModalVisible(false);
+  }, []);
+
   useEffect(() => {
     loadThreadDetail();
   }, [loadThreadDetail]);
@@ -288,6 +265,7 @@ export const useThreadDetail = () => {
     passages,
     error,
     diamond: userProfile?.diamond,
+    isExtendModalVisible,
     handleGoBack,
     onDeleteMessage,
     onRewriteMessage,
@@ -295,6 +273,7 @@ export const useThreadDetail = () => {
     onExpand,
     loadThreadDetail,
     onPressDiamond,
-    onExtendWithContent
+    onExtendWithContent,
+    onCloseExtendModal,
   };
 };

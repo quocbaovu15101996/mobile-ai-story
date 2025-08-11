@@ -1,15 +1,15 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
-import React, { useState } from 'react';
+import React from 'react';
 import { ActivityIndicator, FlatList, Image, ListRenderItem, Pressable, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import ExtendModal from '@/components/ExtendModal';
 import TextApp from '@/components/TextApp';
 import { ThemedView } from '@/components/ThemedView';
 import { MessageItem } from '@/components/thread/MessageItem';
 import { ThreadBottomAction } from '@/components/thread/ThreadBottomAction';
 import { useThreadDetail } from '@/hooks/useThreadDetail';
-import ExtendModal from '@/components/ExtendModal';
 
 import { DiamondBox } from '@/components/DiamondBox';
 import type { MessageItemInterface } from '@/src/services/api/types';
@@ -17,7 +17,6 @@ import { SCREEN_HEIGHT } from '@/src/utils';
 
 export default function ThreadDetail() {
   const { colors } = useTheme();
-  const [isExtendModalVisible, setIsExtendModalVisible] = useState(false);
 
   const {
     thread,
@@ -26,6 +25,7 @@ export default function ThreadDetail() {
     passages,
     error,
     diamond,
+    isExtendModalVisible,
     handleGoBack,
     onDeleteMessage,
     onRewriteMessage,
@@ -34,6 +34,7 @@ export default function ThreadDetail() {
     loadThreadDetail,
     onPressDiamond,
     onExtendWithContent,
+    onCloseExtendModal,
   } = useThreadDetail();
 
   const renderThreadHeader = () => {
@@ -44,7 +45,7 @@ export default function ThreadDetail() {
         </Pressable>
         <View style={styles.headerRight}>
           <DiamondBox onPress={onPressDiamond} diamond={diamond} />
-          <Pressable style={styles.actionButton} onPress={() => setIsExtendModalVisible(true)}>
+          <Pressable style={styles.actionButton}>
             <Ionicons name="ellipsis-vertical" size={24} color={colors.text} />
           </Pressable>
         </View>
@@ -169,7 +170,7 @@ export default function ThreadDetail() {
       {/* Extend Modal */}
       <ExtendModal
         visible={isExtendModalVisible}
-        onClose={() => setIsExtendModalVisible(false)}
+        onClose={onCloseExtendModal}
         onExtend={handleExtendWithContent}
         loading={loadingPassage}
       />
