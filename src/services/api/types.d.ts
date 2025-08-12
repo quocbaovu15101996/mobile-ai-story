@@ -33,6 +33,7 @@ export interface UserProfile {
   totalAmountWatchAds?: number; // Number of times user can watch ads today
   lastRefreshTotalWatchAds?: string; // Timestamp as ISO string
   maxWatchAdsPerDay?: number;
+  isVip?: boolean;
 }
 
 export interface Thread {

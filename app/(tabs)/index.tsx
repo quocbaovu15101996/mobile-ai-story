@@ -126,6 +126,7 @@ export default function HomeScreen() {
         diamond={userProfile?.diamond}
         onPressToken={onPressToken}
         onPressCalendar={onPressCalendar}
+        isVip={userProfile?.isVip}
       />
       <CreateThreadBox />
       <RollCallModal visible={modalVisible} onClose={onCloseModal} />

@@ -149,6 +149,7 @@ export default function HistoryScreen() {
         diamond={userProfile?.diamond}
         onPressToken={onPressToken}
         onPressCalendar={onPressCalendar}
+        isVip={userProfile?.isVip}
       />
       <FlatList
         data={threads}
