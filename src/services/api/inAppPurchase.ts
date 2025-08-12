@@ -25,4 +25,13 @@ export const inAppPurchaseApi = {
       throw error;
     }
   },
+
+  restorePurchase: async (): Promise<any> => {
+    try {
+      return await api.get<any>(ENDPOINTS.USERS.RESTORE_PURCHASE);
+    } catch (error) {
+      console.error('Restore purchase API error:', error);
+      throw error;
+    }
+  },
 };

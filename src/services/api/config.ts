@@ -8,8 +8,8 @@ const appJson = require('../../../app.json');
 // Base API configuration
 export const API_CONFIG = {
   // BASE_URL: 'https://viable-jointly-hen.ngrok-free.app',
-  // BASE_URL: 'http://192.168.200.57:8080',
-  BASE_URL: 'http://192.168.0.101:8080',
+  BASE_URL: 'http://192.168.200.36:8080',
+  // BASE_URL: 'http://192.168.0.101:8080',
   TIMEOUT: 30000, // 30 seconds
   HEADERS: {
     'Content-Type': 'application/json',
@@ -29,6 +29,7 @@ export const ENDPOINTS = {
     ROLL_CALL: '/v1/users/roll-call',
     EARN_TOKEN_BY_ADS: '/v1/users/earn-token-by-ads',
     IN_APP_PURCHASE: '/v1/in-app-purchase',
+    RESTORE_PURCHASE: '/v1/in-app-purchase/restore-iap'
   },
   THREAD: {
     URL: '/v1/threads',

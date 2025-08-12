@@ -36,10 +36,12 @@ export default function InAppPurchaseScreen() {
     selectedPlanId: string;
     offerToken: string;
     loading: boolean;
+    loadingRestore: boolean;
   }>({
     selectedPlanId: SUBSCRIPTION_IDS[0],
     offerToken: '',
     loading: false,
+    loadingRestore: false,
   });
   const { setUserProfile } = useAuthStore();
 
@@ -140,8 +142,24 @@ export default function InAppPurchaseScreen() {
     />
   );
 
-  const handleRestorePurchases = () => {
-
+  const handleRestorePurchases = async () => {
+    setStateScreen(prevState => ({
+      ...prevState,
+      loadingRestore: true,
+    }));
+    try {
+      await inAppPurchaseApi.restorePurchase();
+      await handleUpdateProfile();
+      navigation.goBack();
+    } catch (error) {
+      console.error('Restore purchase error', error);
+      showErrorToast('Failed to restore purchases. Please try again.');
+    } finally {
+      setStateScreen(prevState => ({
+        ...prevState,
+        loadingRestore: false,
+      }));
+    }
   };
 
   useEffect(() => {
@@ -219,12 +237,12 @@ export default function InAppPurchaseScreen() {
       <Pressable
         style={[
           styles.restoreBtn,
-          stateScreen.loading && styles.restoreButtonDisabled,
+          stateScreen.loadingRestore && styles.restoreButtonDisabled,
         ]}
         onPress={handleRestorePurchases}
-        disabled={stateScreen.loading}
+        disabled={stateScreen.loadingRestore}
       >
-        {stateScreen.loading ? (
+        {stateScreen.loadingRestore ? (
           <>
             <ActivityIndicator
               size="small"
