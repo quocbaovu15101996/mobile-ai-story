@@ -26,9 +26,9 @@ export const inAppPurchaseApi = {
     }
   },
 
-  restorePurchase: async (): Promise<any> => {
+  restorePurchase: async (payload: InAppPurchasePayload): Promise<any> => {
     try {
-      return await api.get<any>(ENDPOINTS.USERS.RESTORE_PURCHASE);
+      return await api.post<any>(ENDPOINTS.USERS.RESTORE_PURCHASE, payload);
     } catch (error) {
       console.error('Restore purchase API error:', error);
       throw error;

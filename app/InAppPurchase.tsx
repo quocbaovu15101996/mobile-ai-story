@@ -1,18 +1,24 @@
-
 import BenefitBox from '@/components/inappPurchase/BenefitBox';
 import PurchaseItem from '@/components/inappPurchase/PurchaseItem';
 import { ModalLoading } from '@/components/ModalLoading';
-import { PurchaseSuccessInterface, useInAppPurchase } from '@/src/hooks/useInAppPurchase';
+import {
+  PurchaseSuccessInterface,
+  useInAppPurchase,
+} from '@/src/hooks/useInAppPurchase';
 import { inAppPurchaseApi } from '@/src/services/api/inAppPurchase';
 import { getUserProfile } from '@/src/services/api/users';
 import { useAuthStore } from '@/src/store';
 import { isIos, isNullOrEmpty, SUBSCRIPTION_IDS } from '@/src/utils';
 import { showErrorToast } from '@/src/utils/toast';
-import {
-  Ionicons
-} from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useTheme } from '@react-navigation/native';
-import { PurchaseError, requestPurchase, SubscriptionProduct } from 'expo-iap';
+import {
+  getAvailablePurchases,
+  ProductPurchaseAndroid,
+  PurchaseError,
+  requestPurchase,
+  SubscriptionProduct,
+} from 'expo-iap';
 import React, { useEffect } from 'react';
 import {
   ActivityIndicator,
@@ -54,7 +60,7 @@ export default function InAppPurchaseScreen() {
 
   const onPurchaseSuccess = async (purchase: PurchaseSuccessInterface) => {
     console.log('Purchase success', purchase);
-    setStateScreen(prevState => ({
+    setStateScreen((prevState) => ({
       ...prevState,
       loading: true,
     }));
@@ -74,7 +80,7 @@ export default function InAppPurchaseScreen() {
       console.error('Purchase error', error);
       showErrorToast('Failed to purchase. Please try again.');
     } finally {
-      setStateScreen(prevState => ({
+      setStateScreen((prevState) => ({
         ...prevState,
         loading: false,
       }));
@@ -88,12 +94,12 @@ export default function InAppPurchaseScreen() {
   const { subscriptions, loadingSubs } = useInAppPurchase(
     onPurchaseSuccess,
     onPurchaseError,
-    clickedRef.current,
+    clickedRef.current
   );
 
   const onPressSubscribe = async () => {
     clickedRef.current = true;
-    setStateScreen(prevState => ({
+    setStateScreen((prevState) => ({
       ...prevState,
       loading: true,
     }));
@@ -103,10 +109,15 @@ export default function InAppPurchaseScreen() {
           ios: { sku: stateScreen.selectedPlanId },
           android: {
             skus: [stateScreen.selectedPlanId],
-            subscriptionOffers: [{ sku: stateScreen.selectedPlanId, offerToken: stateScreen.offerToken }]
-          }
+            subscriptionOffers: [
+              {
+                sku: stateScreen.selectedPlanId,
+                offerToken: stateScreen.offerToken,
+              },
+            ],
+          },
         },
-        type: 'subs'
+        type: 'subs',
       });
     } catch (error) {
       if (error instanceof PurchaseError) {
@@ -114,7 +125,7 @@ export default function InAppPurchaseScreen() {
       } else {
         console.error({ message: 'handleBuySubscription', error });
       }
-      setStateScreen(prevState => ({
+      setStateScreen((prevState) => ({
         ...prevState,
         loading: false,
       }));
@@ -126,8 +137,7 @@ export default function InAppPurchaseScreen() {
   };
 
   const onPressItem = (item: SubscriptionProduct & any) => {
-    console.log('onPressItem ', item?.subscriptionOfferDetails);
-    setStateScreen(prevState => ({
+    setStateScreen((prevState) => ({
       ...prevState,
       selectedPlanId: item.id,
       offerToken: item.subscriptionOfferDetails?.[0]?.offerToken || '',
@@ -143,19 +153,28 @@ export default function InAppPurchaseScreen() {
   );
 
   const handleRestorePurchases = async () => {
-    setStateScreen(prevState => ({
+    setStateScreen((prevState) => ({
       ...prevState,
       loadingRestore: true,
     }));
+    const subscription: ProductPurchaseAndroid[] =
+      await getAvailablePurchases();
+    console.log('handleRestorePurchases', subscription);
     try {
-      await inAppPurchaseApi.restorePurchase();
+      await inAppPurchaseApi.restorePurchase({
+        platform: isIos ? 'ios' : 'android',
+        subscriptionId: subscription?.[0]?.id || '',
+        transactionId: subscription?.[0]?.transactionId || '',
+        purchaseToken: subscription?.[0]?.purchaseTokenAndroid || '',
+        receipt: subscription?.[0]?.transactionReceipt || '',
+      });
       await handleUpdateProfile();
       navigation.goBack();
     } catch (error) {
       console.error('Restore purchase error', error);
       showErrorToast('Failed to restore purchases. Please try again.');
     } finally {
-      setStateScreen(prevState => ({
+      setStateScreen((prevState) => ({
         ...prevState,
         loadingRestore: false,
       }));
@@ -165,11 +184,11 @@ export default function InAppPurchaseScreen() {
   useEffect(() => {
     if (!loadingSubs) {
       const selectPlan = subscriptions.find(
-        item => item.id === SUBSCRIPTION_IDS[0],
+        (item) => item.id === SUBSCRIPTION_IDS[0]
       );
       const subscriptionOfferDetails = selectPlan?.subscriptionOfferDetails;
 
-      setStateScreen(prevState => ({
+      setStateScreen((prevState) => ({
         ...prevState,
         selectedPlanId: selectPlan?.id,
         offerToken: !isNullOrEmpty(subscriptionOfferDetails)
@@ -207,7 +226,8 @@ export default function InAppPurchaseScreen() {
       <Pressable
         style={[
           styles.subscribeBtn,
-          (stateScreen.loading || stateScreen.selectedPlanId === '') && styles.subscribeButtonDisabled,
+          (stateScreen.loading || stateScreen.selectedPlanId === '') &&
+          styles.subscribeButtonDisabled,
         ]}
         onPress={onPressSubscribe}
         disabled={stateScreen.loading || stateScreen.selectedPlanId === ''}
@@ -258,7 +278,6 @@ export default function InAppPurchaseScreen() {
     </View>
   );
 
-
   const sortSubscription = subscriptions.sort((a: any, b: any) => {
     const priceA = Number(a.price);
     const priceB = Number(b.price);
@@ -297,10 +316,7 @@ export default function InAppPurchaseScreen() {
           Google Play store settings.
         </Text>
       </ScrollView>
-      <ModalLoading
-        modalVisible={stateScreen.loading}
-        color={colors.primary}
-      />
+      <ModalLoading modalVisible={stateScreen.loading} color={colors.primary} />
     </SafeAreaView>
   );
 }
