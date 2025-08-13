@@ -25,16 +25,6 @@ type ThreadDetailScreenRouteProp = {
   };
 };
 
-const TONE_TYPE = {
-  DEFAULT: 'DEFAULT',
-  CHARACTER: 'CHARACTER',
-  SPICY: 'SPICY',
-  EMOTION: 'EMOTION',
-  DARK: 'DARK',
-  COMEDY: 'COMEDY',
-  CLASH: 'CLASH',
-};
-
 export const useThreadDetail = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<ThreadDetailScreenRouteProp>();
@@ -103,11 +93,12 @@ export const useThreadDetail = () => {
     }
   }, [threadId, createTempMessage]);
 
-  const checkEnoughDiamond = useCallback(() => {
-    if ((userProfile?.diamond || 0) < 3) {
-      navigation.navigate('InAppPurchase');
+  const isEnoughDiamond = useCallback(() => {
+    if (userProfile?.isVip) {
+      return true;
     }
-  }, [navigation, userProfile?.diamond]);
+    return (userProfile?.diamond || 0) >= 3;
+  }, [userProfile?.diamond, userProfile?.isVip]);
 
   const loadThreadDetail = useCallback(async () => {
     try {
@@ -150,7 +141,10 @@ export const useThreadDetail = () => {
   }, [threadId, passages.length, deleting]);
 
   const onRewriteMessage = useCallback(async () => {
-    checkEnoughDiamond();
+    if (!isEnoughDiamond()) {
+      navigation.navigate('InAppPurchase');
+      return;
+    }
     try {
       setLoadingPassage(true);
       setPassages(prevPassages => prevPassages.slice(0, -1));
@@ -162,7 +156,6 @@ export const useThreadDetail = () => {
         ROLE.ASSISTANT
       );
       setPassages((prevPassages) => [...prevPassages, newMessage]);
-      // Update user profile after successful API call
       await updateUserProfile();
     } catch (err) {
       console.error('Error rewriting messages:', err);
@@ -170,10 +163,13 @@ export const useThreadDetail = () => {
     } finally {
       setLoadingPassage(false);
     }
-  }, [checkEnoughDiamond, threadId, createTempMessage, updateUserProfile]);
+  }, [isEnoughDiamond, navigation, threadId, createTempMessage, updateUserProfile]);
 
   const onContinue = useCallback(async () => {
-    checkEnoughDiamond();
+    if (!isEnoughDiamond()) {
+      navigation.navigate('InAppPurchase');
+      return;
+    }
     try {
       setLoadingPassage(true);
       const continueMessage = createTempMessage(
@@ -199,15 +195,21 @@ export const useThreadDetail = () => {
     } finally {
       setLoadingPassage(false);
     }
-  }, [checkEnoughDiamond, createTempMessage, threadId, updateUserProfile]);
+  }, [isEnoughDiamond, navigation, createTempMessage, threadId, updateUserProfile]);
 
   const onExpand = useCallback(async () => {
-    checkEnoughDiamond();
+    if (!isEnoughDiamond()) {
+      navigation.navigate('InAppPurchase');
+      return;
+    }
     setIsExtendModalVisible(true);
-  }, [checkEnoughDiamond]);
+  }, [isEnoughDiamond, navigation]);
 
   const onExtendWithContent = useCallback(async (content: string, tone: string) => {
-    checkEnoughDiamond();
+    if (!isEnoughDiamond()) {
+      navigation.navigate('InAppPurchase');
+      return;
+    }
     try {
       setLoadingPassage(true);
       const payload = {
@@ -237,7 +239,7 @@ export const useThreadDetail = () => {
     } finally {
       setLoadingPassage(false);
     }
-  }, [checkEnoughDiamond, threadId, createTempMessage, updateUserProfile]);
+  }, [isEnoughDiamond, navigation, createTempMessage, threadId, updateUserProfile]);
 
   const onPressDiamond = useCallback(() => {
     navigation.navigate('InAppPurchase');

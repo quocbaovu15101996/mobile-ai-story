@@ -1,5 +1,6 @@
 import { ADMOB_ADS } from '@/config/admob-config';
 import { createThread } from '@/src/services/api/thread';
+import { useUserProfile } from '@/src/store';
 import { showErrorToast } from '@/src/utils/toast';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useTheme } from '@react-navigation/native';
@@ -49,6 +50,7 @@ const NARRATIVE = [
 
 const CreateThreadBox: FC<Props> = () => {
   const { colors } = useTheme();
+  const userProfile = useUserProfile();
 
   const [storyIdea, setStoryIdea] = useState('');
   const [storyType, setStoryType] = useState('endless');
@@ -81,24 +83,39 @@ const CreateThreadBox: FC<Props> = () => {
   }, [navigation]);
 
   const onPressGenerate = useCallback(async () => {
-    // Load the interstitial ad
+    const payload = {
+      title: storyIdea,
+      storyIdea,
+      isCanInteract: STORY_TYPE.find((s) => s.key === storyType)
+        ?.value as number,
+      storyLength: storyLength.toLocaleUpperCase(),
+      genreType: genre,
+      characterPrompt: characters,
+      settingPrompt: setting,
+      narrative: NARRATIVE.find((n) => n.value === narrative)?.value,
+    };
+
+    if (userProfile?.isVip) {
+      try {
+        const response = await createThread(payload);
+        if (response.data && response.data.id) {
+          threadId.current = response.data.threadId;
+          navigateToThreadDetail();
+        }
+      } catch (error) {
+        showErrorToast(error as string ?? "Something went wrong!!! Please try again.");
+      } finally {
+        setLoading(false);
+      }
+
+      return;
+    }
+
+    // case show ads with normal user
     interstitial.current?.load();
     setLoadingAds(true);
     try {
-      const payload = {
-        title: storyIdea,
-        storyIdea,
-        isCanInteract: STORY_TYPE.find((s) => s.key === storyType)
-          ?.value as number,
-        storyLength: storyLength.toLocaleUpperCase(),
-        genreType: genre,
-        characterPrompt: characters,
-        settingPrompt: setting,
-        narrative: NARRATIVE.find((n) => n.value === narrative)?.value,
-      };
       const response = await createThread(payload);
-
-      // Navigate to ThreadDetail after successful creation
       if (response.data && response.data.id) {
         threadId.current = response.data.threadId;
         await Promise.resolve(setTimeout(() => { }, 3000));
@@ -109,20 +126,20 @@ const CreateThreadBox: FC<Props> = () => {
         }
       }
     } catch (error) {
-      // Optionally handle error (e.g., show toast)
-      console.error(error);
+      showErrorToast(error as string ?? "Something went wrong!!! Please try again.");
     } finally {
       setLoading(false);
     }
   }, [
-    characters,
-    genre,
-    loadingAds,
-    narrative,
-    setting,
     storyIdea,
     storyLength,
+    genre,
+    characters,
+    setting,
+    userProfile?.isVip,
     storyType,
+    narrative,
+    loadingAds,
     navigateToThreadDetail,
   ]);
 
