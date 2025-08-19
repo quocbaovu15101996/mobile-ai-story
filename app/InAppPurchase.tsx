@@ -65,12 +65,15 @@ export default function InAppPurchaseScreen() {
       loading: true,
     }));
     try {
+      const receipt = (
+        isIos ? purchase?.transactionReceipt : purchase?.purchaseTokenAndroid
+      ) as string;
       const response = await inAppPurchaseApi.submitPurchase({
         platform: isIos ? 'ios' : 'android',
         subscriptionId: stateScreen.selectedPlanId,
         transactionId: purchase?.transactionId || '',
         purchaseToken: purchase?.purchaseTokenAndroid || '',
-        receipt: purchase?.transactionReceipt || '',
+        receipt: receipt,
       });
       if (response?.status === 200) {
         await handleUpdateProfile();
