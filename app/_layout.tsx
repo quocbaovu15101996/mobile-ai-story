@@ -57,7 +57,7 @@ export default function RootLayout() {
         // Show splash screen for at least 2 seconds for better UX
         setTimeout(() => {
           setIsLoading(false);
-        }, 2000);
+        }, 1000);
       }
     };
 
@@ -66,11 +66,9 @@ export default function RootLayout() {
     };
 
     initializeAds();
-    if (loaded) {
-      initializeAuth();
-    }
+    initializeAuth();
 
-  }, [loaded, loginByDevice]);
+  }, [loginByDevice]);
 
   if (!loaded || isLoading) {
     return <SplashScreen />;
