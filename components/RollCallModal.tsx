@@ -116,7 +116,7 @@ export default function RollCallModal({ visible, onClose }: Props) {
             </View>
             {/* Check-in days row */}
             <View style={styles.modalCheckinRow}>
-              {[5, 6, 7, 8, 8, 8, 10].map((gem, idx) => (
+              {[3, 4, 5, 5, 5, 6, 10].map((gem, idx) => (
                 <View
                   key={idx}
                   style={[
