@@ -1,7 +1,7 @@
 import { ADMOB_ADS } from '@/config/admob-config';
 import { earnTokenByAds, getUserProfile, rollCall } from '@/src/services/api/users';
 import { useAuthStore } from '@/src/store/useAuthStore';
-import { SCREEN_WIDTH } from '@/src/utils';
+import { checkTheDayIsToDay, SCREEN_WIDTH } from '@/src/utils';
 import { showErrorToast } from '@/src/utils/toast';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useRef, useState } from 'react';
@@ -125,6 +125,7 @@ export default function RollCallModal({ visible, onClose }: Props) {
                     styles.modalCheckinDay,
                     idx < currentStreak && styles.modalCheckinDayPass,
                     idx === currentStreak && styles.modalCheckinDayActive,
+                    checkTheDayIsToDay(userProfile?.lastRollCallDate) && idx === currentStreak && styles.modalCheckinDayPass,
                     idx === 6 && { width: ITEM_WIDTH * 2 }
                   ]}
                 >

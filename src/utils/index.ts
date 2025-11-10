@@ -41,3 +41,15 @@ export function isNullOrEmpty(data: any | any[]): boolean {
 
   return output.length <= 0;
 }
+
+export function checkTheDayIsToDay(date?: string): boolean {
+  if (!date) return false;
+  const today = new Date();
+  const lastRollCallDate = new Date(date);
+
+  return (
+    lastRollCallDate.getFullYear() === today.getFullYear() &&
+    lastRollCallDate.getMonth() === today.getMonth() &&
+    lastRollCallDate.getDate() === today.getDate()
+  );
+}
