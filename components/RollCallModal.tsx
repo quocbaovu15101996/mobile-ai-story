@@ -28,6 +28,7 @@ export default function RollCallModal({ visible, onClose }: Props) {
   const { setUserProfile, userProfile } = useAuthStore();
   const [loadingAds, setLoadingAds] = useState<boolean>(false);
 
+  console.log('userProfile ', userProfile);
   const rewardInterstitial = useRef<RewardedInterstitialAd | null>(null);
 
   const handleUpdateProfile = async () => {
@@ -101,12 +102,13 @@ export default function RollCallModal({ visible, onClose }: Props) {
 
   const disabledWatchAds = loadingAds || userProfile?.totalAmountWatchAds === 0;
 
+  const currentStreak = (userProfile?.rollCallStreak || 1) - 1;
   return (
     <>
       {visible && <View style={styles.background} />}
       <Modal visible={visible} transparent animationType="slide">
         <Pressable style={styles.modalBackdrop} onPress={onClose}>
-          <View style={styles.modalContainer}>
+          <Pressable style={styles.modalContainer} onPress={(e) => e.stopPropagation()}>
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Check-In</Text>
               <View style={styles.modalGem}>
@@ -121,7 +123,8 @@ export default function RollCallModal({ visible, onClose }: Props) {
                   key={idx}
                   style={[
                     styles.modalCheckinDay,
-                    idx === 0 && styles.modalCheckinDayActive,
+                    idx < currentStreak && styles.modalCheckinDayPass,
+                    idx === currentStreak && styles.modalCheckinDayActive,
                     idx === 6 && { width: ITEM_WIDTH * 2 }
                   ]}
                 >
@@ -174,7 +177,7 @@ export default function RollCallModal({ visible, onClose }: Props) {
                 <Text style={styles.modalAdsGem}>+10</Text>
               </View>
             </Pressable>
-          </View>
+          </Pressable>
         </Pressable>
       </Modal>
     </>
@@ -248,6 +251,9 @@ const styles = StyleSheet.create({
   modalCheckinDayActive: {
     borderWidth: 2,
     borderColor: '#7ee2ff',
+  },
+  modalCheckinDayPass: {
+    backgroundColor: '#434253ff',
   },
   modalCheckinDayText: {
     color: '#fff',
