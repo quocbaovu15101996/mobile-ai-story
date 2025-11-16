@@ -1,17 +1,27 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
-import React from 'react';
-import { ActivityIndicator, FlatList, Image, ListRenderItem, Pressable, StyleSheet, View } from 'react-native';
+import React, { useRef } from 'react';
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  Image,
+  ListRenderItem,
+  Pressable,
+  StyleSheet,
+  View
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import ActionModal from '@/components/ActionModal';
+
+import { DiamondBox } from '@/components/DiamondBox';
 import ExtendModal from '@/components/ExtendModal';
 import TextApp from '@/components/TextApp';
 import { ThemedView } from '@/components/ThemedView';
 import { MessageItem } from '@/components/thread/MessageItem';
 import { ThreadBottomAction } from '@/components/thread/ThreadBottomAction';
 import { useThreadDetail } from '@/hooks/useThreadDetail';
-
-import { DiamondBox } from '@/components/DiamondBox';
 import type { MessageItemInterface } from '@/src/services/api/types';
 import { SCREEN_HEIGHT } from '@/src/utils';
 
@@ -26,6 +36,9 @@ export default function ThreadDetail() {
     error,
     diamond,
     isExtendModalVisible,
+    actionModalVisible,
+    actionModalPosition,
+    showDeleteConfirm,
     handleGoBack,
     onDeleteMessage,
     onRewriteMessage,
@@ -35,7 +48,22 @@ export default function ThreadDetail() {
     onPressDiamond,
     onExtendWithContent,
     onCloseExtendModal,
+    handleActionPress,
+    handleActionOption,
+    handleDeleteConfirm,
+    handleCloseDeleteConfirm,
+    handleCloseActionModal,
   } = useThreadDetail();
+
+  const actionButtonRef = useRef<View>(null);
+  
+  const onActionPress = () => {
+    if (actionButtonRef.current) {
+      actionButtonRef.current.measureInWindow((x, y) => {
+        handleActionPress(y);
+      });
+    }
+  };
 
   const renderThreadHeader = () => {
     return (
@@ -45,9 +73,11 @@ export default function ThreadDetail() {
         </Pressable>
         <View style={styles.headerRight}>
           <DiamondBox onPress={onPressDiamond} diamond={diamond} />
-          <Pressable style={styles.actionButton}>
-            <Ionicons name="ellipsis-vertical" size={24} color={colors.text} />
-          </Pressable>
+          <View ref={actionButtonRef} collapsable={false}>
+            <Pressable onPress={onActionPress} testID="action-button">
+              <Ionicons name="ellipsis-vertical" size={24} color={colors.text} />
+            </Pressable>
+          </View>
         </View>
       </View>
     );
@@ -76,33 +106,47 @@ export default function ThreadDetail() {
     </View>
   );
 
-  const renderActions = () => (
-    <View style={{ flexDirection: 'row', gap: 8, justifyContent: 'flex-end', marginRight: 12 }}>
-      <Pressable style={styles.actionButtonSmall} onPress={onDeleteMessage}>
-        <Ionicons name="trash" size={14} color="#fff" />
-        <TextApp style={styles.actionButtonText}>Delete</TextApp>
-      </Pressable>
-      <Pressable style={styles.actionButtonSmall} onPress={onRewriteMessage}>
-        <Ionicons name="refresh-sharp" size={14} color="#fff" />
-        <TextApp style={styles.actionButtonText}>Re-Write</TextApp>
-      </Pressable>
-    </View>
-  );
-
   const renderFooter = () => {
     if (loadingPassage) {
       return (
         <ActivityIndicator size="small" color="#007AFF" />
       )
     }
-    return thread?.isCanInteract === 1 && renderActions()
+    return thread?.isCanInteract === 1 && (
+      <View style={{ flexDirection: 'row', gap: 8, justifyContent: 'flex-end', marginRight: 12 }}>
+        <Pressable style={styles.actionButtonSmall} onPress={onDeleteMessage}>
+          <Ionicons name="trash" size={14} color="#fff" />
+          <TextApp style={styles.actionButtonText}>Delete</TextApp>
+        </Pressable>
+        <Pressable style={styles.actionButtonSmall} onPress={onRewriteMessage}>
+          <Ionicons name="refresh-sharp" size={14} color="#fff" />
+          <TextApp style={styles.actionButtonText}>Re-Write</TextApp>
+        </Pressable>
+      </View>
+    )
   }
 
-  const handleExtendWithContent = async (content: string, tone: string) => {
-    if (onExtendWithContent) {
-      await onExtendWithContent(content, tone);
+  // Show delete confirmation when showDeleteConfirm changes
+  React.useEffect(() => {
+    if (showDeleteConfirm) {
+      Alert.alert(
+        'Delete Thread',
+        'Are you sure you want to delete this thread? This action cannot be undone.',
+        [
+          {
+            text: 'Cancel',
+            style: 'cancel',
+            onPress: handleCloseDeleteConfirm,
+          },
+          {
+            text: 'Delete',
+            style: 'destructive',
+            onPress: handleDeleteConfirm,
+          },
+        ]
+      );
     }
-  };
+  }, [showDeleteConfirm]);
 
   if (loading) {
     return (
@@ -167,13 +211,19 @@ export default function ThreadDetail() {
         onExpand={onExpand}
       />
 
-      {/* Extend Modal */}
       <ExtendModal
         visible={isExtendModalVisible}
         onClose={onCloseExtendModal}
-        onExtend={handleExtendWithContent}
+        onExtend={onExtendWithContent}
         loading={loadingPassage}
       />
+      {actionModalVisible && (
+        <ActionModal
+          positionY={actionModalPosition}
+          onClose={handleCloseActionModal}
+          onSelectOption={handleActionOption}
+        />
+      )}
     </SafeAreaView>
   );
 }

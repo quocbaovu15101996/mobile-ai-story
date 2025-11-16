@@ -1,11 +1,14 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import * as Print from 'expo-print';
 import { useCallback, useEffect, useState } from 'react';
+import { Alert } from 'react-native'; // Added ActionSheetIOS import
 import { RootStackParamList } from '../app/_layout';
 import { MESSAGE_TYPE, ROLE } from '../constants';
 import {
   continueThread,
   createARunThread,
+  deleteThread,
   eraseLastMessage,
   expandThread,
   getThreadDetail,
@@ -259,6 +262,114 @@ export const useThreadDetail = () => {
     }
   }, [isCreate, runThread]);
 
+  const exportToPdf = useCallback(async () => {
+    try {
+      // Check if thread exists and has messages
+      if (!thread) {
+        Alert.alert('Error', 'No thread data available');
+        return;
+      }
+
+      // Type assertion to access messages if they exist in the thread
+      const threadWithMessages = thread as Thread & { messages?: { role: string; content: string }[] };
+      const messages = passages.length > 0 ? passages : threadWithMessages.messages || [];
+
+      // Create HTML content for the PDF
+      const html = `
+        <html>
+          <head>
+            <style>
+              body { font-family: Arial; padding: 20px; }
+              h1 { color: #333; }
+              .message { margin-bottom: 15px; padding: 10px; border-bottom: 1px solid #eee; }
+              .user { font-weight: bold; color: #007AFF; }
+              .assistant { color: #333; }
+            </style>
+          </head>
+          <body>
+            <h1>${thread.title || 'Thread'}</h1>
+            ${messages.map((msg: any) =>
+        `<div class="message">
+                <div class="${msg.role}">${msg.role === 'user' ? 'You' : 'Assistant'}</div>
+                <div>${msg.content?.text?.value || msg.content || ''}</div>
+              </div>`
+      ).join('')}
+          </body>
+        </html>
+      `;
+
+      // Generate PDF
+      const { uri } = await Print.printToFileAsync({
+        html,
+        base64: false,
+      });
+
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      Alert.alert('Error', 'Failed to generate PDF');
+    }
+  }, [thread, passages]);
+
+  const handleDeleteThread = useCallback(async () => {
+    if (!thread?.id) return;
+
+    try {
+      setLoading(true);
+      await deleteThread(thread.id);
+      // Navigate back after successful deletion
+      navigation.goBack();
+      // Optional: Show success message or refresh thread list if needed
+    } catch (error) {
+      console.error('Error deleting thread:', error);
+      Alert.alert('Error', 'Failed to delete thread');
+    } finally {
+      setLoading(false);
+    }
+  }, [thread?.id, navigation]);
+
+  const [actionModalVisible, setActionModalVisible] = useState(false);
+  const [actionModalPosition, setActionModalPosition] = useState(0);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  const handleActionPress = useCallback((positionY: number) => {
+    setActionModalPosition(positionY);
+    setActionModalVisible(true);
+  }, []);
+
+  const handleActionOption = useCallback((option: string) => {
+    setActionModalVisible(false);
+
+    switch (option) {
+      case 'delete':
+        setShowDeleteConfirm(true);
+        break;
+      case 'export':
+        exportToPdf();
+        break;
+      case 'share':
+        // Handle share functionality if needed
+        break;
+      case 'copy':
+        // Handle copy functionality if needed
+        break;
+      default:
+        break;
+    }
+  }, [exportToPdf]);
+
+  const handleDeleteConfirm = useCallback(() => {
+    setShowDeleteConfirm(false);
+    handleDeleteThread();
+  }, [handleDeleteThread]);
+
+  const handleCloseDeleteConfirm = useCallback(() => {
+    setShowDeleteConfirm(false);
+  }, []);
+
+  const handleCloseActionModal = useCallback(() => {
+    setActionModalVisible(false);
+  }, []);
+
   return {
     thread,
     loading,
@@ -266,8 +377,11 @@ export const useThreadDetail = () => {
     deleting,
     passages,
     error,
-    diamond: userProfile?.diamond,
+    diamond: userProfile?.diamond || 0,
     isExtendModalVisible,
+    actionModalVisible,
+    actionModalPosition,
+    showDeleteConfirm,
     handleGoBack,
     onDeleteMessage,
     onRewriteMessage,
@@ -277,5 +391,11 @@ export const useThreadDetail = () => {
     onPressDiamond,
     onExtendWithContent,
     onCloseExtendModal,
+    handleActionPress,
+    handleActionOption,
+    handleDeleteConfirm,
+    handleCloseDeleteConfirm,
+    handleCloseActionModal,
+    exportToPdf,
   };
 };

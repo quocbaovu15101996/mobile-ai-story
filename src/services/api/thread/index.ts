@@ -36,3 +36,7 @@ export const eraseLastMessage = async (threadId: string): Promise<ApiResponse<bo
 export const rewriteLastMessage = async (threadId: string): Promise<ApiResponse<MessageResponse>> => {
   return await api.post<MessageResponse>(ENDPOINTS.THREAD.URL + '/' + threadId + ENDPOINTS.THREAD.REWRITE);
 };
+
+export const deleteThread = async (threadId: string): Promise<ApiResponse<boolean>> => {
+  return await api.delete<boolean>(`${ENDPOINTS.THREAD.URL}/${threadId}`);
+};
