@@ -106,6 +106,9 @@ export interface MessageResponse {
   content: string;
 }
 
+export interface GenerateIdeaResponse {
+  idea: string;
+}
 interface Metadata {
   type: string;
   content: string;

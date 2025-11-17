@@ -1,5 +1,5 @@
 import { ADMOB_ADS } from '@/config/admob-config';
-import { createThread } from '@/src/services/api/thread';
+import { createThread, generateIdea } from '@/src/services/api/thread';
 import { useUserProfile } from '@/src/store';
 import { showErrorToast } from '@/src/utils/toast';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,7 +13,7 @@ import {
   ScrollView,
   StyleSheet,
   TextInput,
-  View
+  View,
 } from 'react-native';
 import { AdEventType, InterstitialAd } from 'react-native-google-mobile-ads';
 import { RootStackParamList } from '../app/_layout';
@@ -61,6 +61,7 @@ const CreateThreadBox: FC<Props> = () => {
   const [loading, setLoading] = useState(false);
   const [narrative, setNarrative] = useState('FIRST_PERSON');
   const [loadingAds, setLoadingAds] = useState<boolean>(false);
+  const [loadingSuggestIdea, setLoadingSuggestIdea] = useState(false);
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -102,7 +103,9 @@ const CreateThreadBox: FC<Props> = () => {
           navigateToThreadDetail();
         }
       } catch (error) {
-        showErrorToast(error as string ?? "Something went wrong!!! Please try again.");
+        showErrorToast(
+          (error as string) ?? 'Something went wrong!!! Please try again.'
+        );
       } finally {
         setLoading(false);
       }
@@ -117,7 +120,7 @@ const CreateThreadBox: FC<Props> = () => {
       const response = await createThread(payload);
       if (response.data && response.data.id) {
         threadId.current = response.data.threadId;
-        await Promise.resolve(setTimeout(() => { }, 3000));
+        await Promise.resolve(setTimeout(() => {}, 3000));
         if (!loadingAds) {
           interstitial.current?.show();
         } else {
@@ -125,7 +128,9 @@ const CreateThreadBox: FC<Props> = () => {
         }
       }
     } catch (error) {
-      showErrorToast(error as string ?? "Something went wrong!!! Please try again.");
+      showErrorToast(
+        (error as string) ?? 'Something went wrong!!! Please try again.'
+      );
     } finally {
       setLoading(false);
     }
@@ -141,6 +146,21 @@ const CreateThreadBox: FC<Props> = () => {
     loadingAds,
     navigateToThreadDetail,
   ]);
+
+  const onPressSuggestIdea = useCallback(async () => {
+    setLoadingSuggestIdea(true);
+    const response = await generateIdea();
+    console.log('response', response.data?.idea);
+    if (response.status === 200 && response.data?.idea) {
+      setStoryIdea(response.data?.idea);
+    } else {
+      showErrorToast(
+        (response.data as unknown as string) ??
+          'Something went wrong!!! Please try again.'
+      );
+    }
+    setLoadingSuggestIdea(false);
+  }, []);
 
   useEffect(() => {
     interstitial.current = InterstitialAd.createForAdRequest(
@@ -223,18 +243,23 @@ const CreateThreadBox: FC<Props> = () => {
             multiline
             textAlignVertical="top"
             numberOfLines={4}
+            maxLength={250}
           />
-          {/* <View style={styles.inputIconsRow}>
+          <Pressable
+            style={styles.btnSuggestIdea}
+            onPress={onPressSuggestIdea}
+            disabled={loadingSuggestIdea}
+          >
             <Ionicons
-              name="bulb-outline"
+              name={loadingSuggestIdea ? 'hourglass-outline' : 'bulb-outline'}
               size={22}
-              color="#888"
+              color={loadingSuggestIdea ? '#6366f1' : '#888'}
               style={styles.iconSuggestion}
             />
             <View style={styles.proBadge}>
-              <Text style={styles.proText}>Pro</Text>
+              <TextApp style={styles.proText}>Pro</TextApp>
             </View>
-          </View> */}
+          </Pressable>
         </View>
 
         {/* Story size */}
@@ -420,7 +445,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     marginBottom: 6,
   },
-  inputIconsRow: {
+  btnSuggestIdea: {
     flexDirection: 'row',
     alignItems: 'center',
   },

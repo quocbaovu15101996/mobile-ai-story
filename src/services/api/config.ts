@@ -38,6 +38,7 @@ export const ENDPOINTS = {
     EXPAND: '/expand',
     ERASE: '/erase',
     REWRITE: '/rewrite',
+    GENERATE_IDEA: '/generate-idea',
   },
 };
 
