@@ -146,7 +146,7 @@ export default function ThreadDetail() {
         ]
       );
     }
-  }, [showDeleteConfirm]);
+  }, [handleCloseDeleteConfirm, handleDeleteConfirm, showDeleteConfirm]);
 
   if (loading) {
     return (
@@ -219,6 +219,7 @@ export default function ThreadDetail() {
       />
       {actionModalVisible && (
         <ActionModal
+          visible={actionModalVisible}
           positionY={actionModalPosition}
           onClose={handleCloseActionModal}
           onSelectOption={handleActionOption}

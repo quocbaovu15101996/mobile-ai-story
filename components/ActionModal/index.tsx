@@ -1,5 +1,5 @@
 import { scale } from '@/src/utils';
-import React from 'react';
+import React, { FC } from 'react';
 import {
   Modal,
   StyleSheet,
@@ -23,7 +23,7 @@ type Props = {
   onClose: () => void;
 };
 
-const ActionModal = ({ positionY, visible, onClose, onSelectOption }: Props) => {
+const ActionModal: FC<Props> = ({ positionY, visible, onClose, onSelectOption }: Props) => {
   const styleContent = { top: positionY + scale(44) };
   return (
     <Modal transparent={true} visible={visible} statusBarTranslucent={true}>
@@ -77,7 +77,7 @@ const ActionModal = ({ positionY, visible, onClose, onSelectOption }: Props) => 
   );
 };
 
-export default React.forwardRef(ActionModal);
+export default ActionModal;
 
 const styles = StyleSheet.create({
   container: {
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   content: {
     width: scale(187),
     paddingHorizontal: scale(8),
-    backgroundColor: 'white',
+    backgroundColor: '#232136',
     position: 'absolute',
     right: scale(8),
     borderRadius: scale(8),
@@ -109,15 +109,13 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: scale(8),
     paddingVertical: scale(4),
-    borderBottomWidth: scale(1),
-    borderBottomColor: '#F2F4F7',
   },
   viewTextDelete: {
     flex: 1,
     marginLeft: scale(8),
   },
   text: {
-    color: '#000000',
+    color: '#fff',
   },
   textRed: {
     color: '#D92D20',
