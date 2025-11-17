@@ -28,7 +28,6 @@ export default function RollCallModal({ visible, onClose }: Props) {
   const { setUserProfile, userProfile } = useAuthStore();
   const [loadingAds, setLoadingAds] = useState<boolean>(false);
 
-  console.log('userProfile ', userProfile);
   const rewardInterstitial = useRef<RewardedInterstitialAd | null>(null);
 
   const handleUpdateProfile = async () => {

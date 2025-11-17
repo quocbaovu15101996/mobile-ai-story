@@ -12,9 +12,8 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
-  Text,
   TextInput,
-  View,
+  View
 } from 'react-native';
 import { AdEventType, InterstitialAd } from 'react-native-google-mobile-ads';
 import { RootStackParamList } from '../app/_layout';
@@ -225,7 +224,7 @@ const CreateThreadBox: FC<Props> = () => {
             textAlignVertical="top"
             numberOfLines={4}
           />
-          <View style={styles.inputIconsRow}>
+          {/* <View style={styles.inputIconsRow}>
             <Ionicons
               name="bulb-outline"
               size={22}
@@ -235,7 +234,7 @@ const CreateThreadBox: FC<Props> = () => {
             <View style={styles.proBadge}>
               <Text style={styles.proText}>Pro</Text>
             </View>
-          </View>
+          </View> */}
         </View>
 
         {/* Story size */}
