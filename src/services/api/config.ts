@@ -9,7 +9,8 @@ const appJson = require('../../../app.json');
 export const API_CONFIG = {
   // BASE_URL: 'https://viable-jointly-hen.ngrok-free.app',
   // BASE_URL: 'http://192.168.200.37:8080',
-  BASE_URL: 'http://192.168.0.100:8080',
+  // BASE_URL: 'http://192.168.0.100:8080',
+  BASE_URL: 'http://155.138.214.95:8989', // production
   TIMEOUT: 30000, // 30 seconds
   HEADERS: {
     'Content-Type': 'application/json',
