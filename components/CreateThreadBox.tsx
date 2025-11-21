@@ -111,28 +111,28 @@ const CreateThreadBox: FC<Props> = () => {
       }
 
       return;
-    }
-
-    // case show ads with normal user
-    interstitial.current?.load();
-    setLoadingAds(true);
-    try {
-      const response = await createThread(payload);
-      if (response.data && response.data.id) {
-        threadId.current = response.data.threadId;
-        await Promise.resolve(setTimeout(() => {}, 3000));
-        if (!loadingAds) {
-          interstitial.current?.show();
-        } else {
-          navigateToThreadDetail();
+    } else {
+      // case show ads with normal user
+      interstitial.current?.load();
+      setLoadingAds(true);
+      try {
+        const response = await createThread(payload);
+        if (response.data && response.data.id) {
+          threadId.current = response.data.threadId;
+          await Promise.resolve(setTimeout(() => {}, 3000));
+          if (!loadingAds) {
+            interstitial.current?.show();
+          } else {
+            navigateToThreadDetail();
+          }
         }
+      } catch (error) {
+        showErrorToast(
+          (error as string) ?? 'Something went wrong!!! Please try again.'
+        );
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      showErrorToast(
-        (error as string) ?? 'Something went wrong!!! Please try again.'
-      );
-    } finally {
-      setLoading(false);
     }
   }, [
     storyIdea,
@@ -150,7 +150,6 @@ const CreateThreadBox: FC<Props> = () => {
   const onPressSuggestIdea = useCallback(async () => {
     setLoadingSuggestIdea(true);
     const response = await generateIdea();
-    console.log('response', response.data?.idea);
     if (response.status === 200 && response.data?.idea) {
       setStoryIdea(response.data?.idea);
     } else {
@@ -326,7 +325,6 @@ const CreateThreadBox: FC<Props> = () => {
         </Pressable>
         {extendDetails && (
           <View style={styles.detailsBox}>
-            {/* Genre */}
             <TextApp style={styles.subLabel}>Genre</TextApp>
             <ScrollView
               horizontal
@@ -401,7 +399,7 @@ const CreateThreadBox: FC<Props> = () => {
           onPress={onPressGenerate}
         >
           <TextApp style={styles.generateButtonText}>
-            {loading ? 'Generating...' : 'Start generate'}
+            {loading || loadingAds ? 'Generating...' : 'Start generate'}
           </TextApp>
         </Pressable>
       </ScrollView>
