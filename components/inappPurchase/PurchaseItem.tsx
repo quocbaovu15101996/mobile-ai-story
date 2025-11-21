@@ -39,10 +39,10 @@ const PurchaseItem = ({ item, selectedPlanId, onPress }: Props) => {
     }
 
     const offerPricingPhaseList =
-      itemSub?.subscriptionOfferDetails[0]?.pricingPhases?.pricingPhaseList;
+      itemSub?.subscriptionOfferDetailsAndroid?.[0]?.pricingPhases?.pricingPhaseList;
     const length = offerPricingPhaseList?.length;
     const formattedPrice =
-      itemSub?.subscriptionOfferDetails?.[0]?.pricingPhases?.pricingPhaseList?.[
+      itemSub?.subscriptionOfferDetailsAndroid?.[0]?.pricingPhases?.pricingPhaseList?.[
         length - 1
       ]?.formattedPrice;
     return formattedPrice || 'N/A';

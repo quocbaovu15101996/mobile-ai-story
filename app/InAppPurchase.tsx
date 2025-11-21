@@ -14,7 +14,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import {
   getAvailablePurchases,
-  ProductPurchaseAndroid,
+  Purchase,
   PurchaseError,
   requestPurchase,
   SubscriptionProduct,
@@ -160,9 +160,7 @@ export default function InAppPurchaseScreen() {
       ...prevState,
       loadingRestore: true,
     }));
-    const subscription: ProductPurchaseAndroid[] =
-      await getAvailablePurchases();
-    console.log('handleRestorePurchases', subscription);
+    const subscription: (Purchase & any)[] = await getAvailablePurchases();
     try {
       await inAppPurchaseApi.restorePurchase({
         platform: isIos ? 'ios' : 'android',
@@ -196,7 +194,7 @@ export default function InAppPurchaseScreen() {
         selectedPlanId: selectPlan?.id,
         offerToken: !isNullOrEmpty(subscriptionOfferDetails)
           ? subscriptionOfferDetails?.[subscriptionOfferDetails?.length - 1]
-            ?.offerToken
+              ?.offerToken
           : '',
       }));
     }
@@ -230,7 +228,7 @@ export default function InAppPurchaseScreen() {
         style={[
           styles.subscribeBtn,
           (stateScreen.loading || stateScreen.selectedPlanId === '') &&
-          styles.subscribeButtonDisabled,
+            styles.subscribeButtonDisabled,
         ]}
         onPress={onPressSubscribe}
         disabled={stateScreen.loading || stateScreen.selectedPlanId === ''}
