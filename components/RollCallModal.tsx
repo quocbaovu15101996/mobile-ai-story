@@ -89,6 +89,7 @@ export default function RollCallModal({ visible, onClose }: Props) {
 
     const unsubscribeClosed = rewardInterstitial.current.addAdEventListener(AdEventType.CLOSED, () => {
       console.log('AdEventType.CLOSED');
+      onClose();
     });
     // Unsubscribe from events on unmount
     return () => {
