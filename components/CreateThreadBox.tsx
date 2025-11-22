@@ -18,6 +18,7 @@ import {
 import { AdEventType, InterstitialAd } from 'react-native-google-mobile-ads';
 import { RootStackParamList } from '../app/_layout';
 import TextApp from './TextApp';
+import { analyticsService } from '@/src/services/analyticsService';
 
 type Props = {};
 
@@ -75,6 +76,7 @@ const CreateThreadBox: FC<Props> = () => {
       showErrorToast('Something went wrong!!! Please try again.');
       return;
     }
+    analyticsService.logThreadViewed(threadId.current, true);
     navigation.navigate('ThreadDetail', {
       threadId: threadId.current,
       isCreate: true,
@@ -83,6 +85,7 @@ const CreateThreadBox: FC<Props> = () => {
   }, [navigation]);
 
   const onPressGenerate = useCallback(async () => {
+    analyticsService.logStoryCreationStart();
     const payload = {
       title: storyIdea,
       storyIdea,
@@ -100,6 +103,15 @@ const CreateThreadBox: FC<Props> = () => {
         const response = await createThread(payload);
         if (response.data && response.data.id) {
           threadId.current = response.data.threadId;
+          analyticsService.logStoryGenerated({
+            storyType: storyType as 'endless' | 'story',
+            storyLength: storyLength,
+            genre: genre || undefined,
+            hasCharacters: !!characters,
+            hasSetting: !!setting,
+            narrative: narrative,
+            isVip: true,
+          });
           navigateToThreadDetail();
         }
       } catch (error) {
@@ -119,6 +131,15 @@ const CreateThreadBox: FC<Props> = () => {
         const response = await createThread(payload);
         if (response.data && response.data.id) {
           threadId.current = response.data.threadId;
+          analyticsService.logStoryGenerated({
+            storyType: storyType as 'endless' | 'story',
+            storyLength: storyLength,
+            genre: genre || undefined,
+            hasCharacters: !!characters,
+            hasSetting: !!setting,
+            narrative: narrative,
+            isVip: false,
+          });
           await Promise.resolve(setTimeout(() => {}, 3000));
           if (!loadingAds) {
             interstitial.current?.show();
@@ -148,6 +169,7 @@ const CreateThreadBox: FC<Props> = () => {
   ]);
 
   const onPressSuggestIdea = useCallback(async () => {
+    analyticsService.logStoryIdeaSuggestion();
     setLoadingSuggestIdea(true);
     const response = await generateIdea();
     if (response.status === 200 && response.data?.idea) {
@@ -179,6 +201,14 @@ const CreateThreadBox: FC<Props> = () => {
       }
     );
 
+    // Event listener for when the ad is shown
+    const unsubscribeOpened = interstitial.current.addAdEventListener(
+      AdEventType.OPENED,
+      () => {
+        analyticsService.logInterstitialAdShown(ADMOB_ADS.CREATE_STORY_INTERSTITIAL);
+      }
+    );
+
     // Event listener for when the ad is closed
     const unsubscribeClosed = interstitial.current.addAdEventListener(
       AdEventType.CLOSED,
@@ -193,6 +223,7 @@ const CreateThreadBox: FC<Props> = () => {
       AdEventType.ERROR,
       (error) => {
         console.error('Interstitial ad failed to load:', error);
+        analyticsService.logAdLoadError('interstitial', error.message || 'Unknown error');
         interstitial.current?.load();
       }
     );
@@ -201,6 +232,7 @@ const CreateThreadBox: FC<Props> = () => {
     return () => {
       if (interstitial.current) {
         unsubscribeLoaded();
+        unsubscribeOpened();
         unsubscribeError();
         unsubscribeClosed();
         interstitial.current.removeAllListeners();

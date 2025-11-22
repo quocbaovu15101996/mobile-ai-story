@@ -18,6 +18,7 @@ import {
 import { MessageItemInterface, Thread } from '../src/services/api/types';
 import { getUserProfile } from '../src/services/api/users';
 import { useAuthStore } from '../src/store/useAuthStore';
+import { analyticsService } from '../src/services/analyticsService';
 
 type ThreadDetailScreenRouteProp = {
   key: string;
@@ -133,6 +134,7 @@ export const useThreadDetail = () => {
       setDeleting(true);
       const response = await eraseLastMessage(threadId);
       if (response.status === 200 && response.data === true) {
+        analyticsService.logMessageDelete(threadId);
         setPassages(prevPassages => prevPassages.slice(0, -2));
       }
     } catch (err) {
@@ -159,6 +161,7 @@ export const useThreadDetail = () => {
         ROLE.ASSISTANT
       );
       setPassages((prevPassages) => [...prevPassages, newMessage]);
+      analyticsService.logMessageRewrite(threadId, userProfile?.isVip || false);
       await updateUserProfile();
     } catch (err) {
       console.error('Error rewriting messages:', err);
@@ -166,7 +169,7 @@ export const useThreadDetail = () => {
     } finally {
       setLoadingPassage(false);
     }
-  }, [isEnoughDiamond, navigation, threadId, createTempMessage, updateUserProfile]);
+  }, [isEnoughDiamond, navigation, threadId, createTempMessage, updateUserProfile, userProfile?.isVip]);
 
   const onContinue = useCallback(async () => {
     if (!isEnoughDiamond()) {
@@ -191,6 +194,7 @@ export const useThreadDetail = () => {
       );
       setPassages((prevPassages) => [...prevPassages, newMessage]);
 
+      analyticsService.logStoryContinue(threadId, userProfile?.isVip || false);
       // Update user profile after successful API call
       await updateUserProfile();
     } catch (err) {
@@ -198,7 +202,7 @@ export const useThreadDetail = () => {
     } finally {
       setLoadingPassage(false);
     }
-  }, [isEnoughDiamond, navigation, createTempMessage, threadId, updateUserProfile]);
+  }, [isEnoughDiamond, navigation, createTempMessage, threadId, updateUserProfile, userProfile?.isVip]);
 
   const onExpand = useCallback(async () => {
     if (!isEnoughDiamond()) {
@@ -235,6 +239,7 @@ export const useThreadDetail = () => {
       );
       setPassages(prev => [...prev, newMessage]);
 
+      analyticsService.logStoryExpand(threadId, tone, userProfile?.isVip || false);
       // Update user profile after successful API call
       await updateUserProfile();
     } catch (err) {
@@ -242,7 +247,7 @@ export const useThreadDetail = () => {
     } finally {
       setLoadingPassage(false);
     }
-  }, [isEnoughDiamond, navigation, createTempMessage, threadId, updateUserProfile]);
+  }, [isEnoughDiamond, navigation, createTempMessage, threadId, updateUserProfile, userProfile?.isVip]);
 
   const onPressDiamond = useCallback(() => {
     navigation.navigate('InAppPurchase');
@@ -316,6 +321,7 @@ export const useThreadDetail = () => {
     try {
       setLoading(true);
       await deleteThread(thread.id);
+      analyticsService.logThreadDelete(thread.threadId);
       // Navigate back after successful deletion
       navigation.goBack();
       // Optional: Show success message or refresh thread list if needed
@@ -325,7 +331,7 @@ export const useThreadDetail = () => {
     } finally {
       setLoading(false);
     }
-  }, [thread?.id, navigation]);
+  }, [thread?.id, thread?.threadId, navigation]);
 
   const [actionModalVisible, setActionModalVisible] = useState(false);
   const [actionModalPosition, setActionModalPosition] = useState(0);
@@ -344,6 +350,7 @@ export const useThreadDetail = () => {
         setShowDeleteConfirm(true);
         break;
       case 'export':
+        analyticsService.logThreadExport(threadId);
         exportToPdf();
         break;
       case 'share':

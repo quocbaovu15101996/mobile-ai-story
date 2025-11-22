@@ -1,4 +1,5 @@
 import { ADMOB_ADS } from '@/config/admob-config';
+import { analyticsService } from '@/src/services/analyticsService';
 import { earnTokenByAds, getUserProfile, rollCall } from '@/src/services/api/users';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import { checkTheDayIsToDay, SCREEN_WIDTH } from '@/src/utils';
@@ -43,6 +44,8 @@ export default function RollCallModal({ visible, onClose }: Props) {
     setIsCheckingIn(true);
     try {
       await rollCall();
+      const currentStreak = (userProfile?.rollCallStreak || 1);
+      analyticsService.logRollCallCheckIn(currentStreak);
       await handleUpdateProfile();
     } catch (error) {
       console.error('Check-in failed:', error);
@@ -55,6 +58,7 @@ export default function RollCallModal({ visible, onClose }: Props) {
   const handleEarnDiamond = async () => {
     try {
       await earnTokenByAds();
+      analyticsService.logEarnDiamondsFromAds(10); // Assuming 10 diamonds per ad
       await handleUpdateProfile();
     } catch (error) {
       console.error('Watch ads failed:', error);
@@ -66,6 +70,8 @@ export default function RollCallModal({ visible, onClose }: Props) {
     if (loadingAds) {
       return;
     }
+    const adsWatchedToday = MAX_WATCH_ADS_PER_DAY - (userProfile?.totalAmountWatchAds || 0);
+    analyticsService.logWatchAdsForDiamonds(adsWatchedToday);
     rewardInterstitial.current?.load();
     setLoadingAds(true);
   };
@@ -81,9 +87,15 @@ export default function RollCallModal({ visible, onClose }: Props) {
       setLoadingAds(false);
     });
 
+    // Event listener for when the ad is shown
+    const unsubscribeOpened = rewardInterstitial.current.addAdEventListener(AdEventType.OPENED, () => {
+      analyticsService.logRewardedAdShown(ADMOB_ADS.CREATE_STORY_REWARD_INTERSTITIAL);
+    });
+
     // Event listener for when the ad is closed
     const unsubscribeEarnedReward = rewardInterstitial.current.addAdEventListener(RewardedAdEventType.EARNED_REWARD, (event) => {
       console.log('AdEventType.EARNED_REWARD', event);
+      analyticsService.logRewardedAdRewardEarned(ADMOB_ADS.CREATE_STORY_REWARD_INTERSTITIAL);
       handleEarnDiamond();
     });
 
@@ -91,11 +103,19 @@ export default function RollCallModal({ visible, onClose }: Props) {
       console.log('AdEventType.CLOSED');
       onClose();
     });
+
+    // Event listener for ad errors
+    const unsubscribeError = rewardInterstitial.current.addAdEventListener(AdEventType.ERROR, (error) => {
+      console.error('Rewarded ad error:', error);
+      analyticsService.logAdLoadError('rewarded', error.message || 'Unknown error');
+    });
     // Unsubscribe from events on unmount
     return () => {
       unsubscribeLoaded();
+      unsubscribeOpened();
       unsubscribeEarnedReward();
       unsubscribeClosed();
+      unsubscribeError();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -103,6 +123,13 @@ export default function RollCallModal({ visible, onClose }: Props) {
   const disabledWatchAds = loadingAds || userProfile?.totalAmountWatchAds === 0;
 
   const currentStreak = (userProfile?.rollCallStreak || 1) - 1;
+
+  useEffect(() => {
+    if (visible) {
+      analyticsService.logRollCallModalOpened();
+    }
+  }, [visible]);
+
   return (
     <>
       {visible && <View style={styles.background} />}

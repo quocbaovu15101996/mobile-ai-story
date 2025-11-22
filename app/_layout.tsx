@@ -11,6 +11,7 @@ import SplashScreen from '@/components/SplashScreen';
 import { initializeFirebase } from '@/config/firebase-config';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import { MobileAds } from 'react-native-google-mobile-ads';
+import { analyticsService } from '@/src/services/analyticsService';
 
 if (__DEV__) {
   require("../src/config/ReactotronConfig");
@@ -43,7 +44,7 @@ export default function RootLayout() {
   });
 
   const [isLoading, setIsLoading] = useState(true);
-  const { loginByDevice } = useAuthStore();
+  const { loginByDevice, userProfile } = useAuthStore();
 
   useEffect(() => {
     initializeFirebase();
@@ -69,6 +70,14 @@ export default function RootLayout() {
     initializeAuth();
 
   }, [loginByDevice]);
+
+  // Set user ID for analytics when user profile is available
+  useEffect(() => {
+    if (userProfile?.id) {
+      analyticsService.setUserId(userProfile.id.toString());
+      analyticsService.setUserProperty('is_vip', userProfile.isVip ? 'true' : 'false');
+    }
+  }, [userProfile]);
 
   if (!loaded || isLoading) {
     return <SplashScreen />;

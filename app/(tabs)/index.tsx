@@ -11,6 +11,7 @@ import { RootStackParamList } from '../_layout';
 import { HeaderBox } from '@/components/HeaderBox';
 import RollCallModal from '@/components/RollCallModal';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { analyticsService } from '@/src/services/analyticsService';
 
 export default function HomeScreen() {
   const { colors } = useTheme();
@@ -73,6 +74,8 @@ export default function HomeScreen() {
   // }, [navigation]);
 
   useEffect(() => {
+    // Track screen view
+    analyticsService.logScreenView('Home');
     // setupNotifications();
 
     // Cleanup listeners on unmount

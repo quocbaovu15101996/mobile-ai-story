@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { RootStackParamList } from '../_layout';
+import { analyticsService } from '@/src/services/analyticsService';
 
 const PAGE_SIZE = 10;
 
@@ -72,6 +73,9 @@ export default function HistoryScreen() {
   };
 
   useEffect(() => {
+    // Track screen view
+    analyticsService.logScreenView('History');
+    analyticsService.logHistoryScreenViewed();
     fetchHistory();
   }, []);
 
@@ -80,11 +84,13 @@ export default function HistoryScreen() {
   };
 
   const onRefresh = () => {
+    analyticsService.logHistoryRefreshed();
     fetchHistory(true, 0);
   };
 
   const handleLoadMore = () => {
     if (!loadingMore && hasNext) {
+      analyticsService.logHistoryLoadMore(currentPage + 1);
       fetchHistory(false, currentPage + 1);
     }
   };

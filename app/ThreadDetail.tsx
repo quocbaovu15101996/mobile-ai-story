@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
-import React, { useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -24,6 +24,7 @@ import { ThreadBottomAction } from '@/components/thread/ThreadBottomAction';
 import { useThreadDetail } from '@/hooks/useThreadDetail';
 import type { MessageItemInterface } from '@/src/services/api/types';
 import { SCREEN_HEIGHT } from '@/src/utils';
+import { analyticsService } from '@/src/services/analyticsService';
 
 export default function ThreadDetail() {
   const { colors } = useTheme();
@@ -54,6 +55,13 @@ export default function ThreadDetail() {
     handleCloseDeleteConfirm,
     handleCloseActionModal,
   } = useThreadDetail();
+
+  useEffect(() => {
+    if (thread?.threadId) {
+      analyticsService.logScreenView('ThreadDetail');
+      analyticsService.logThreadViewed(thread.threadId, false);
+    }
+  }, [thread?.threadId]);
 
   const actionButtonRef = useRef<View>(null);
   
