@@ -7,7 +7,6 @@ import {
   StyleSheet
 } from 'react-native';
 import { RootStackParamList } from '../_layout';
-// import { NotificationService } from '../../src/services/notificationService';
 import { HeaderBox } from '@/components/HeaderBox';
 import RollCallModal from '@/components/RollCallModal';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,71 +16,13 @@ export default function HomeScreen() {
   const { colors } = useTheme();
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [notificationPermission, setNotificationPermission] = useState(false);
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const userProfile = useUserProfile();
 
-  // Setup notification listeners and permissions
-  // const setupNotifications = useCallback(async () => {
-  //   try {
-  //     // Request notification permissions
-  //     const hasPermission = await NotificationService.requestPermissions();
-  //     setNotificationPermission(hasPermission);
-
-  //     if (!hasPermission) {
-  //       Alert.alert(
-  //         'Notification Permission',
-  //         'Please enable notifications to receive story updates and reminders.',
-  //         [
-  //           { text: 'Cancel', style: 'cancel' },
-  //           { text: 'Settings', onPress: () => {
-  //             // You could navigate to settings here
-  //           }}
-  //         ]
-  //       );
-  //       return;
-  //     }
-
-  //     // Get push token for remote notifications
-  //     const pushToken = await NotificationService.getPushToken();
-  //     console.log('Push token:', pushToken);
-
-  //     // Setup notification listeners
-  //     const cleanup = NotificationService.setupNotificationListeners(
-  //       (notification) => {
-  //         // Handle notification received while app is in foreground
-  //         console.log('Notification received in foreground:', notification);
-  //         Alert.alert(
-  //           notification.request.content.title || 'Notification',
-  //           notification.request.content.body || 'You have a new notification',
-  //           [{ text: 'OK' }]
-  //         );
-  //       },
-  //       (response) => {
-  //         // Handle notification press
-  //         console.log('Notification pressed:', response);
-  //         NotificationService.handleNotificationAction(response, navigation);
-  //       }
-  //     );
-
-  //     // Store cleanup function for later use
-  //     return cleanup;
-  //   } catch (error) {
-  //     console.error('Failed to setup notifications:', error);
-  //     Alert.alert('Error', 'Failed to setup notifications');
-  //   }
-  // }, [navigation]);
-
   useEffect(() => {
     // Track screen view
     analyticsService.logScreenView('Home');
-    // setupNotifications();
-
-    // Cleanup listeners on unmount
-    return () => {
-      // Cleanup is handled by the service
-    };
   }, []);
 
   const onPressToken = () => {
@@ -94,32 +35,6 @@ export default function HomeScreen() {
 
   const onCloseModal = () => {
     setModalVisible(false);
-  };
-
-  // Test notification function - for development purposes
-  const testNotification = async () => {
-    // try {
-    //   await NotificationService.showLocalNotification({
-    //     title: 'Test Notification',
-    //     body: 'This is a test notification from AI Story app!',
-    //     data: { type: 'test', timestamp: Date.now() },
-    //   });
-    // } catch (error) {
-    //   console.error('Failed to show test notification:', error);
-    // }
-  };
-
-  // Test notifee notification
-  const testNotifeeNotification = async () => {
-    // try {
-    //   await NotificationService.showNotifeeNotification({
-    //     title: 'Story Complete!',
-    //     body: 'Your AI story has been generated and is ready to read.',
-    //     data: { type: 'story_complete', threadId: 'test-123' },
-    //   });
-    // } catch (error) {
-    //   console.error('Failed to show notifee notification:', error);
-    // }
   };
 
   return (

@@ -1,4 +1,5 @@
 import { ADMOB_ADS } from '@/config/admob-config';
+import { analyticsService } from '@/src/services/analyticsService';
 import { createThread, generateIdea } from '@/src/services/api/thread';
 import { useUserProfile } from '@/src/store';
 import { showErrorToast } from '@/src/utils/toast';
@@ -18,7 +19,6 @@ import {
 import { AdEventType, InterstitialAd } from 'react-native-google-mobile-ads';
 import { RootStackParamList } from '../app/_layout';
 import TextApp from './TextApp';
-import { analyticsService } from '@/src/services/analyticsService';
 
 type Props = {};
 
@@ -76,7 +76,6 @@ const CreateThreadBox: FC<Props> = () => {
       showErrorToast('Something went wrong!!! Please try again.');
       return;
     }
-    analyticsService.logThreadViewed(threadId.current, true);
     navigation.navigate('ThreadDetail', {
       threadId: threadId.current,
       isCreate: true,
@@ -85,6 +84,7 @@ const CreateThreadBox: FC<Props> = () => {
   }, [navigation]);
 
   const onPressGenerate = useCallback(async () => {
+    setLoading(true);
     analyticsService.logStoryCreationStart();
     const payload = {
       title: storyIdea,
@@ -140,10 +140,14 @@ const CreateThreadBox: FC<Props> = () => {
             narrative: narrative,
             isVip: false,
           });
-          await Promise.resolve(setTimeout(() => {}, 3000));
+          // Wait up to 3 seconds for ad to load
+          await new Promise(resolve => setTimeout(resolve, 3000));
+          // If ad has loaded (loadingAds is false), show it
+          // Navigation will happen in the ad CLOSED event listener
           if (!loadingAds) {
             interstitial.current?.show();
           } else {
+            // Ad didn't load in time, navigate directly
             navigateToThreadDetail();
           }
         }
