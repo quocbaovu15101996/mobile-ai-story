@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { Alert } from 'react-native'; // Added ActionSheetIOS import
 import { RootStackParamList } from '../app/_layout';
 import { MESSAGE_TYPE, ROLE } from '../constants';
+import { analyticsService } from '../src/services/analyticsService';
 import {
   continueThread,
   createARunThread,
@@ -18,7 +19,6 @@ import {
 import { MessageItemInterface, Thread } from '../src/services/api/types';
 import { getUserProfile } from '../src/services/api/users';
 import { useAuthStore } from '../src/store/useAuthStore';
-import { analyticsService } from '../src/services/analyticsService';
 
 type ThreadDetailScreenRouteProp = {
   key: string;
@@ -362,7 +362,7 @@ export const useThreadDetail = () => {
       default:
         break;
     }
-  }, [exportToPdf]);
+  }, [exportToPdf, threadId]);
 
   const handleDeleteConfirm = useCallback(() => {
     setShowDeleteConfirm(false);
