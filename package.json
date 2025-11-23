@@ -13,6 +13,7 @@
     "test:coverage": "jest --coverage",
     "build:android": "eas build --profile development --platform android",
     "build:android-pro": "eas build --profile production --platform android",
+    "build:preview": "eas build --profile preview --platform android",
     "prebuild:android": "eas prebuild",
     "clear-project": "npx expo prebuild --clean && watchman watch-del-all"
   },
