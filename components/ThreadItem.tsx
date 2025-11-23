@@ -6,6 +6,7 @@ import React from 'react';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 import TextApp from './TextApp';
 import { ThemedView } from './ThemedView';
+import { analyticsService } from '@/src/services/analyticsService';
 
 interface ThreadItemProps {
   thread: Thread;
@@ -15,6 +16,7 @@ export const ThreadItem: React.FC<ThreadItemProps> = ({ thread }) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const handlePress = () => {
+    analyticsService.logThreadViewed(thread.threadId, false);
     navigation.navigate('ThreadDetail', { threadId: thread.threadId, isCreate: false });
   };
 

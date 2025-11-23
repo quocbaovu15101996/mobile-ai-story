@@ -1,4 +1,5 @@
 import { ADMOB_ADS } from '@/config/admob-config';
+import { analyticsService } from '@/src/services/analyticsService';
 import { createThread, generateIdea } from '@/src/services/api/thread';
 import { useUserProfile } from '@/src/store';
 import { showErrorToast } from '@/src/utils/toast';
@@ -83,6 +84,8 @@ const CreateThreadBox: FC<Props> = () => {
   }, [navigation]);
 
   const onPressGenerate = useCallback(async () => {
+    setLoading(true);
+    analyticsService.logStoryCreationStart();
     const payload = {
       title: storyIdea,
       storyIdea,
@@ -100,6 +103,15 @@ const CreateThreadBox: FC<Props> = () => {
         const response = await createThread(payload);
         if (response.data && response.data.id) {
           threadId.current = response.data.threadId;
+          analyticsService.logStoryGenerated({
+            storyType: storyType as 'endless' | 'story',
+            storyLength: storyLength,
+            genre: genre || undefined,
+            hasCharacters: !!characters,
+            hasSetting: !!setting,
+            narrative: narrative,
+            isVip: true,
+          });
           navigateToThreadDetail();
         }
       } catch (error) {
@@ -119,10 +131,23 @@ const CreateThreadBox: FC<Props> = () => {
         const response = await createThread(payload);
         if (response.data && response.data.id) {
           threadId.current = response.data.threadId;
-          await Promise.resolve(setTimeout(() => {}, 3000));
+          analyticsService.logStoryGenerated({
+            storyType: storyType as 'endless' | 'story',
+            storyLength: storyLength,
+            genre: genre || undefined,
+            hasCharacters: !!characters,
+            hasSetting: !!setting,
+            narrative: narrative,
+            isVip: false,
+          });
+          // Wait up to 3 seconds for ad to load
+          await new Promise(resolve => setTimeout(resolve, 3000));
+          // If ad has loaded (loadingAds is false), show it
+          // Navigation will happen in the ad CLOSED event listener
           if (!loadingAds) {
             interstitial.current?.show();
           } else {
+            // Ad didn't load in time, navigate directly
             navigateToThreadDetail();
           }
         }
@@ -148,6 +173,7 @@ const CreateThreadBox: FC<Props> = () => {
   ]);
 
   const onPressSuggestIdea = useCallback(async () => {
+    analyticsService.logStoryIdeaSuggestion();
     setLoadingSuggestIdea(true);
     const response = await generateIdea();
     if (response.status === 200 && response.data?.idea) {
@@ -179,6 +205,14 @@ const CreateThreadBox: FC<Props> = () => {
       }
     );
 
+    // Event listener for when the ad is shown
+    const unsubscribeOpened = interstitial.current.addAdEventListener(
+      AdEventType.OPENED,
+      () => {
+        analyticsService.logInterstitialAdShown(ADMOB_ADS.CREATE_STORY_INTERSTITIAL);
+      }
+    );
+
     // Event listener for when the ad is closed
     const unsubscribeClosed = interstitial.current.addAdEventListener(
       AdEventType.CLOSED,
@@ -193,6 +227,7 @@ const CreateThreadBox: FC<Props> = () => {
       AdEventType.ERROR,
       (error) => {
         console.error('Interstitial ad failed to load:', error);
+        analyticsService.logAdLoadError('interstitial', error.message || 'Unknown error');
         interstitial.current?.load();
       }
     );
@@ -201,6 +236,7 @@ const CreateThreadBox: FC<Props> = () => {
     return () => {
       if (interstitial.current) {
         unsubscribeLoaded();
+        unsubscribeOpened();
         unsubscribeError();
         unsubscribeClosed();
         interstitial.current.removeAllListeners();

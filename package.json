@@ -13,12 +13,14 @@
     "test:coverage": "jest --coverage",
     "build:android": "eas build --profile development --platform android",
     "build:android-pro": "eas build --profile production --platform android",
+    "build:preview": "eas build --profile preview --platform android",
     "prebuild:android": "eas prebuild",
     "clear-project": "npx expo prebuild --clean && watchman watch-del-all"
   },
   "dependencies": {
     "@expo/vector-icons": "^14.1.0",
     "@react-native-async-storage/async-storage": "2.1.2",
+    "@react-native-firebase/analytics": "^23.5.0",
     "@react-native-firebase/app": "^22.4.0",
     "@react-native-firebase/crashlytics": "^22.4.0",
     "@react-navigation/bottom-tabs": "^7.3.10",

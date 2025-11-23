@@ -19,7 +19,7 @@ import {
   requestPurchase,
   SubscriptionProduct,
 } from 'expo-iap';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -32,6 +32,7 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { analyticsService } from '@/src/services/analyticsService';
 
 export default function InAppPurchaseScreen() {
   const navigation = useNavigation();
@@ -76,11 +77,22 @@ export default function InAppPurchaseScreen() {
         receipt: receipt,
       });
       if (response?.status === 200) {
+        const selectedPlan = subscriptions.find(s => s.id === stateScreen.selectedPlanId);
+        const price = selectedPlan ? Number(selectedPlan.price) : 0;
+        analyticsService.logPurchaseSuccess(
+          stateScreen.selectedPlanId,
+          price,
+          isIos ? 'ios' : 'android'
+        );
         await handleUpdateProfile();
         navigation.goBack();
       }
     } catch (error) {
       console.error('Purchase error', error);
+      analyticsService.logPurchaseError(
+        stateScreen.selectedPlanId,
+        error instanceof Error ? error.message : 'Unknown error'
+      );
       showErrorToast('Failed to purchase. Please try again.');
     } finally {
       setStateScreen((prevState) => ({
@@ -90,9 +102,13 @@ export default function InAppPurchaseScreen() {
     }
   };
 
-  const onPurchaseError = (error?: PurchaseError) => {
+  const onPurchaseError = useCallback((error?: PurchaseError) => {
     console.log('Purchase error', error);
-  };
+    analyticsService.logPurchaseError(
+      stateScreen.selectedPlanId,
+      error?.message || 'Unknown error'
+    );
+  }, [stateScreen.selectedPlanId]);
 
   const { subscriptions, loadingSubs } = useInAppPurchase(
     onPurchaseSuccess,
@@ -107,6 +123,9 @@ export default function InAppPurchaseScreen() {
       loading: true,
     }));
     try {
+      const selectedPlan = subscriptions.find(s => s.id === stateScreen.selectedPlanId);
+      const price = selectedPlan ? Number(selectedPlan.price) : 0;
+      analyticsService.logPurchaseInitiated(stateScreen.selectedPlanId, price);
       await requestPurchase({
         request: {
           ios: { sku: stateScreen.selectedPlanId },
@@ -125,8 +144,16 @@ export default function InAppPurchaseScreen() {
     } catch (error) {
       if (error instanceof PurchaseError) {
         console.error({ message: `[${error.code}]: ${error.message}`, error });
+        analyticsService.logPurchaseError(
+          stateScreen.selectedPlanId,
+          error.message
+        );
       } else {
         console.error({ message: 'handleBuySubscription', error });
+        analyticsService.logPurchaseError(
+          stateScreen.selectedPlanId,
+          'Unknown error'
+        );
       }
       setStateScreen((prevState) => ({
         ...prevState,
@@ -140,6 +167,8 @@ export default function InAppPurchaseScreen() {
   };
 
   const onPressItem = (item: SubscriptionProduct & any) => {
+    const price = Number(item.price) || 0;
+    analyticsService.logSubscriptionPlanSelected(item.id, price);
     setStateScreen((prevState) => ({
       ...prevState,
       selectedPlanId: item.id,
@@ -156,6 +185,7 @@ export default function InAppPurchaseScreen() {
   );
 
   const handleRestorePurchases = async () => {
+    analyticsService.logRestorePurchases();
     setStateScreen((prevState) => ({
       ...prevState,
       loadingRestore: true,
@@ -169,6 +199,7 @@ export default function InAppPurchaseScreen() {
         purchaseToken: subscription?.[0]?.purchaseTokenAndroid || '',
         receipt: subscription?.[0]?.transactionReceipt || '',
       });
+      analyticsService.logRestorePurchasesSuccess();
       await handleUpdateProfile();
       navigation.goBack();
     } catch (error) {
@@ -183,6 +214,10 @@ export default function InAppPurchaseScreen() {
   };
 
   useEffect(() => {
+    // Track screen view
+    analyticsService.logScreenView('InAppPurchase');
+    analyticsService.logPurchaseScreenViewed();
+    
     if (!loadingSubs) {
       const selectPlan = subscriptions.find(
         (item) => item.id === SUBSCRIPTION_IDS[0]

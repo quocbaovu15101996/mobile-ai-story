@@ -2,12 +2,13 @@ import { HeaderBox } from '@/components/HeaderBox';
 import RollCallModal from '@/components/RollCallModal';
 import TextApp from '@/components/TextApp';
 import { ThreadItem } from '@/components/ThreadItem';
+import { analyticsService } from '@/src/services/analyticsService';
 import { getHistory } from '@/src/services/api/thread';
 import { Thread } from '@/src/services/api/types';
 import { useUserProfile } from '@/src/store';
-import { useNavigation, useTheme } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, useTheme } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -35,6 +36,7 @@ export default function HistoryScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const isFirstFocus = useRef(true);
 
   const fetchHistory = async (isRefresh = false, page = 0) => {
     try {
@@ -72,19 +74,37 @@ export default function HistoryScreen() {
   };
 
   useEffect(() => {
+    // Track screen view
+    analyticsService.logScreenView('History');
+    analyticsService.logHistoryScreenViewed();
     fetchHistory();
   }, []);
+
+  // Refresh history when screen comes into focus (e.g., after deleting a thread)
+  useFocusEffect(
+    useCallback(() => {
+      // Skip initial mount to avoid double fetch with useEffect above
+      if (isFirstFocus.current) {
+        isFirstFocus.current = false;
+        return;
+      }
+      // Refresh when returning to the screen
+      fetchHistory(true, 0);
+    }, [])
+  );
 
   const onCloseModal = () => {
     setModalVisible(false);
   };
 
   const onRefresh = () => {
+    analyticsService.logHistoryRefreshed();
     fetchHistory(true, 0);
   };
 
   const handleLoadMore = () => {
     if (!loadingMore && hasNext) {
+      analyticsService.logHistoryLoadMore(currentPage + 1);
       fetchHistory(false, currentPage + 1);
     }
   };

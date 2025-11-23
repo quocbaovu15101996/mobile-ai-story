@@ -1,5 +1,6 @@
 import TextApp from '@/components/TextApp';
 import { useGetThemeColor } from '@/hooks/useThemeColor';
+import { analyticsService } from '@/src/services/analyticsService';
 import { SCREEN_WIDTH } from '@/src/utils';
 import {
   Ionicons,
@@ -8,7 +9,7 @@ import {
 } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
 import { router } from 'expo-router';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Alert,
   Linking,
@@ -46,7 +47,13 @@ export default function SettingScreen() {
   const { colors } = useTheme();
   const themeColors = useGetThemeColor('dark');
 
+  useEffect(() => {
+    // Track screen view
+    analyticsService.logScreenView('Settings');
+  }, []);
+
   const handleUpgrade = () => {
+    analyticsService.logUpgradePremiumClicked();
     router.push('/InAppPurchase');
   };
 
@@ -57,12 +64,15 @@ export default function SettingScreen() {
           'Check out AI Story - Create amazing stories with AI! Download it now.',
         title: 'AI Story App',
       });
+      // Only log analytics if share operation succeeds
+      analyticsService.logAppShare();
     } catch (error) {
       console.error('Error sharing:', error);
     }
   };
 
   const handleRate = () => {
+    analyticsService.logAppRate();
     const storeUrl =
       'https://play.google.com/store/apps/details?id=com.codezap.ai.story';
     Linking.openURL(storeUrl).catch(() => {
@@ -71,6 +81,7 @@ export default function SettingScreen() {
   };
 
   const handleContact = () => {
+    analyticsService.logContactSupport();
     Linking.openURL(
       'mailto:support@aistory.com?subject=AI Story Support'
     ).catch(() => {
@@ -79,12 +90,14 @@ export default function SettingScreen() {
   };
 
   const handleTerms = () => {
+    analyticsService.logTermsViewed();
     Linking.openURL('https://aistory.com/terms').catch(() => {
       Alert.alert('Error', 'Unable to open terms and conditions');
     });
   };
 
   const handlePrivacy = () => {
+    analyticsService.logPrivacyPolicyViewed();
     Linking.openURL('https://aistory.com/privacy').catch(() => {
       Alert.alert('Error', 'Unable to open privacy policy');
     });
@@ -103,6 +116,7 @@ export default function SettingScreen() {
           text: 'Clear',
           style: 'destructive',
           onPress: () => {
+            analyticsService.logClearData();
             // TODO: Implement data clearing logic
             Alert.alert('Success', 'App data has been cleared.');
           },
