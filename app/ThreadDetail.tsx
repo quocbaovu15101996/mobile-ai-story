@@ -17,6 +17,7 @@ import ActionModal from '@/components/ActionModal';
 
 import { DiamondBox } from '@/components/DiamondBox';
 import ExtendModal from '@/components/ExtendModal';
+import { LoadingButton } from '@/components/LoadingButton';
 import TextApp from '@/components/TextApp';
 import { ThemedView } from '@/components/ThemedView';
 import { MessageItem } from '@/components/thread/MessageItem';
@@ -32,6 +33,7 @@ export default function ThreadDetail() {
     thread,
     loading,
     loadingPassage,
+    deleting,
     passages,
     error,
     diamond,
@@ -121,25 +123,32 @@ export default function ThreadDetail() {
   );
 
   const renderFooter = () => {
-    if (loadingPassage) {
-      return <ActivityIndicator size="small" color="#007AFF" />;
-    }
     return (
-      thread?.isCanInteract === 1 && (
-        <View style={styles.messageActions}>
-          <Pressable style={styles.actionButtonSmall} onPress={onDeleteMessage}>
-            <Ionicons name="trash" size={14} color="#fff" />
-            <TextApp style={styles.actionButtonText}>Delete</TextApp>
-          </Pressable>
-          <Pressable
-            style={styles.actionButtonSmall}
-            onPress={onRewriteMessage}
-          >
-            <Ionicons name="refresh-sharp" size={14} color="#fff" />
-            <TextApp style={styles.actionButtonText}>Re-Write</TextApp>
-          </Pressable>
-        </View>
-      )
+      <View>
+        {loadingPassage && (
+          <ActivityIndicator size="small" color="#007AFF" style={styles.footerLoading} />
+        )}
+        {thread?.isCanInteract === 1 && (
+          <View style={styles.messageActions}>
+            <LoadingButton
+              loading={deleting}
+              icon="trash"
+              text="Delete"
+              onPress={onDeleteMessage}
+              style={styles.actionButtonSmall}
+              textStyle={styles.actionButtonText}
+            />
+            <LoadingButton
+              loading={loadingPassage}
+              icon="refresh-sharp"
+              text="Re-Write"
+              onPress={onRewriteMessage}
+              style={styles.actionButtonSmall}
+              textStyle={styles.actionButtonText}
+            />
+          </View>
+        )}
+      </View>
     );
   };
 
@@ -367,5 +376,9 @@ const styles = StyleSheet.create({
     gap: 8,
     justifyContent: 'flex-end',
     marginRight: 12,
+  },
+  footerLoading: {
+    alignItems: 'center',
+    paddingVertical: 8,
   },
 });
