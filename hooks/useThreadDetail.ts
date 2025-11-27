@@ -1,6 +1,8 @@
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import * as FileSystem from 'expo-file-system';
 import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
 import { useCallback, useEffect, useState } from 'react';
 import { Alert } from 'react-native'; // Added ActionSheetIOS import
 import { RootStackParamList } from '../app/_layout';
@@ -19,6 +21,7 @@ import {
 import { MessageItemInterface, Thread } from '../src/services/api/types';
 import { getUserProfile } from '../src/services/api/users';
 import { useAuthStore } from '../src/store/useAuthStore';
+import { showErrorToast, showSuccessToast } from '../src/utils/toast';
 
 type ThreadDetailScreenRouteProp = {
   key: string;
@@ -267,17 +270,33 @@ export const useThreadDetail = () => {
     }
   }, [isCreate, runThread]);
 
+  // Helper function to sanitize filename
+  const sanitizeFilename = useCallback((filename: string): string => {
+    // Remove special characters and replace spaces with hyphens
+    const sanitized = filename
+      .replace(/[^a-z0-9\s-]/gi, '')
+      .replace(/\s+/g, '-')
+      .toLowerCase()
+      .substring(0, 100); // Limit length
+    return sanitized || 'thread';
+  }, []);
+
   const exportToPdf = useCallback(async () => {
     try {
       // Check if thread exists and has messages
       if (!thread) {
-        Alert.alert('Error', 'No thread data available');
+        showErrorToast('No thread data available');
         return;
       }
 
       // Type assertion to access messages if they exist in the thread
       const threadWithMessages = thread as Thread & { messages?: { role: string; content: string }[] };
       const messages = passages.length > 0 ? passages : threadWithMessages.messages || [];
+
+      if (messages.length === 0) {
+        showErrorToast('No messages to export');
+        return;
+      }
 
       // Create HTML content for the PDF
       const html = `
@@ -309,11 +328,50 @@ export const useThreadDetail = () => {
         base64: false,
       });
 
+      if (!uri) {
+        showErrorToast('Failed to generate PDF');
+        return;
+      }
+
+      // Create filename with sanitized thread title and timestamp
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+      const sanitizedTitle = thread.title ? sanitizeFilename(thread.title) : 'thread';
+      const filename = `${sanitizedTitle}-${timestamp}.pdf`;
+
+      // Get Documents directory path
+      const documentsDir = FileSystem.documentDirectory;
+      if (!documentsDir) {
+        showErrorToast('Unable to access documents directory');
+        return;
+      }
+
+      const fileUri = `${documentsDir}${filename}`;
+
+      // Copy PDF from temporary location to Documents folder
+      await FileSystem.copyAsync({
+        from: uri,
+        to: fileUri,
+      });
+
+      // Check if sharing is available
+      const isAvailable = await Sharing.isAvailableAsync();
+      if (!isAvailable) {
+        showSuccessToast(`PDF saved to Documents: ${filename}`);
+        return;
+      }
+
+      // Share the PDF file
+      await Sharing.shareAsync(fileUri, {
+        mimeType: 'application/pdf',
+        dialogTitle: 'Share PDF',
+      });
+
+      showSuccessToast('PDF exported and ready to share');
     } catch (error) {
-      console.error('Error generating PDF:', error);
-      Alert.alert('Error', 'Failed to generate PDF');
+      console.error('Error exporting PDF:', error);
+      showErrorToast('Failed to export PDF. Please try again.');
     }
-  }, [thread, passages]);
+  }, [thread, passages, sanitizeFilename]);
 
   const handleDeleteThread = useCallback(async () => {
     if (!thread?.id) return;

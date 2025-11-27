@@ -9,7 +9,7 @@ import {
   ListRenderItem,
   Pressable,
   StyleSheet,
-  View
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -22,9 +22,9 @@ import { ThemedView } from '@/components/ThemedView';
 import { MessageItem } from '@/components/thread/MessageItem';
 import { ThreadBottomAction } from '@/components/thread/ThreadBottomAction';
 import { useThreadDetail } from '@/hooks/useThreadDetail';
+import { analyticsService } from '@/src/services/analyticsService';
 import type { MessageItemInterface } from '@/src/services/api/types';
 import { SCREEN_HEIGHT } from '@/src/utils';
-import { analyticsService } from '@/src/services/analyticsService';
 
 export default function ThreadDetail() {
   const { colors } = useTheme();
@@ -64,7 +64,7 @@ export default function ThreadDetail() {
   }, [thread?.threadId]);
 
   const actionButtonRef = useRef<View>(null);
-  
+
   const onActionPress = () => {
     if (actionButtonRef.current) {
       actionButtonRef.current.measureInWindow((x, y) => {
@@ -83,7 +83,11 @@ export default function ThreadDetail() {
           <DiamondBox onPress={onPressDiamond} diamond={diamond} />
           <View ref={actionButtonRef} collapsable={false}>
             <Pressable onPress={onActionPress} testID="action-button">
-              <Ionicons name="ellipsis-vertical" size={24} color={colors.text} />
+              <Ionicons
+                name="ellipsis-vertical"
+                size={24}
+                color={colors.text}
+              />
             </Pressable>
           </View>
         </View>
@@ -91,12 +95,15 @@ export default function ThreadDetail() {
     );
   };
 
-  const renderItem: ListRenderItem<MessageItemInterface> = React.useCallback(({ item }) => (
-    <MessageItem item={item} />
-  ), []);
+  const renderItem: ListRenderItem<MessageItemInterface> = React.useCallback(
+    ({ item }) => <MessageItem item={item} />,
+    []
+  );
 
-  const keyExtractor = React.useCallback((item: MessageItemInterface, index: number) =>
-    `${item.id}-${index}`, []);
+  const keyExtractor = React.useCallback(
+    (item: MessageItemInterface, index: number) => `${item.id}-${index}`,
+    []
+  );
 
   const renderHeader = () => (
     <View>
@@ -116,25 +123,27 @@ export default function ThreadDetail() {
 
   const renderFooter = () => {
     if (loadingPassage) {
-      return (
-        <ActivityIndicator size="small" color="#007AFF" />
-      )
+      return <ActivityIndicator size="small" color="#007AFF" />;
     }
-    return thread?.isCanInteract === 1 && (
-      <View style={{ flexDirection: 'row', gap: 8, justifyContent: 'flex-end', marginRight: 12 }}>
-        <Pressable style={styles.actionButtonSmall} onPress={onDeleteMessage}>
-          <Ionicons name="trash" size={14} color="#fff" />
-          <TextApp style={styles.actionButtonText}>Delete</TextApp>
-        </Pressable>
-        <Pressable style={styles.actionButtonSmall} onPress={onRewriteMessage}>
-          <Ionicons name="refresh-sharp" size={14} color="#fff" />
-          <TextApp style={styles.actionButtonText}>Re-Write</TextApp>
-        </Pressable>
-      </View>
-    )
-  }
+    return (
+      thread?.isCanInteract === 1 && (
+        <View style={styles.messageActions}>
+          <Pressable style={styles.actionButtonSmall} onPress={onDeleteMessage}>
+            <Ionicons name="trash" size={14} color="#fff" />
+            <TextApp style={styles.actionButtonText}>Delete</TextApp>
+          </Pressable>
+          <Pressable
+            style={styles.actionButtonSmall}
+            onPress={onRewriteMessage}
+          >
+            <Ionicons name="refresh-sharp" size={14} color="#fff" />
+            <TextApp style={styles.actionButtonText}>Re-Write</TextApp>
+          </Pressable>
+        </View>
+      )
+    );
+  };
 
-  // Show delete confirmation when showDeleteConfirm changes
   React.useEffect(() => {
     if (showDeleteConfirm) {
       Alert.alert(
@@ -193,10 +202,7 @@ export default function ThreadDetail() {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      {/* Header */}
       {renderThreadHeader()}
-
-      {/* Content */}
       <FlatList
         data={passages}
         renderItem={renderItem}
@@ -212,7 +218,6 @@ export default function ThreadDetail() {
         updateCellsBatchingPeriod={50}
       />
 
-      {/* Bottom Actions */}
       <ThreadBottomAction
         visible={!loadingPassage && thread?.isCanInteract === 1}
         onContinue={onContinue}
@@ -270,7 +275,7 @@ const styles = StyleSheet.create({
   flatListContent: {
     flexGrow: 1,
     gap: 12,
-    paddingBottom: SCREEN_HEIGHT / 3
+    paddingBottom: SCREEN_HEIGHT / 3,
   },
   heroImageContainer: {
     width: '100%',
@@ -357,5 +362,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 50,
     gap: 8,
-  }
+  },
+  messageActions: {
+    flexDirection: 'row',
+    gap: 8,
+    justifyContent: 'flex-end',
+    marginRight: 12,
+  },
 });

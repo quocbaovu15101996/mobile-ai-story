@@ -1,19 +1,21 @@
 import { ADMOB_ADS } from '@/config/admob-config';
 import { analyticsService } from '@/src/services/analyticsService';
-import { earnTokenByAds, getUserProfile, rollCall } from '@/src/services/api/users';
+import {
+  earnTokenByAds,
+  getUserProfile,
+  rollCall,
+} from '@/src/services/api/users';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import { checkTheDayIsToDay, SCREEN_WIDTH } from '@/src/utils';
 import { showErrorToast } from '@/src/utils/toast';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useRef, useState } from 'react';
+import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import {
-  Modal,
-  Pressable,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
-import { AdEventType, RewardedAdEventType, RewardedInterstitialAd } from 'react-native-google-mobile-ads';
+  AdEventType,
+  RewardedAdEventType,
+  RewardedInterstitialAd,
+} from 'react-native-google-mobile-ads';
 
 type Props = {
   visible: boolean;
@@ -44,7 +46,7 @@ export default function RollCallModal({ visible, onClose }: Props) {
     setIsCheckingIn(true);
     try {
       await rollCall();
-      const currentStreak = (userProfile?.rollCallStreak || 1);
+      const currentStreak = userProfile?.rollCallStreak || 1;
       analyticsService.logRollCallCheckIn(currentStreak);
       await handleUpdateProfile();
     } catch (error) {
@@ -70,45 +72,72 @@ export default function RollCallModal({ visible, onClose }: Props) {
     if (loadingAds) {
       return;
     }
-    const adsWatchedToday = MAX_WATCH_ADS_PER_DAY - (userProfile?.totalAmountWatchAds || 0);
+    const adsWatchedToday =
+      MAX_WATCH_ADS_PER_DAY - (userProfile?.totalAmountWatchAds || 0);
     analyticsService.logWatchAdsForDiamonds(adsWatchedToday);
     rewardInterstitial.current?.load();
     setLoadingAds(true);
   };
 
   useEffect(() => {
-    rewardInterstitial.current = RewardedInterstitialAd.createForAdRequest(ADMOB_ADS.CREATE_STORY_REWARD_INTERSTITIAL, {
-      requestNonPersonalizedAdsOnly: true,
-    });
+    rewardInterstitial.current = RewardedInterstitialAd.createForAdRequest(
+      ADMOB_ADS.CREATE_STORY_REWARD_INTERSTITIAL,
+      {
+        requestNonPersonalizedAdsOnly: true,
+      }
+    );
     if (!rewardInterstitial.current) return;
     // Event listener for when the ad is loaded
-    const unsubscribeLoaded = rewardInterstitial.current.addAdEventListener(RewardedAdEventType.LOADED, () => {
-      rewardInterstitial.current?.show();
-      setLoadingAds(false);
-    });
+    const unsubscribeLoaded = rewardInterstitial.current.addAdEventListener(
+      RewardedAdEventType.LOADED,
+      () => {
+        rewardInterstitial.current?.show();
+        setLoadingAds(false);
+      }
+    );
 
     // Event listener for when the ad is shown
-    const unsubscribeOpened = rewardInterstitial.current.addAdEventListener(AdEventType.OPENED, () => {
-      analyticsService.logRewardedAdShown(ADMOB_ADS.CREATE_STORY_REWARD_INTERSTITIAL);
-    });
+    const unsubscribeOpened = rewardInterstitial.current.addAdEventListener(
+      AdEventType.OPENED,
+      () => {
+        analyticsService.logRewardedAdShown(
+          ADMOB_ADS.CREATE_STORY_REWARD_INTERSTITIAL
+        );
+      }
+    );
 
     // Event listener for when the ad is closed
-    const unsubscribeEarnedReward = rewardInterstitial.current.addAdEventListener(RewardedAdEventType.EARNED_REWARD, (event) => {
-      console.log('AdEventType.EARNED_REWARD', event);
-      analyticsService.logRewardedAdRewardEarned(ADMOB_ADS.CREATE_STORY_REWARD_INTERSTITIAL);
-      handleEarnDiamond();
-    });
+    const unsubscribeEarnedReward =
+      rewardInterstitial.current.addAdEventListener(
+        RewardedAdEventType.EARNED_REWARD,
+        (event) => {
+          console.log('AdEventType.EARNED_REWARD', event);
+          analyticsService.logRewardedAdRewardEarned(
+            ADMOB_ADS.CREATE_STORY_REWARD_INTERSTITIAL
+          );
+          handleEarnDiamond();
+        }
+      );
 
-    const unsubscribeClosed = rewardInterstitial.current.addAdEventListener(AdEventType.CLOSED, () => {
-      console.log('AdEventType.CLOSED');
-      onClose();
-    });
+    const unsubscribeClosed = rewardInterstitial.current.addAdEventListener(
+      AdEventType.CLOSED,
+      () => {
+        console.log('AdEventType.CLOSED');
+        onClose();
+      }
+    );
 
     // Event listener for ad errors
-    const unsubscribeError = rewardInterstitial.current.addAdEventListener(AdEventType.ERROR, (error) => {
-      console.error('Rewarded ad error:', error);
-      analyticsService.logAdLoadError('rewarded', error.message || 'Unknown error');
-    });
+    const unsubscribeError = rewardInterstitial.current.addAdEventListener(
+      AdEventType.ERROR,
+      (error) => {
+        console.error('Rewarded ad error:', error);
+        analyticsService.logAdLoadError(
+          'rewarded',
+          error.message || 'Unknown error'
+        );
+      }
+    );
     // Unsubscribe from events on unmount
     return () => {
       unsubscribeLoaded();
@@ -122,7 +151,7 @@ export default function RollCallModal({ visible, onClose }: Props) {
 
   const disabledWatchAds = loadingAds || userProfile?.totalAmountWatchAds === 0;
 
-  const currentStreak = (userProfile?.rollCallStreak || 1) - 1;
+  const currentStreak = userProfile?.rollCallStreak || 0;
 
   useEffect(() => {
     if (visible) {
@@ -135,7 +164,10 @@ export default function RollCallModal({ visible, onClose }: Props) {
       {visible && <View style={styles.background} />}
       <Modal visible={visible} transparent animationType="slide">
         <Pressable style={styles.modalBackdrop} onPress={onClose}>
-          <Pressable style={styles.modalContainer} onPress={(e) => e.stopPropagation()}>
+          <Pressable
+            style={styles.modalContainer}
+            onPress={(e) => e.stopPropagation()}
+          >
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Check-In</Text>
               <View style={styles.modalGem}>
@@ -152,8 +184,10 @@ export default function RollCallModal({ visible, onClose }: Props) {
                     styles.modalCheckinDay,
                     idx < currentStreak && styles.modalCheckinDayPass,
                     idx === currentStreak && styles.modalCheckinDayActive,
-                    checkTheDayIsToDay(userProfile?.lastRollCallDate) && idx === currentStreak && styles.modalCheckinDayPass,
-                    idx === 6 && { width: ITEM_WIDTH * 2 }
+                    checkTheDayIsToDay(userProfile?.lastRollCallDate) &&
+                      idx === currentStreak &&
+                      styles.modalCheckinDayPass,
+                    idx === 6 && { width: ITEM_WIDTH * 2 },
                   ]}
                 >
                   <Text style={styles.modalCheckinDayText}>Day {idx + 1}</Text>
@@ -185,22 +219,22 @@ export default function RollCallModal({ visible, onClose }: Props) {
               </Text>
             </Pressable>
             <Pressable
-              style={[
-                styles.modalAds,
-                disabledWatchAds && styles.btnDisabled,
-              ]}
+              style={[styles.modalAds, disabledWatchAds && styles.btnDisabled]}
               onPress={handleWatchAds}
               disabled={disabledWatchAds}
             >
               <Text style={styles.modalAdsText}>
-                {loadingAds ? 'Watching Ads...' : `Watch Ads (${MAX_WATCH_ADS_PER_DAY - (userProfile?.totalAmountWatchAds || 0)}/${MAX_WATCH_ADS_PER_DAY})`}
+                {loadingAds
+                  ? 'Watching Ads...'
+                  : `Watch Ads (${
+                      MAX_WATCH_ADS_PER_DAY -
+                      (userProfile?.totalAmountWatchAds || 0)
+                    }/${MAX_WATCH_ADS_PER_DAY})`}
                 <Text style={{ color: '#7ee2ff' }}>
                   {'  '}Watch ads to earn{' '}
                 </Text>
               </Text>
-              <View
-                style={styles.modalAdsGemContainer}
-              >
+              <View style={styles.modalAdsGemContainer}>
                 <Ionicons name="diamond" size={18} color="#7ee2ff" />
                 <Text style={styles.modalAdsGem}>+10</Text>
               </View>
@@ -274,7 +308,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
-    width: ITEM_WIDTH
+    width: ITEM_WIDTH,
   },
   modalCheckinDayActive: {
     borderWidth: 2,

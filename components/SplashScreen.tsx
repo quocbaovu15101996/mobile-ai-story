@@ -9,7 +9,7 @@ export default function SplashScreen() {
       <Image
         source={require('../assets/images/splash-icon.png')}
         style={styles.logo}
-        resizeMode="contain"
+        resizeMode="cover"
       />
     </View>
   );
