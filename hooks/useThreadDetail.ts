@@ -18,7 +18,6 @@ import {
   getThreadMessages,
   rewriteLastMessage,
 } from '../src/services/api/thread';
-import { MessageItemInterface, Thread } from '../src/services/api/types';
 import { getUserProfile } from '../src/services/api/users';
 import { useAuthStore } from '../src/store/useAuthStore';
 import { showErrorToast, showSuccessToast } from '../src/utils/toast';

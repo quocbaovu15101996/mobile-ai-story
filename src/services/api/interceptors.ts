@@ -1,11 +1,6 @@
 import { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-import { API_CONFIG, RESPONSE_CODES } from './config';
 import { useAuthStore } from '../../store/useAuthStore';
-
-export interface RefreshTokenResponse {
-  type: string;
-  token: string;
-}
+import { API_CONFIG, RESPONSE_CODES } from './config';
 
 type FailedQueueItem = {
   resolve: (token: string) => void;

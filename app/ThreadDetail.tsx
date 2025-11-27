@@ -23,7 +23,6 @@ import { MessageItem } from '@/components/thread/MessageItem';
 import { ThreadBottomAction } from '@/components/thread/ThreadBottomAction';
 import { useThreadDetail } from '@/hooks/useThreadDetail';
 import { analyticsService } from '@/src/services/analyticsService';
-import type { MessageItemInterface } from '@/src/services/api/types';
 import { SCREEN_HEIGHT } from '@/src/utils';
 
 export default function ThreadDetail() {

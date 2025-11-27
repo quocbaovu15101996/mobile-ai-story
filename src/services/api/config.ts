@@ -43,5 +43,4 @@ export const ENDPOINTS = {
   },
 };
 
-// Types are now defined globally in src/services/api/types.d.ts
 // No need to import interfaces from config.ts

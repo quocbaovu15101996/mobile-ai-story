@@ -1,5 +1,4 @@
 import { MESSAGE_TYPE, ROLE } from '@/constants';
-import { MessageItemInterface } from '@/src/services/api/types';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { StyleSheet } from 'react-native';

@@ -4,7 +4,6 @@ import TextApp from '@/components/TextApp';
 import { ThreadItem } from '@/components/ThreadItem';
 import { analyticsService } from '@/src/services/analyticsService';
 import { getHistory } from '@/src/services/api/thread';
-import { Thread } from '@/src/services/api/types';
 import { useUserProfile } from '@/src/store';
 import { useFocusEffect, useNavigation, useTheme } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';

@@ -1,15 +1,5 @@
 import api, { ApiResponse } from '..';
 import { ENDPOINTS } from '../config';
-import {
-  CreateThreadPayload,
-  CreateThreadResponse,
-  ExpandThreadPayload,
-  GenerateIdeaResponse,
-  MessageItemInterface,
-  MessageResponse,
-  Thread,
-  ThreadsResponse,
-} from '../types';
 
 export const getHistory = async (
   page: number = 0,

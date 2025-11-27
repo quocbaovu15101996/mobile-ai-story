@@ -1,11 +1,11 @@
 // Centralized type definitions for API-related interfaces
 
-export interface LoginResponse {
+interface LoginResponse {
   type: string;
   token: string;
 }
 
-export interface UserProfile {
+interface UserProfile {
   id: string;
   username?: string;
   password?: string;
@@ -36,7 +36,7 @@ export interface UserProfile {
   isVip?: boolean;
 }
 
-export interface Thread {
+interface Thread {
   id: string;
   image?: string;
   userId: string;
@@ -61,7 +61,7 @@ export interface Thread {
   modifiedDate: string;
 }
 
-export interface ThreadsResponse {
+interface ThreadsResponse {
   threads: Thread[];
   currentPage: number;
   totalPages: number;
@@ -71,7 +71,7 @@ export interface ThreadsResponse {
   hasPrevious: boolean;
 }
 
-export interface CreateThreadPayload {
+interface CreateThreadPayload {
   storyIdea: string;
   isCanInteract: number; // 1 | 0
   storyLength: string;
@@ -81,7 +81,7 @@ export interface CreateThreadPayload {
   narrative?: string;
 }
 
-export interface CreateThreadResponse {
+interface CreateThreadResponse {
   id: string;
   userId: string;
   status: number;
@@ -99,14 +99,14 @@ export interface CreateThreadResponse {
   modifiedDate: string;
 }
 
-export interface MessageResponse {
+interface MessageResponse {
   id: string;
   createdAt: string;
   totalTokens: number;
   content: string;
 }
 
-export interface GenerateIdeaResponse {
+interface GenerateIdeaResponse {
   idea: string;
 }
 interface Metadata {
@@ -120,7 +120,7 @@ interface Content {
   type: string;
   text: ContentText;
 }
-export interface MessageItemInterface {
+interface MessageItemInterface {
   id: string;
   object: string;
   created_at: string;
@@ -131,7 +131,7 @@ export interface MessageItemInterface {
   metadata: Metadata
 }
 
-export interface ExpandThreadPayload {
+interface ExpandThreadPayload {
   content: string;
   tone: string;
 }

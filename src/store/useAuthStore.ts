@@ -3,10 +3,8 @@ import { Platform } from 'react-native';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import { loginByDevice } from '../services/api/auth';
-import { UserProfile } from '../services/api/types';
 import { getUserProfile } from '../services/api/users';
 import getDeviceId from '../utils/devices';
-import { AuthState } from './types';
 
 // Custom storage object for expo-secure-store
 const secureStorage = {
@@ -20,16 +18,6 @@ const secureStorage = {
     await SecureStore.deleteItemAsync(name);
   },
 };
-
-type AuthActions = {
-  setToken: (token: string) => void;
-  clearToken: () => void;
-  setAuthenticated: (isAuthenticated: boolean) => void;
-  setUserProfile: (profile: UserProfile | null) => void;
-  loginByDevice: () => Promise<string | null>;
-};
-
-type AuthStore = AuthState & AuthActions;
 
 const initialState: AuthState = {
   token: null,

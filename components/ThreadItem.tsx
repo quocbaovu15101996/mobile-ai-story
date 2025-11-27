@@ -1,12 +1,11 @@
 import { RootStackParamList } from '@/app/_layout';
-import { Thread } from '@/src/services/api/types';
+import { analyticsService } from '@/src/services/analyticsService';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
 import { Image, Pressable, StyleSheet, View } from 'react-native';
 import TextApp from './TextApp';
 import { ThemedView } from './ThemedView';
-import { analyticsService } from '@/src/services/analyticsService';
 
 interface ThreadItemProps {
   thread: Thread;
