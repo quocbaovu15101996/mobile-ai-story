@@ -65,6 +65,9 @@ export default function ThreadDetail() {
   }, [thread?.threadId]);
 
   const actionButtonRef = useRef<View>(null);
+  const flatListRef = useRef<FlatList<MessageItemInterface>>(null);
+  const previousPassagesLengthRef = useRef<number>(0);
+  const isInitialLoadRef = useRef<boolean>(true);
 
   const onActionPress = () => {
     if (actionButtonRef.current) {
@@ -176,6 +179,35 @@ export default function ThreadDetail() {
     }
   }, [handleCloseDeleteConfirm, handleDeleteConfirm, showDeleteConfirm]);
 
+  // Auto-scroll to new MessageItem when passages are updated
+  useEffect(() => {
+    const currentLength = passages.length;
+    const previousLength = previousPassagesLengthRef.current;
+
+    // Skip scroll on initial load
+    if (isInitialLoadRef.current) {
+      previousPassagesLengthRef.current = currentLength;
+      isInitialLoadRef.current = false;
+      return;
+    }
+
+    // Only scroll if new items were added (length increased)
+    if (currentLength > previousLength && flatListRef.current) {
+      // Small delay to ensure the new item is rendered
+      const scrollTimeout = setTimeout(() => {
+        flatListRef.current?.scrollToEnd({ animated: true });
+      }, 150);
+
+      previousPassagesLengthRef.current = currentLength;
+
+      return () => {
+        clearTimeout(scrollTimeout);
+      };
+    }
+
+    previousPassagesLengthRef.current = currentLength;
+  }, [passages.length]);
+
   if (loading) {
     return (
       <ThemedView style={styles.container}>
@@ -215,6 +247,7 @@ export default function ThreadDetail() {
     <SafeAreaView style={styles.safeArea}>
       {renderThreadHeader()}
       <FlatList
+        ref={flatListRef}
         data={passages}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
