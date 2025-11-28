@@ -123,11 +123,14 @@ export default function ThreadDetail() {
   );
 
   const renderFooter = () => {
+    if (loadingPassage) {
+      return (
+        <ActivityIndicator size="small" color="#007AFF" style={styles.footerLoading} />
+      );
+    }
+
     return (
       <View>
-        {loadingPassage && (
-          <ActivityIndicator size="small" color="#007AFF" style={styles.footerLoading} />
-        )}
         {thread?.isCanInteract === 1 && (
           <View style={styles.messageActions}>
             <LoadingButton
