@@ -23,7 +23,7 @@ const MessageItem: React.FC<Props> = ({ item }) => {
       <ThemedView style={styles.messageAction}>
         <Ionicons name={item?.metadata?.type === MESSAGE_TYPE.CONTINUE ? 'play' : 'expand'} size={14} color="#fff" />
         <TextApp style={styles.txtAction}>
-          {item?.metadata?.type}
+          {item?.metadata?.type === MESSAGE_TYPE.CONTINUE ? 'Continue' : item?.metadata?.content}
         </TextApp>
       </ThemedView>
     )
