@@ -5,6 +5,7 @@ import {
   PurchaseSuccessInterface,
   useInAppPurchase,
 } from '@/src/hooks/useInAppPurchase';
+import { analyticsService } from '@/src/services/analyticsService';
 import { inAppPurchaseApi } from '@/src/services/api/inAppPurchase';
 import { getUserProfile } from '@/src/services/api/users';
 import { useAuthStore } from '@/src/store';
@@ -32,7 +33,6 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { analyticsService } from '@/src/services/analyticsService';
 
 export default function InAppPurchaseScreen() {
   const navigation = useNavigation();
@@ -172,7 +172,7 @@ export default function InAppPurchaseScreen() {
     setStateScreen((prevState) => ({
       ...prevState,
       selectedPlanId: item.id,
-      offerToken: item.subscriptionOfferDetails?.[0]?.offerToken || '',
+      offerToken: item.subscriptionOfferDetailsAndroid?.[0]?.offerToken || '',
     }));
   };
 
@@ -222,13 +222,13 @@ export default function InAppPurchaseScreen() {
       const selectPlan = subscriptions.find(
         (item) => item.id === SUBSCRIPTION_IDS[0]
       );
-      const subscriptionOfferDetails = selectPlan?.subscriptionOfferDetails;
+      const subscriptionOfferDetailsAndroid = selectPlan?.subscriptionOfferDetailsAndroid;
 
       setStateScreen((prevState) => ({
         ...prevState,
         selectedPlanId: selectPlan?.id,
-        offerToken: !isNullOrEmpty(subscriptionOfferDetails)
-          ? subscriptionOfferDetails?.[subscriptionOfferDetails?.length - 1]
+        offerToken: !isNullOrEmpty(subscriptionOfferDetailsAndroid)
+          ? subscriptionOfferDetailsAndroid?.[subscriptionOfferDetailsAndroid?.length - 1]
               ?.offerToken
           : '',
       }));
@@ -320,6 +320,7 @@ export default function InAppPurchaseScreen() {
     return priceB - priceA;
   });
 
+  console.log('subscriptions ', subscriptions);
   return (
     <SafeAreaView style={styles.container}>
       <Pressable style={styles.backButton} onPress={onClose}>

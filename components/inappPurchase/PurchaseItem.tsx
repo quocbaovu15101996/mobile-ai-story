@@ -12,11 +12,10 @@ type Props = {
 const PurchaseItem = ({ item, selectedPlanId, onPress }: Props) => {
   const yearlyPlan = item?.id.includes('12m');
 
-  let locale: string =
-    isIos
-      ? NativeModules.SettingsManager.settings.AppleLocale ||
+  let locale: string = isIos
+    ? NativeModules.SettingsManager.settings.AppleLocale ||
       NativeModules.SettingsManager.settings.AppleLanguages[0]
-      : NativeModules.I18nManager.localeIdentifier;
+    : NativeModules.I18nManager.localeIdentifier;
 
   const getPrice = (itemSub: any) => {
     if (isIos) {
@@ -30,7 +29,7 @@ const PurchaseItem = ({ item, selectedPlanId, onPress }: Props) => {
 
       try {
         return new Intl.NumberFormat(resolvedLocale, config).format(
-          item?.price ?? 0,
+          item?.price ?? 0
         );
       } catch (error) {
         console.error('Error formatting price:', error);
@@ -38,14 +37,7 @@ const PurchaseItem = ({ item, selectedPlanId, onPress }: Props) => {
       }
     }
 
-    const offerPricingPhaseList =
-      itemSub?.subscriptionOfferDetailsAndroid?.[0]?.pricingPhases?.pricingPhaseList;
-    const length = offerPricingPhaseList?.length;
-    const formattedPrice =
-      itemSub?.subscriptionOfferDetailsAndroid?.[0]?.pricingPhases?.pricingPhaseList?.[
-        length - 1
-      ]?.formattedPrice;
-    return formattedPrice || 'N/A';
+    return itemSub?.displayPrice || 'N/A';
   };
 
   const productName = (productId: string) => {
@@ -60,24 +52,25 @@ const PurchaseItem = ({ item, selectedPlanId, onPress }: Props) => {
       style={({ pressed }) => [
         styles.planBox,
         selectedPlanId === item.id && styles.planBoxSelected,
-        pressed && { opacity: 0.8 }
+        pressed && { opacity: 0.8 },
       ]}
       onPress={() => onPress(item)}
     >
+      {yearlyPlan && (
+        <View style={styles.saveTag}>
+          <Text style={styles.saveText}>Save 90%</Text>
+        </View>
+      )}
       <View style={styles.planRow}>
         <Text style={styles.planRenew}>{getTitle(item.id)}</Text>
-        {yearlyPlan && (
-          <View style={styles.saveTag}>
-            <Text style={styles.saveText}>Save 90%</Text>
-          </View>
-        )}
       </View>
       <Text style={styles.planPrice}>
-        {getPrice(item)} <Text style={styles.planPeriod}>/ {productName(item.id)}</Text>
+        {getPrice(item)}{' '}
+        <Text style={styles.planPeriod}>/ {productName(item.id)}</Text>
       </Text>
     </Pressable>
-  )
-}
+  );
+};
 
 export default PurchaseItem;
 
@@ -127,12 +120,11 @@ const styles = StyleSheet.create({
   saveTag: {
     backgroundColor: '#ef4444',
     borderRadius: 8,
-    marginLeft: 10,
     paddingHorizontal: 8,
     paddingVertical: 2,
     position: 'absolute',
-    right: 0,
-    top: 0,
+    right: 8,
+    top: 8,
   },
   saveText: {
     color: '#fff',
