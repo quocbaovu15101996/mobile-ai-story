@@ -92,8 +92,10 @@ export const useThreadDetail = () => {
         'assistant'
       );
       setPassages([newMessage]);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error loading thread detail:', err);
+      const errorMessage = err?.response?.data?.message || err?.message || 'Failed to generate story. Please try again.';
+      showErrorToast(errorMessage);
     } finally {
       setLoadingPassage(false);
     }
@@ -117,8 +119,9 @@ export const useThreadDetail = () => {
       const [threadDetail, threadMessages] = response;
       setThread(threadDetail.data);
       setPassages(threadMessages.data);
-    } catch (err) {
-      setError('Failed to load thread details');
+    } catch (err: any) {
+      const errorMessage = err?.response?.data?.message || err?.message || 'Failed to load thread details';
+      setError(errorMessage);
       console.error('Error loading thread detail:', err);
     } finally {
       setLoading(false);
@@ -139,9 +142,10 @@ export const useThreadDetail = () => {
         analyticsService.logMessageDelete(threadId);
         setPassages(prevPassages => prevPassages.slice(0, -2));
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error deleting messages:', err);
-      setError('Failed to delete messages');
+      const errorMessage = err?.response?.data?.message || err?.message || 'Failed to delete messages';
+      showErrorToast(errorMessage);
     } finally {
       setDeleting(false);
     }
@@ -165,9 +169,10 @@ export const useThreadDetail = () => {
       setPassages((prevPassages) => [...prevPassages, newMessage]);
       analyticsService.logMessageRewrite(threadId, userProfile?.isVip || false);
       await updateUserProfile();
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error rewriting messages:', err);
-      setError('Failed to rewrite messages');
+      const errorMessage = err?.response?.data?.message || err?.message || 'Failed to rewrite messages';
+      showErrorToast(errorMessage);
     } finally {
       setLoadingPassage(false);
     }
@@ -199,8 +204,12 @@ export const useThreadDetail = () => {
       analyticsService.logStoryContinue(threadId, userProfile?.isVip || false);
       // Update user profile after successful API call
       await updateUserProfile();
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error continuing messages:', err);
+      const errorMessage = err?.response?.data?.message || err?.message || 'Failed to continue story. Please try again.';
+      showErrorToast(errorMessage);
+      // Remove the continue message if the API call failed
+      setPassages((prevPassages) => prevPassages.slice(0, -1));
     } finally {
       setLoadingPassage(false);
     }
@@ -244,8 +253,12 @@ export const useThreadDetail = () => {
       analyticsService.logStoryExpand(threadId, tone, userProfile?.isVip || false);
       // Update user profile after successful API call
       await updateUserProfile();
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error expanding messages:', err);
+      const errorMessage = err?.response?.data?.message || err?.message || 'Failed to expand story. Please try again.';
+      showErrorToast(errorMessage);
+      // Remove the expand message if the API call failed
+      setPassages((prevPassages) => prevPassages.slice(0, -1));
     } finally {
       setLoadingPassage(false);
     }
@@ -382,9 +395,10 @@ export const useThreadDetail = () => {
       // Navigate back after successful deletion
       navigation.goBack();
       // Optional: Show success message or refresh thread list if needed
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error deleting thread:', error);
-      Alert.alert('Error', 'Failed to delete thread');
+      const errorMessage = error?.response?.data?.message || error?.message || 'Failed to delete thread';
+      Alert.alert('Error', errorMessage);
     } finally {
       setLoading(false);
     }

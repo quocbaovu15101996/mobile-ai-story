@@ -62,9 +62,10 @@ export default function HistoryScreen() {
       }
 
       setHasNext(response.data.hasNext);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Failed to fetch history:', err);
-      setError('Failed to load history. Please try again.');
+      const errorMessage = err?.response?.data?.message || err?.message || 'Failed to load history. Please try again.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
       setRefreshing(false);

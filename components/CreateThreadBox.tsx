@@ -184,16 +184,22 @@ const CreateThreadBox: FC<Props> = () => {
   const onPressSuggestIdea = useCallback(async () => {
     analyticsService.logStoryIdeaSuggestion();
     setLoadingSuggestIdea(true);
-    const response = await generateIdea();
-    if (response.status === 200 && response.data?.idea) {
-      setStoryIdea(response.data?.idea);
-    } else {
-      showErrorToast(
-        (response.data as unknown as string) ??
-          'Something went wrong!!! Please try again.'
-      );
+    try {
+      const response = await generateIdea();
+      if (response.status === 200 && response.data?.idea) {
+        setStoryIdea(response.data?.idea);
+      } else {
+        showErrorToast(
+          (response.data as unknown as string) ??
+            'Something went wrong!!! Please try again.'
+        );
+      }
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.message || error?.message || 'Something went wrong!!! Please try again.';
+      showErrorToast(errorMessage);
+    } finally {
+      setLoadingSuggestIdea(false);
     }
-    setLoadingSuggestIdea(false);
   }, []);
 
   useEffect(() => {
