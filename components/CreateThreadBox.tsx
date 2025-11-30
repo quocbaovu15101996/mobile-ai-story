@@ -18,6 +18,7 @@ import {
 } from 'react-native';
 import { AdEventType, InterstitialAd } from 'react-native-google-mobile-ads';
 import { RootStackParamList } from '../app/_layout';
+import LoadingEllipsis from './LoadingEllipsis';
 import TextApp from './TextApp';
 
 type Props = {};
@@ -125,10 +126,9 @@ const CreateThreadBox: FC<Props> = () => {
           });
           navigateToThreadDetail();
         }
-      } catch (error) {
-        showErrorToast(
-          (error as string) ?? 'Something went wrong!!! Please try again.'
-        );
+      } catch (error: any) {
+        const errorMessage = error?.response?.data?.message || error?.message || 'Something went wrong!!! Please try again.';
+        showErrorToast(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -159,10 +159,9 @@ const CreateThreadBox: FC<Props> = () => {
             navigateToThreadDetail();
           }
         }
-      } catch (error) {
-        showErrorToast(
-          (error as string) ?? 'Something went wrong!!! Please try again.'
-        );
+      } catch (error: any) {
+        const errorMessage = error?.response?.data?.message || error?.message || 'Something went wrong!!! Please try again.';
+        showErrorToast(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -449,9 +448,30 @@ const CreateThreadBox: FC<Props> = () => {
           disabled={isButtonDisabled}
           onPress={onPressGenerate}
         >
-          <TextApp style={styles.generateButtonText}>
-            {loading || loadingAds ? 'Generating...' : 'Start generate'}
-          </TextApp>
+          <View style={styles.generateButtonContent}>
+            {loading || loadingAds ? (
+              <LoadingEllipsis
+                prefix="Generating"
+                style={styles.generateButtonText}
+              />
+            ) : userProfile?.isVip ? (
+              <TextApp style={styles.generateButtonText}>
+                Start generate
+              </TextApp>
+            ) : (
+              <>
+                <TextApp style={styles.generateButtonText}>
+                  Start generate  3{' '}
+                </TextApp>
+                <Ionicons
+                  name="diamond"
+                  size={18}
+                  color="#7ee2ff"
+                  style={styles.diamondIcon}
+                />
+              </>
+            )}
+          </View>
         </Pressable>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -608,6 +628,14 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 18,
+  },
+  generateButtonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  diamondIcon: {
+    marginHorizontal: 2,
   },
   iconSuggestion: { marginRight: 8 },
 });

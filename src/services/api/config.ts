@@ -1,6 +1,17 @@
 // API response codes
 export const RESPONSE_CODES = {
   TOKEN_EXPIRED: 498,
+  NOT_ENOUGH_DIAMOND: 403,
+  INTERNAL_SERVER_ERROR: 500,
+  BAD_REQUEST: 400,
+  UNAUTHORIZED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  METHOD_NOT_ALLOWED: 405,
+  REQUEST_TIMEOUT: 408,
+  CONFLICT: 409,
+  GONE: 410,
+  SUCCESS: 200,
 };
 
 const appJson = require('../../../app.json');
