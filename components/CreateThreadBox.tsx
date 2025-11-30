@@ -152,13 +152,10 @@ const CreateThreadBox: FC<Props> = () => {
             isVip: false,
           });
           // Wait up to 3 seconds for ad to load
-          await new Promise(resolve => setTimeout(resolve, 3000));
-          // If ad has loaded (loadingAds is false), show it
-          // Navigation will happen in the ad CLOSED event listener
+          await new Promise((resolve) => setTimeout(resolve, 3000));
           if (!loadingAds) {
             interstitial.current?.show();
           } else {
-            // Ad didn't load in time, navigate directly
             navigateToThreadDetail();
           }
         }
@@ -171,16 +168,18 @@ const CreateThreadBox: FC<Props> = () => {
       }
     }
   }, [
+    isEnoughDiamond,
     storyIdea,
     storyLength,
     genre,
     characters,
     setting,
     userProfile?.isVip,
+    navigation,
     storyType,
     narrative,
-    loadingAds,
     navigateToThreadDetail,
+    loadingAds,
   ]);
 
   const onPressSuggestIdea = useCallback(async () => {
@@ -220,7 +219,9 @@ const CreateThreadBox: FC<Props> = () => {
     const unsubscribeOpened = interstitial.current.addAdEventListener(
       AdEventType.OPENED,
       () => {
-        analyticsService.logInterstitialAdShown(ADMOB_ADS.CREATE_STORY_INTERSTITIAL);
+        analyticsService.logInterstitialAdShown(
+          ADMOB_ADS.CREATE_STORY_INTERSTITIAL
+        );
       }
     );
 
@@ -238,7 +239,10 @@ const CreateThreadBox: FC<Props> = () => {
       AdEventType.ERROR,
       (error) => {
         console.error('Interstitial ad failed to load:', error);
-        analyticsService.logAdLoadError('interstitial', error.message || 'Unknown error');
+        analyticsService.logAdLoadError(
+          'interstitial',
+          error.message || 'Unknown error'
+        );
         interstitial.current?.load();
       }
     );
