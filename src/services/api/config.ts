@@ -21,7 +21,7 @@ export const API_CONFIG = {
   // BASE_URL: 'https://viable-jointly-hen.ngrok-free.app',
   // BASE_URL: 'http://192.168.200.37:8989',
   // BASE_URL: 'http://192.168.0.100:8989',
-  BASE_URL: 'https://ai-story.codezap.io.vn', // production
+  BASE_URL: 'https://ai-story.codezap.io.vn/api', // production
   TIMEOUT: 30000, // 30 seconds
   HEADERS: {
     'Content-Type': 'application/json',
