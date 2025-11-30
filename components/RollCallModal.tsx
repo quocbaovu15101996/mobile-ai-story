@@ -151,7 +151,7 @@ export default function RollCallModal({ visible, onClose }: Props) {
 
   const disabledWatchAds = loadingAds || userProfile?.totalAmountWatchAds === 0;
 
-  const currentStreak = userProfile?.rollCallStreak || 0;
+  const currentStreak = (userProfile?.rollCallStreak || 1) - 1;
 
   useEffect(() => {
     if (visible) {
