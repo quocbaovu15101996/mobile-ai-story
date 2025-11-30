@@ -71,6 +71,13 @@ const CreateThreadBox: FC<Props> = () => {
   const interstitial = useRef<InterstitialAd | null>(null);
   const threadId = useRef<string>('');
 
+  const isEnoughDiamond = useCallback(() => {
+    if (userProfile?.isVip) {
+      return true;
+    }
+    return (userProfile?.diamond || 0) >= 3;
+  }, [userProfile?.diamond, userProfile?.isVip]);
+
   const navigateToThreadDetail = useCallback(() => {
     if (!threadId.current) {
       showErrorToast('Something went wrong!!! Please try again.');
@@ -84,6 +91,10 @@ const CreateThreadBox: FC<Props> = () => {
   }, [navigation]);
 
   const onPressGenerate = useCallback(async () => {
+    if (!isEnoughDiamond()) {
+      navigation.navigate('InAppPurchase');
+      return;
+    }
     setLoading(true);
     analyticsService.logStoryCreationStart();
     const payload = {
