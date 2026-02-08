@@ -1,25 +1,29 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
 import Toast from 'react-native-toast-message';
 
-import SplashScreen from '@/components/SplashScreen';
 // import { useColorScheme } from '@/hooks/useColorScheme';
 import { initializeFirebase } from '@/config/firebase-config';
+import { analyticsService } from '@/src/services/analyticsService';
 import { useAuthStore } from '@/src/store/useAuthStore';
 import { MobileAds } from 'react-native-google-mobile-ads';
-import { analyticsService } from '@/src/services/analyticsService';
 
 if (__DEV__) {
-  require("../src/config/ReactotronConfig");
-};
+  require('../src/config/ReactotronConfig');
+}
 
 export type RootStackParamList = {
   InAppPurchase: undefined;
-  ThreadDetail: { threadId: string, isCreate: boolean };
+  ThreadDetail: { threadId: string; isCreate: boolean };
 };
 
 const DefaultDarkTheme = {
@@ -28,7 +32,7 @@ const DefaultDarkTheme = {
     ...DarkTheme.colors,
     backgroundGray: 'rbg(20,20,20)',
   },
-}
+};
 
 const DefaultLightTheme = {
   ...DefaultTheme,
@@ -36,7 +40,7 @@ const DefaultLightTheme = {
     ...DefaultTheme.colors,
     backgroundGray: 'rbg(20,20,20)',
   },
-}
+};
 export default function RootLayout() {
   // const colorScheme = useColorScheme();
   const [loaded] = useFonts({
@@ -46,20 +50,16 @@ export default function RootLayout() {
   const [isLoading, setIsLoading] = useState(true);
   const { loginByDevice, userProfile } = useAuthStore();
 
+  // Keep the native splash screen visible while we load resources
+  useEffect(() => {
+    SplashScreen.preventAutoHideAsync();
+  }, []);
+
   useEffect(() => {
     initializeFirebase();
     const initializeAuth = async () => {
-      try {
-        // Attempt auto-login using device credentials
-        await loginByDevice();
-      } catch (error) {
-        console.error('Auto-login failed:', error);
-      } finally {
-        // Show splash screen for at least 2 seconds for better UX
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 1000);
-      }
+      await loginByDevice();
+      setIsLoading(false);
     };
 
     const initializeAds = async () => {
@@ -68,19 +68,28 @@ export default function RootLayout() {
 
     initializeAds();
     initializeAuth();
-
   }, [loginByDevice]);
+
+  // Hide the native splash screen when fonts are loaded and initialization is complete
+  useEffect(() => {
+    if (loaded && !isLoading) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, isLoading]);
 
   // Set user ID for analytics when user profile is available
   useEffect(() => {
     if (userProfile?.id) {
       analyticsService.setUserId(userProfile.id.toString());
-      analyticsService.setUserProperty('is_vip', userProfile.isVip ? 'true' : 'false');
+      analyticsService.setUserProperty(
+        'is_vip',
+        userProfile.isVip?.toString() || 'false'
+      );
     }
   }, [userProfile]);
 
   if (!loaded || isLoading) {
-    return <SplashScreen />;
+    return null;
   }
 
   return (
