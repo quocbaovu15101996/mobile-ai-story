@@ -135,3 +135,9 @@ interface ExpandThreadPayload {
   content: string;
   tone: string;
 }
+
+interface Genre {
+  type: string;
+  image: string;
+  name: string;
+}

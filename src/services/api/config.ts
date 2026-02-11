@@ -52,6 +52,7 @@ export const ENDPOINTS = {
     REWRITE: '/rewrite',
     GENERATE_IDEA: '/generate-idea',
   },
+  GENRES: '/v1/genres',
 };
 
 // No need to import interfaces from config.ts

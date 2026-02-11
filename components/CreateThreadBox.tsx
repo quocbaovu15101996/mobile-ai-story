@@ -1,11 +1,13 @@
 import { ADMOB_ADS } from '@/config/admob-config';
 import { analyticsService } from '@/src/services/analyticsService';
-import { createThread, generateIdea } from '@/src/services/api/thread';
+import { API_CONFIG } from '@/src/services/api/config';
+import { createThread, generateIdea, getGenres } from '@/src/services/api/thread';
 import { useUserProfile } from '@/src/store';
 import { showErrorToast } from '@/src/utils/toast';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Image } from 'expo-image';
 import React, { FC, useCallback, useEffect, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
@@ -21,7 +23,14 @@ import { RootStackParamList } from '../app/_layout';
 import LoadingEllipsis from './LoadingEllipsis';
 import TextApp from './TextApp';
 
+
 type Props = {};
+
+interface Genre {
+  type: string;
+  image: string;
+  name: string;
+}
 
 const STORY_TYPE = [
   { key: 'endless', label: 'Endless', subLabel: 'Step-by-step', value: 1 },
@@ -30,22 +39,16 @@ const STORY_TYPE = [
 
 const STORY_LENGTH = ['Short', 'Medium', 'Long'];
 
-const GENRES = [
-  { key: 'romantic', label: 'Romantic', image: null },
-  { key: 'fantasy', label: 'Fantasy', image: null },
-  { key: 'horror', label: 'Horror', image: null },
-  { key: 'adventure', label: 'Adventure', image: null },
-  { key: 'sci-fi', label: 'Sci-Fi', image: null },
-];
-
 const NARRATIVE = [
   {
     value: 'FIRST_PERSON',
     label: 'First person',
+    image: '415ef3f0-782a-4b15-bd93-69f996a6e5a5'
   },
   {
     value: 'THIRD_PERSON',
     label: 'Third person',
+    image: '77376ef1-3102-48ef-abe6-aa6ca9fb7197'
   },
 ];
 
@@ -57,6 +60,7 @@ const CreateThreadBox: FC<Props> = () => {
   const [storyType, setStoryType] = useState('endless');
   const [storyLength, setStoryLength] = useState('Short');
   const [extendDetails, setExtendDetails] = useState(false);
+  const [genres, setGenres] = useState<Genre[]>([]);
   const [genre, setGenre] = useState<string | null>(null);
   const [characters, setCharacters] = useState('');
   const [setting, setSetting] = useState('');
@@ -200,6 +204,25 @@ const CreateThreadBox: FC<Props> = () => {
     } finally {
       setLoadingSuggestIdea(false);
     }
+  }, []);
+
+  const fetchGenres = useCallback(async () => {
+    try {
+      const response = await getGenres();
+      if (response.status === 200 && response.data) {
+        setGenres(response.data);
+      }
+    } catch (error) {
+      console.error('Failed to fetch genres', error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchGenres();
+  }, [fetchGenres]);
+
+  const getImageLink = useCallback((image: string, type: string) => {
+    return `${API_CONFIG.BASE_URL}/v1/images/${image}?type=${type}`;
   }, []);
 
   useEffect(() => {
@@ -387,17 +410,22 @@ const CreateThreadBox: FC<Props> = () => {
               showsHorizontalScrollIndicator={false}
               style={styles.genreRow}
             >
-              {GENRES.map((g) => (
+              {genres.map((g) => (
                 <Pressable
-                  key={g.key}
+                  key={g.type}
                   style={[
                     styles.genreItem,
-                    genre === g.key && styles.genreItemActive,
+                    genre === g.type && styles.genreItemActive,
                   ]}
-                  onPress={() => setGenre(g.key)}
+                  onPress={() => setGenre(g.type)}
                 >
-                  <View style={styles.genreImagePlaceholder} />
-                  <TextApp style={styles.genreText}>{g.label}</TextApp>
+                  <Image
+                    source={{ uri: getImageLink(g.image, 'thumbnail') }}
+                    style={styles.genreImage}
+                    contentFit="cover"
+                    transition={1000}
+                  />
+                  <TextApp style={styles.genreText}>{g.name}</TextApp>
                 </Pressable>
               ))}
             </ScrollView>
@@ -437,7 +465,12 @@ const CreateThreadBox: FC<Props> = () => {
                   ]}
                   onPress={() => setNarrative(n.value)}
                 >
-                  <View style={styles.genreImagePlaceholder} />
+                  <Image
+                    source={{ uri: getImageLink(n.image, 'thumbnail') }}
+                    style={styles.genreImage}
+                    contentFit="cover"
+                    transition={1000}
+                  />
                   <TextApp style={styles.genreText}>{n.label}</TextApp>
                 </Pressable>
               ))}
@@ -608,9 +641,9 @@ const styles = StyleSheet.create({
     borderColor: '#6366f1',
     backgroundColor: '#1e1e3f',
   },
-  genreImagePlaceholder: {
+  genreImage: {
     width: 60,
-    height: 40,
+    height: 60,
     backgroundColor: '#555',
     borderRadius: 6,
     marginBottom: 4,

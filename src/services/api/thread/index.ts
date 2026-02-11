@@ -84,3 +84,7 @@ export const generateIdea = async (): Promise<
     ENDPOINTS.THREAD.URL + ENDPOINTS.THREAD.GENERATE_IDEA
   );
 };
+
+export const getGenres = async (): Promise<ApiResponse<Genre[]>> => {
+  return await api.get<Genre[]>(ENDPOINTS.GENRES);
+};
