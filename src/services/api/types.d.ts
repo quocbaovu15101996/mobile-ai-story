@@ -128,7 +128,8 @@ interface MessageItemInterface {
   run_id: string;
   role: string;
   content: Content;
-  metadata: Metadata
+  metadata: Metadata;
+  flagNSFW: boolean;
 }
 
 interface ExpandThreadPayload {

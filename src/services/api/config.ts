@@ -19,8 +19,7 @@ const appJson = require('../../../app.json');
 // Base API configuration
 export const API_CONFIG = {
   // BASE_URL: 'https://viable-jointly-hen.ngrok-free.app',
-  // BASE_URL: 'http://192.168.200.37:8989',
-  // BASE_URL: 'http://192.168.0.100:8989',
+  // BASE_URL: 'http://192.168.1.9:8989/api',
   BASE_URL: 'https://ai-story.codezap.io.vn/api', // production
   TIMEOUT: 30000, // 30 seconds
   HEADERS: {
@@ -51,6 +50,7 @@ export const ENDPOINTS = {
     ERASE: '/erase',
     REWRITE: '/rewrite',
     GENERATE_IDEA: '/generate-idea',
+    REPORT: '/report',
   },
   GENRES: '/v1/genres',
 };

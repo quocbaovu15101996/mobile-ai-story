@@ -88,3 +88,13 @@ export const generateIdea = async (): Promise<
 export const getGenres = async (): Promise<ApiResponse<Genre[]>> => {
   return await api.get<Genre[]>(ENDPOINTS.GENRES);
 };
+
+export const reportMessage = async (
+  threadId: string,
+  messageId: string
+): Promise<ApiResponse<boolean>> => {
+  return await api.post<boolean>(
+    `${ENDPOINTS.THREAD.URL}/${threadId}${ENDPOINTS.THREAD.REPORT}/${messageId}`
+  );
+};
+

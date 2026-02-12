@@ -16,6 +16,7 @@ import {
   expandThread,
   getThreadDetail,
   getThreadMessages,
+  reportMessage,
   rewriteLastMessage,
 } from '../src/services/api/thread';
 import { getUserProfile } from '../src/services/api/users';
@@ -79,6 +80,7 @@ export const useThreadDetail = () => {
         type: type,
         content: content,
       },
+      flagNSFW: false,
     };
   }, []);
 
@@ -444,6 +446,23 @@ export const useThreadDetail = () => {
     setShowDeleteConfirm(false);
   }, []);
 
+  const handleReport = useCallback(async (messageId: string) => {
+    try {
+      setLoadingPassage(true);
+      const response = await reportMessage(threadId, messageId);
+      if (response.data) {
+        showSuccessToast('Message reported successfully');
+        setPassages(prev => prev.map(msg => msg.id === messageId ? { ...msg, flagNSFW: true } : msg));
+      }
+    } catch (err: any) {
+      console.error('Error reporting message:', err);
+      const errorMessage = err?.response?.data?.message || err?.message || 'Failed to report message';
+      showErrorToast(errorMessage);
+    } finally {
+      setLoadingPassage(false);
+    }
+  }, [threadId]);
+
   const handleCloseActionModal = useCallback(() => {
     setActionModalVisible(false);
   }, []);
@@ -473,6 +492,7 @@ export const useThreadDetail = () => {
     handleActionOption,
     handleDeleteConfirm,
     handleCloseDeleteConfirm,
+    handleReport,
     handleCloseActionModal,
     exportToPdf,
   };

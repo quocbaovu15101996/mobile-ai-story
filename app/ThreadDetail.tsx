@@ -54,6 +54,7 @@ export default function ThreadDetail() {
     handleActionOption,
     handleDeleteConfirm,
     handleCloseDeleteConfirm,
+    handleReport,
     handleCloseActionModal,
   } = useThreadDetail();
 
@@ -76,6 +77,8 @@ export default function ThreadDetail() {
       });
     }
   };
+
+
 
   const renderThreadHeader = () => {
     return (
@@ -100,7 +103,7 @@ export default function ThreadDetail() {
   };
 
   const renderItem: ListRenderItem<MessageItemInterface> = React.useCallback(
-    ({ item }) => <MessageItem item={item} />,
+    ({ item }) => <MessageItem item={item} onReport={handleReport} />,
     []
   );
 
