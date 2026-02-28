@@ -1,8 +1,8 @@
 import { ADMOB_ADS } from '@/config/admob-config';
 import { analyticsService } from '@/src/services/analyticsService';
 import { API_CONFIG } from '@/src/services/api/config';
-import { createThread, generateIdea, getGenres } from '@/src/services/api/thread';
-import { useUserProfile } from '@/src/store';
+import { createThread, generateIdea } from '@/src/services/api/thread';
+import { useFetchGenres, useGenres, useUserProfile } from '@/src/store';
 import { showErrorToast } from '@/src/utils/toast';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useTheme } from '@react-navigation/native';
@@ -60,7 +60,8 @@ const CreateThreadBox: FC<Props> = () => {
   const [storyType, setStoryType] = useState('endless');
   const [storyLength, setStoryLength] = useState('Short');
   const [extendDetails, setExtendDetails] = useState(false);
-  const [genres, setGenres] = useState<Genre[]>([]);
+  const genres = useGenres();
+  const fetchGenres = useFetchGenres();
   const [genre, setGenre] = useState<string | null>(null);
   const [characters, setCharacters] = useState('');
   const [setting, setSetting] = useState('');
@@ -203,17 +204,6 @@ const CreateThreadBox: FC<Props> = () => {
       showErrorToast(errorMessage);
     } finally {
       setLoadingSuggestIdea(false);
-    }
-  }, []);
-
-  const fetchGenres = useCallback(async () => {
-    try {
-      const response = await getGenres();
-      if (response.status === 200 && response.data) {
-        setGenres(response.data);
-      }
-    } catch (error) {
-      console.error('Failed to fetch genres', error);
     }
   }, []);
 
