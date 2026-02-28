@@ -1,11 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useTheme } from '@react-navigation/native';
+import { Image } from 'expo-image';
 import React, { useEffect, useRef } from 'react';
 import {
   ActivityIndicator,
   Alert,
   FlatList,
-  Image,
   ListRenderItem,
   Pressable,
   StyleSheet,
@@ -24,7 +24,7 @@ import { MessageItem } from '@/components/thread/MessageItem';
 import { ThreadBottomAction } from '@/components/thread/ThreadBottomAction';
 import { useThreadDetail } from '@/hooks/useThreadDetail';
 import { analyticsService } from '@/src/services/analyticsService';
-import { SCREEN_HEIGHT } from '@/src/utils';
+import { getImageLink, SCREEN_HEIGHT } from '@/src/utils';
 
 export default function ThreadDetail() {
   const { colors } = useTheme();
@@ -41,6 +41,7 @@ export default function ThreadDetail() {
     actionModalVisible,
     actionModalPosition,
     showDeleteConfirm,
+    genres,
     handleGoBack,
     onDeleteMessage,
     onRewriteMessage,
@@ -78,8 +79,6 @@ export default function ThreadDetail() {
     }
   };
 
-
-
   const renderThreadHeader = () => {
     return (
       <View style={styles.header}>
@@ -114,10 +113,10 @@ export default function ThreadDetail() {
 
   const renderHeader = () => (
     <View>
-      {thread?.image && (
+      {thread?.genreType && (
         <View style={styles.heroImageContainer}>
           <Image
-            source={{ uri: thread.image }}
+            source={{ uri: getImageLink(genres.find(g => g.type === thread?.genreType)?.image || '', 'medium') }}
             style={styles.heroImage}
             resizeMode="cover"
           />
@@ -226,7 +225,7 @@ export default function ThreadDetail() {
       </ThemedView>
     );
   }
-
+  
   if (error || !thread) {
     return (
       <ThemedView style={styles.container}>
@@ -336,7 +335,7 @@ const styles = StyleSheet.create({
   storyTitle: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 16,
+    marginVertical: 16,
     paddingHorizontal: 16,
     lineHeight: 34,
   },

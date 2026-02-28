@@ -1,4 +1,5 @@
 import { Dimensions, PixelRatio, Platform } from "react-native";
+import { API_CONFIG } from "../services/api/config";
 
 export const SCREEN_WIDTH = Dimensions.get('window').width;
 export const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -81,3 +82,8 @@ export function checkTheDayIsToDay(date?: string): boolean {
     lastRollCallDate.getDate() === today.getDate()
   );
 }
+
+// type: thumbnail | medium | large
+export const getImageLink = (image: string, type: string) => {
+  return `${API_CONFIG.BASE_URL}/v1/images/${image}?type=${type}`;
+};

@@ -1,3 +1,4 @@
+import { useGenres } from '@/src/store/useGenreStore';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as FileSystem from 'expo-file-system';
@@ -36,6 +37,7 @@ export const useThreadDetail = () => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute<ThreadDetailScreenRouteProp>();
   const { threadId, isCreate } = route.params;
+  const genres = useGenres();
   const [thread, setThread] = useState<Thread | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadingPassage, setLoadingPassage] = useState(isCreate);
@@ -479,6 +481,7 @@ export const useThreadDetail = () => {
     actionModalVisible,
     actionModalPosition,
     showDeleteConfirm,
+    genres,
     handleGoBack,
     onDeleteMessage,
     onRewriteMessage,

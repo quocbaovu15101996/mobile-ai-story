@@ -50,13 +50,7 @@ interface Thread {
   storyIdea: string;
   character: string;
   narrative: string;
-  genre: string;
-  createdDate: string;
-  modifiedDate: string;
-  storyIdea: string;
-  character: string;
-  narrative: string;
-  genre: string;
+  genreType: string;
   createdDate: string;
   modifiedDate: string;
 }

@@ -1,8 +1,8 @@
 import { ADMOB_ADS } from '@/config/admob-config';
 import { analyticsService } from '@/src/services/analyticsService';
-import { API_CONFIG } from '@/src/services/api/config';
 import { createThread, generateIdea } from '@/src/services/api/thread';
 import { useFetchGenres, useGenres, useUserProfile } from '@/src/store';
+import { getImageLink } from '@/src/utils';
 import { showErrorToast } from '@/src/utils/toast';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useTheme } from '@react-navigation/native';
@@ -210,10 +210,6 @@ const CreateThreadBox: FC<Props> = () => {
   useEffect(() => {
     fetchGenres();
   }, [fetchGenres]);
-
-  const getImageLink = useCallback((image: string, type: string) => {
-    return `${API_CONFIG.BASE_URL}/v1/images/${image}?type=${type}`;
-  }, []);
 
   useEffect(() => {
     interstitial.current = InterstitialAd.createForAdRequest(
