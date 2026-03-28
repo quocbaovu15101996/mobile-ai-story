@@ -51,6 +51,7 @@ interface Thread {
   character: string;
   narrative: string;
   genreType: string;
+  genre: string;
   createdDate: string;
   modifiedDate: string;
 }

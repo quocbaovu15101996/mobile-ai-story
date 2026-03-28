@@ -24,7 +24,7 @@ import { MessageItem } from '@/components/thread/MessageItem';
 import { ThreadBottomAction } from '@/components/thread/ThreadBottomAction';
 import { useThreadDetail } from '@/hooks/useThreadDetail';
 import { analyticsService } from '@/src/services/analyticsService';
-import { getImageLink, SCREEN_HEIGHT } from '@/src/utils';
+import { DEFAULT_THREAD_IMAGE, getImageLink, SCREEN_HEIGHT } from '@/src/utils';
 
 export default function ThreadDetail() {
   const { colors } = useTheme();
@@ -113,15 +113,13 @@ export default function ThreadDetail() {
 
   const renderHeader = () => (
     <View>
-      {thread?.genreType && (
-        <View style={styles.heroImageContainer}>
-          <Image
-            source={{ uri: getImageLink(genres.find(g => g.type === thread?.genreType)?.image || '', 'medium') }}
-            style={styles.heroImage}
-            resizeMode="cover"
-          />
-        </View>
-      )}
+      <View style={styles.heroImageContainer}>
+        <Image
+          source={{ uri: thread?.genreType ? getImageLink(genres.find(g => g.type === thread?.genreType)?.image || '', 'medium') : DEFAULT_THREAD_IMAGE }}
+          style={styles.heroImage}
+          resizeMode="cover"
+        />
+      </View>
 
       <TextApp style={styles.storyTitle}>{thread?.title}</TextApp>
     </View>
@@ -225,7 +223,7 @@ export default function ThreadDetail() {
       </ThemedView>
     );
   }
-  
+
   if (error || !thread) {
     return (
       <ThemedView style={styles.container}>

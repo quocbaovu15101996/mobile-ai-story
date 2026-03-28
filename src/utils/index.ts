@@ -87,3 +87,5 @@ export function checkTheDayIsToDay(date?: string): boolean {
 export const getImageLink = (image: string, type: string) => {
   return `${API_CONFIG.BASE_URL}/v1/images/${image}?type=${type}`;
 };
+
+export const DEFAULT_THREAD_IMAGE = 'https://ai-story.codezap.io.vn/api/v1/images/3852fb9c-7eeb-46af-8d5b-872a945109b7?type=thumbnail'

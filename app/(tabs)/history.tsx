@@ -4,7 +4,7 @@ import TextApp from '@/components/TextApp';
 import { ThreadItem } from '@/components/ThreadItem';
 import { analyticsService } from '@/src/services/analyticsService';
 import { getHistory } from '@/src/services/api/thread';
-import { useUserProfile } from '@/src/store';
+import { useGenres, useUserProfile } from '@/src/store';
 import { useFocusEffect, useNavigation, useTheme } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -24,7 +24,7 @@ const PAGE_SIZE = 10;
 export default function HistoryScreen() {
   const { colors } = useTheme();
   const userProfile = useUserProfile();
-
+  const genres = useGenres();
   const [threads, setThreads] = useState<Thread[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -118,7 +118,7 @@ export default function HistoryScreen() {
   };
 
   const renderItem: ListRenderItem<Thread> = ({ item }) => (
-    <ThreadItem thread={item} />
+    <ThreadItem thread={item} genres={genres} />
   );
 
   const renderEmpty = () => (
@@ -175,7 +175,9 @@ export default function HistoryScreen() {
         data={threads}
         renderItem={renderItem}
         keyExtractor={keyExtractor}
+        numColumns={2}
         contentContainerStyle={styles.listContent}
+        columnWrapperStyle={styles.row}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
@@ -197,6 +199,11 @@ const styles = StyleSheet.create({
   listContent: {
     paddingVertical: 16,
     flexGrow: 1,
+  },
+  row: {
+    flex: 1,
+    justifyContent: 'space-between',
+    marginBottom: 10,
   },
   loadingContainer: {
     flex: 1,

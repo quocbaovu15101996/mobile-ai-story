@@ -1,5 +1,6 @@
 import { RootStackParamList } from '@/app/_layout';
 import { analyticsService } from '@/src/services/analyticsService';
+import { DEFAULT_THREAD_IMAGE, getImageLink, SCREEN_WIDTH } from '@/src/utils';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import React from 'react';
@@ -9,9 +10,10 @@ import { ThemedView } from './ThemedView';
 
 interface ThreadItemProps {
   thread: Thread;
+  genres: Genre[];
 }
 
-export const ThreadItem: React.FC<ThreadItemProps> = ({ thread }) => {
+export const ThreadItem: React.FC<ThreadItemProps> = ({ thread, genres }) => {
   const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const handlePress = () => {
@@ -21,6 +23,11 @@ export const ThreadItem: React.FC<ThreadItemProps> = ({ thread }) => {
 
   return (
     <ThemedView style={styles.container}>
+      <Image
+        source={{ uri: thread?.genre ? getImageLink(genres.find(g => g.type === thread?.genre)?.image || '', 'medium') : DEFAULT_THREAD_IMAGE }}
+        style={styles.image}
+        resizeMode="cover"
+      />
       <Pressable style={({ pressed }) => pressed && { opacity: 0.7 }} onPress={handlePress}>
         <View style={styles.contentContainer}>
           <TextApp style={styles.title} numberOfLines={1} ellipsizeMode="tail">
@@ -33,13 +40,6 @@ export const ThreadItem: React.FC<ThreadItemProps> = ({ thread }) => {
             {new Date(thread.createdDate).toLocaleDateString()}
           </TextApp>
         </View>
-        {thread.image && (
-          <Image
-            source={{ uri: thread.image }}
-            style={styles.image}
-            resizeMode="cover"
-          />
-        )}
       </Pressable>
     </ThemedView>
   );
@@ -48,10 +48,8 @@ export const ThreadItem: React.FC<ThreadItemProps> = ({ thread }) => {
 const styles = StyleSheet.create({
   container: {
     borderRadius: 12,
-    padding: 16,
-    marginVertical: 8,
-    marginHorizontal: 16,
-    flexDirection: 'row',
+    padding: 8,
+    width: (SCREEN_WIDTH - 20) / 2,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -79,8 +77,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   image: {
-    width: 80,
-    height: 80,
+    width: (SCREEN_WIDTH - 56) / 2,
+    height: (SCREEN_WIDTH - 56) / 2,
     borderRadius: 8,
   },
 });
