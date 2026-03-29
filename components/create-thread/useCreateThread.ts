@@ -147,7 +147,7 @@ export const useCreateThread = () => {
           });
           resetCreateStoryForm();
           // Wait up to 3 seconds for ad to load
-          await new Promise((resolve) => setTimeout(resolve, 3000));
+          await new Promise((resolve) => setTimeout(resolve, 4000));
           if (isInterstitialLoaded.current && interstitial.current) {
             interstitial.current?.show();
           } else {
@@ -156,10 +156,10 @@ export const useCreateThread = () => {
         }
       } catch (error: any) {
         const errorMessage = error?.response?.data?.message || error?.message || 'Something went wrong!!! Please try again.';
-        setLoadingAds(false);
         showErrorToast(errorMessage);
       } finally {
         setLoading(false);
+        setLoadingAds(false);
       }
     }
   }, [
@@ -187,7 +187,7 @@ export const useCreateThread = () => {
       } else {
         showErrorToast(
           (response.data as unknown as string) ??
-            'Something went wrong!!! Please try again.'
+          'Something went wrong!!! Please try again.'
         );
       }
     } catch (error: any) {
