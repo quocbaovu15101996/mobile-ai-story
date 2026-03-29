@@ -8,24 +8,21 @@
     "scheme": "aurawriteai",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "react-native-google-mobile-ads": {
-      "android_app_id": "ca-app-pub-4455918819499290~1099428208",
-      "ios_app_id": "ca-app-pub-4455918819499290~1099428208"
-    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.codezap.ai.story"
     },
+    "notification": {
+      "icon": "./assets/images/adaptive-icon.png",
+      "color": "#ffffff"
+    },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "resizeMode": "contain",
         "backgroundColor": "#ffffff"
       },
       "package": "com.codezap.ai.story",
       "permissions": ["com.google.android.gms.permission.AD_ID"],
-      "notificationIcon": "./assets/images/adaptive-icon.png",
-      "notificationColor": "#ffffff",
       "edgeToEdgeEnabled": true,
       "googleServicesFile": "./google-services.json"
     },
@@ -80,15 +77,6 @@
           "android_package": "com.codezap.ai.story",
           "ios_package": "com.codezap.ai.story"
         }
-      ],
-      [
-        "react-native-google-mobile-ads",
-        {
-          "androidAppId": "ca-app-pub-4455918819499290~1099428208",
-          "android_app_id": "ca-app-pub-4455918819499290~1099428208",
-          "iosAppId": "ca-app-pub-12345678910~123456459",
-          "ios_app_id": "ca-app-pub-12345678910~123456459"
-        }
       ]
     ],
     "experiments": {
@@ -101,5 +89,9 @@
       }
     },
     "owner": "quocbao1510"
+  },
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-4455918819499290~1099428208",
+    "ios_app_id": "ca-app-pub-4455918819499290~1099428208"
   }
 }
